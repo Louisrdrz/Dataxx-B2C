@@ -14,9 +14,9 @@ const HeroSection = () => {
         >
           <defs>
             <linearGradient id="tunnelGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(0 100% 60% / 0.08)" />
-              <stop offset="50%" stopColor="hsl(15 100% 65% / 0.06)" />
-              <stop offset="100%" stopColor="hsl(340 100% 85% / 0.1)" />
+              <stop offset="0%" stopColor="hsl(268 83% 60% / 0.10)" />
+              <stop offset="50%" stopColor="hsl(292 76% 60% / 0.08)" />
+              <stop offset="100%" stopColor="hsl(270 100% 98% / 0.15)" />
             </linearGradient>
           </defs>
           
@@ -29,14 +29,14 @@ const HeroSection = () => {
           
           <path
             d="M0,350 Q150,250 300,300 Q500,350 700,300 Q900,250 1100,300 Q1250,350 1440,300 L1440,800 Q1250,750 1100,800 Q900,850 700,800 Q500,750 300,800 Q150,850 0,800 Z"
-            fill="hsl(340 100% 85% / 0.08)"
+            fill="hsl(270 100% 98% / 0.10)"
             className="animate-float"
             style={{ animationDelay: "2s" }}
           />
           
           <path
             d="M0,500 Q100,400 250,450 Q450,500 650,450 Q850,400 1050,450 Q1200,500 1440,450 L1440,900 L0,900 Z"
-            fill="hsl(0 100% 60% / 0.05)"
+            fill="hsl(268 83% 60% / 0.05)"
             className="animate-float"
             style={{ animationDelay: "4s" }}
           />
@@ -60,20 +60,20 @@ const HeroSection = () => {
 
         {/* Main Title */}
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-secondary mb-8 leading-tight animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-          Trouvez des sponsors prêts<br />
-          à investir dans vos talents
+          La plateforme IA qui accélère<br />
+          vos revenus sponsoring
         </h1>
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto mb-12 leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-          MeetSponsors analyse tout le marché YouTube et trouve les<br />
-          sponsors qui ont le plus de chances de collaborer avec vos talents
+          Dataxx analyse le marché et identifie les<br />
+          partenaires qui ont le plus de chances de collaborer avec vos talents
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
           <button className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg">
-            Trouvez des sponsors
+            Découvrir Dataxx
           </button>
           <button className="bg-white hover:bg-gray-50 text-secondary border-2 border-gray-200 hover:border-primary/20 font-semibold px-8 py-4 rounded-full transition-all duration-300 text-lg">
             Voir une démo

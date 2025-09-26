@@ -7,8 +7,8 @@ const Footer = () => {
           <div className="md:col-span-2">
             <div className="flex items-center mb-6">
               <span className="text-3xl font-bold">
-                <span className="text-white">meet</span>
-                <span className="text-primary">sponsors</span>
+                <span className="text-white">Data</span>
+                <span className="text-primary">xx</span>
               </span>
             </div>
             <p className="text-gray-300 mb-6 max-w-md">
@@ -59,7 +59,7 @@ const Footer = () => {
         {/* Bottom */}
         <div className="border-t border-gray-600 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm">
-            © 2024 MeetSponsors. Tous droits réservés.
+            © 2024 Dataxx. Tous droits réservés.
           </p>
           <div className="flex space-x-6 mt-4 md:mt-0">
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">

@@ -6,10 +6,10 @@ const BenefitsSection = () => {
         <div className="text-center mb-16">
           <div className="text-primary font-semibold mb-4">Bénéfices</div>
           <h2 className="text-4xl md:text-5xl font-bold text-secondary mb-6">
-            Plus de sponsors que de places dans vos vidéos
+            Des décisions sponsoring basées sur des données
           </h2>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
-            De la recherche à la prospection, MeetSponsors vous guide à chaque étape et vous permet de cibler les sponsors les plus pertinents, sans effort inutile
+            De la recherche à la prospection, Dataxx vous guide à chaque étape et vous permet de cibler les prospects les plus pertinents, sans effort inutile
           </p>
         </div>
 
@@ -25,7 +25,7 @@ const BenefitsSection = () => {
               Trouvez les sponsors parfaits pour votre niche
             </h3>
             <p className="text-muted-foreground">
-              Utilisez nos outils de recherche avancée pour trouver rapidement des sponsors dans votre niche. Filtrez par langue, secteur, audience et bien plus encore.
+              Accédez à des informations qualifiées et toujours à jour, collectées et analysées par des agents IA.
             </p>
           </div>
 
@@ -36,10 +36,10 @@ const BenefitsSection = () => {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-secondary mb-4">
-              Soyez informé des nouvelles opportunités de sponsoring
+              Ciblage intelligent
             </h3>
             <p className="text-muted-foreground">
-              Recevez des alertes par mail dès qu'une nouvelle marque entre sur le marché du sponsoring dans votre niche. Soyez parmi les premiers à sécuriser ces opportunités.
+              Priorisez les entreprises réellement capables et désireuses de sponsoriser.
             </p>
           </div>
 
@@ -50,10 +50,10 @@ const BenefitsSection = () => {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-secondary mb-4">
-              Ciblez les marques qui ont déjà travaillé avec vos concurrents
+              Pipeline intégré
             </h3>
             <p className="text-muted-foreground">
-              Identifiez les marques qui sponsorisent des YouTubers similaires et maximisez vos chances de collaboration en les ciblant directement.
+              Suivez les discussions, organisez les relances et structurez votre prospection.
             </p>
           </div>
         </div>
@@ -67,10 +67,10 @@ const BenefitsSection = () => {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-secondary mb-4">
-              Chaque semaine, recevez les sponsors les plus pertinents pour vos talents
+              Prospection augmentée par IA
             </h3>
             <p className="text-muted-foreground">
-              Notre algorithme analyse en continu le marché et sélectionne les 5 sponsors ayant le plus de chances de collaborer avec vos YouTubeurs.
+              Des semaines de recherche condensées en quelques clics.
             </p>
           </div>
 
@@ -81,10 +81,10 @@ const BenefitsSection = () => {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-secondary mb-4">
-              Contactez directement les décideurs clés
+              Nouveaux revenus
             </h3>
             <p className="text-muted-foreground">
-              Accédez aux contacts clés des marques, éliminez les intermédiaires et négocier directement avec les bonnes personnes.
+              Accédez à des sponsors encore non sollicités, mais parfaitement alignés.
             </p>
           </div>
 
@@ -95,10 +95,10 @@ const BenefitsSection = () => {
               </svg>
             </div>
             <h3 className="text-xl font-bold text-secondary mb-4">
-              Ciblez les sponsors les plus actifs
+              Meilleur argumentaire commercial
             </h3>
             <p className="text-muted-foreground">
-              Identifiez facilement les marques actives dans le sponsoring YouTube, et concentrez vos efforts là où les opportunités sont réelles.
+              Des dossiers sponsor appuyés sur des données concrètes.
             </p>
           </div>
         </div>
