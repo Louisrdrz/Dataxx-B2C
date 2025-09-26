@@ -1,9 +1,12 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
-import YouTuberCarousel from "@/components/YouTuberCarousel";
+// import YouTuberCarousel from "@/components/YouTuberCarousel";
 import ProblemSection from "@/components/ProblemSection";
 import BenefitsSection from "@/components/BenefitsSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
+import SolutionSection from "@/components/SolutionSection";
+import PositioningSection from "@/components/PositioningSection";
+import LeadFormSection from "@/components/LeadFormSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -11,10 +14,13 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       <HeroSection />
-      <YouTuberCarousel />
+      {/* Carousel retiré pour Dataxx */}
       <ProblemSection />
+      <SolutionSection />
       <BenefitsSection />
+      <PositioningSection />
       <HowItWorksSection />
+      <LeadFormSection />
       <Footer />
     </div>
   );

@@ -15,19 +15,19 @@
     --popover: 0 0% 100%;
     --popover-foreground: 213 27% 84%;
 
-    /* MeetSponsors Brand Colors */
-    --meetsponsors-red: 0 100% 60%;
-    --meetsponsors-orange: 15 100% 65%;
-    --meetsponsors-pink: 340 100% 85%;
-    --meetsponsors-gradient: linear-gradient(135deg, hsl(0 100% 60%) 0%, hsl(15 100% 65%) 100%);
-    --meetsponsors-background-gradient: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(340 100% 97%) 50%, hsl(0 0% 100%) 100%);
+    /* Dataxx Violet Palette */
+    --meetsponsors-red: 268 83% 60%; /* primary violet */
+    --meetsponsors-orange: 292 76% 60%; /* magenta accent */
+    --meetsponsors-pink: 270 100% 98%; /* lavender tint */
+    --meetsponsors-gradient: linear-gradient(135deg, hsl(268 83% 60%) 0%, hsl(292 76% 60%) 100%);
+    --meetsponsors-background-gradient: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(270 100% 98%) 50%, hsl(0 0% 100%) 100%);
     
     /* Curve colors */
-    --curve-red: 0 100% 60%;
-    --curve-pink: 340 100% 85%;
-    --curve-gradient: linear-gradient(45deg, hsl(0 100% 60% / 0.1) 0%, hsl(340 100% 85% / 0.2) 100%);
+    --curve-red: 268 83% 60%;
+    --curve-pink: 292 76% 60%;
+    --curve-gradient: linear-gradient(45deg, hsl(268 83% 60% / 0.08) 0%, hsl(292 76% 60% / 0.15) 100%);
 
-    --primary: 0 100% 60%;
+    --primary: 268 83% 60%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 213 27% 24%;
@@ -36,7 +36,7 @@
     --muted: 0 0% 96%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 15 100% 65%;
+    --accent: 292 76% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -44,7 +44,7 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 0 100% 60%;
+    --ring: 268 83% 60%;
 
     --radius: 0.75rem;
 
@@ -53,16 +53,16 @@
     --curve-animation: cubic-bezier(0.4, 0, 0.2, 1);
     
     /* Shadows */
-    --shadow-meetsponsors: 0 20px 25px -5px hsl(0 100% 60% / 0.1), 0 10px 10px -5px hsl(0 100% 60% / 0.04);
+    --shadow-meetsponsors: 0 20px 25px -5px hsl(268 83% 60% / 0.1), 0 10px 10px -5px hsl(268 83% 60% / 0.04);
     --shadow-card: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -2px hsl(0 0% 0% / 0.05);
   }
 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
-    --primary: 0 100% 60%;
+    --primary: 268 83% 60%;
     --primary-foreground: 0 0% 100%;
-    --meetsponsors-background-gradient: linear-gradient(180deg, hsl(222.2 84% 4.9%) 0%, hsl(0 100% 60% / 0.1) 50%, hsl(222.2 84% 4.9%) 100%);
+    --meetsponsors-background-gradient: linear-gradient(180deg, hsl(222.2 84% 4.9%) 0%, hsl(268 83% 60% / 0.1) 50%, hsl(222.2 84% 4.9%) 100%);
   }
 }
 
