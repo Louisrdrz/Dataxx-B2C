@@ -58,7 +58,7 @@ const HowItWorksSection = () => {
         </div>
 
         {/* Rangée 1 : 3 blocs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
           {/* Bloc 1 - Mapping intelligent (Loupe) */}
           <div ref={(el) => el && (refs.current[0] = el)} className="opacity-0 translate-y-6 transition-all duration-700">
             <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
@@ -179,44 +179,44 @@ const HowItWorksSection = () => {
         </div>
 
         {/* Rangée 2 : 3 blocs */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mt-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10 mt-12">
           {/* Bloc 4 - Identification des décideurs (Listes) */}
           <div ref={(el) => el && (refs.current[3] = el)} className="opacity-0 translate-y-6 transition-all duration-700 [transition-delay:100ms]">
             <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-4 sm:px-6">
                 {/* DG */}
-                <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
+                <div className="bg-primary/5 rounded-2xl w-full max-w-[520px] min-h-14 flex items-center gap-3 border border-primary/10 px-4 py-2">
                   <img src={avatarDG} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Directeur général</div>
-                    <div className="text-gray-500 text-xs flex items-center gap-2">
-                      <span>+33 6 XX XX XX XX</span>
-                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
-                      <span>jean.dupond@entreprise.fr</span>
+                    <div className="text-gray-500 text-xs flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 break-words">
+                      <span className="whitespace-nowrap">+33 6 XX XX XX XX</span>
+                      <span className="hidden sm:inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
+                      <span className="break-all">jean.dupond@entreprise.fr</span>
                     </div>
                   </div>
                 </div>
                 {/* DM */}
-                <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
+                <div className="bg-primary/5 rounded-2xl w-full max-w-[520px] min-h-14 flex items-center gap-3 border border-primary/10 px-4 py-2">
                   <img src={avatarDM} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Directeur Marketing</div>
-                    <div className="text-gray-500 text-xs flex items-center gap-2">
-                      <span>+33 6 XX XX XX XX</span>
-                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
-                      <span>claire.martin@entreprise.fr</span>
+                    <div className="text-gray-500 text-xs flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 break-words">
+                      <span className="whitespace-nowrap">+33 6 XX XX XX XX</span>
+                      <span className="hidden sm:inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
+                      <span className="break-all">claire.martin@entreprise.fr</span>
                     </div>
                   </div>
                 </div>
                 {/* RS */}
-                <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
+                <div className="bg-primary/5 rounded-2xl w-full max-w-[520px] min-h-14 flex items-center gap-3 border border-primary/10 px-4 py-2">
                   <img src={avatarRS} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Responsable Sponsoring</div>
-                    <div className="text-gray-500 text-xs flex items-center gap-2">
-                      <span>+33 6 XX XX XX XX</span>
-                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
-                      <span>thomas.bernard@entreprise.fr</span>
+                    <div className="text-gray-500 text-xs flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 break-words">
+                      <span className="whitespace-nowrap">+33 6 XX XX XX XX</span>
+                      <span className="hidden sm:inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
+                      <span className="break-all">thomas.bernard@entreprise.fr</span>
                     </div>
                   </div>
                 </div>
