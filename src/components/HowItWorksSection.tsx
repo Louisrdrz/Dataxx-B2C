@@ -124,32 +124,35 @@ const HowItWorksSection = () => {
           {/* Bloc 2 - Profilage & Agent IA (Listes) */}
           <div ref={(el) => el && (refs.current[1] = el)} className="opacity-0 translate-y-6 transition-all duration-700 [transition-delay:100ms]">
             <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                <div className="bg-primary/5 rounded-full px-4 py-2 w-[70%] max-w-[360px] flex items-center gap-3 border border-primary/10">
-                  <img src={squeezie} alt="Squeezie" className="w-8 h-8 rounded-full object-cover" />
-                  <div className="flex-1 text-left text-secondary text-sm font-medium">Squeezie</div>
-                  <div className="flex gap-1">
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
+              {/* Fiche identité entreprise (IA) */}
+              <div className="absolute inset-0 p-6">
+                <div className="h-full w-full rounded-2xl border border-primary/10 bg-white/90">
+                  {/* header */}
+                  <div className="px-5 py-3 border-b border-gray-200 flex items-center gap-4">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-accent" />
+                    <div className="flex-1">
+                      <div className="h-3 w-40 bg-gray-200 rounded" />
+                      <div className="h-3 w-24 bg-gray-100 rounded mt-2" />
+                    </div>
+                    <span className="text-xs text-primary font-medium bg-primary/10 px-2 py-1 rounded-full">IA · temps réel</span>
                   </div>
-                </div>
-                <div className="bg-primary/5 rounded-full px-4 py-2 w-[70%] max-w-[360px] flex items-center gap-3 border border-primary/10">
-                  <img src={amixem} alt="Amixem" className="w-8 h-8 rounded-full object-cover" />
-                  <div className="flex-1 text-left text-secondary text-sm font-medium">Amixem</div>
-                  <div className="flex gap-1">
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
-                  </div>
-                </div>
-                <div className="bg-primary/5 rounded-full px-4 py-2 w-[70%] max-w-[360px] flex items-center gap-3 border border-primary/10">
-                  <img src={mcfly} alt="Mcfly et Carlito" className="w-8 h-8 rounded-full object-cover" />
-                  <div className="flex-1 text-left text-secondary text-sm font-medium">Mcfly & Carlito</div>
-                  <div className="flex gap-1">
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
-                    <span className="h-3 w-6 rounded-full bg-primary/20" />
+                  {/* body */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 px-5 py-4 text-sm">
+                    {[
+                      "Chiffre d’affaires",
+                      "Effectifs",
+                      "Historique sponsoring",
+                      "Signaux économiques",
+                      "Actualités",
+                      "Engagements RSE",
+                      "Image de marque",
+                    ].map((label) => (
+                      <div key={label} className="flex items-center gap-3">
+                        <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+                        <span className="text-secondary/80 min-w-[160px]">{label}</span>
+                        <span className="flex-1 h-2 bg-gray-100 rounded" />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
