@@ -180,7 +180,7 @@ const HowItWorksSection = () => {
                     <div className="flex items-center gap-3">
                       <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
                         <path d="M12 21s-6-4.35-8.5-7A5.5 5.5 0 0112 5.5 5.5 5.5 0 0120.5 14c-2.5 2.65-8.5 7-8.5 7z" />
-                      </svg>
+                </svg>
                       <span className="text-secondary/90 min-w-[150px]">Image de marque</span>
                       <span className="flex-1 h-2 bg-gray-100 rounded" />
                     </div>
@@ -275,28 +275,56 @@ const HowItWorksSection = () => {
             </div>
           </div>
 
-          {/* Bloc 5 - Emailing intelligent (Chat) */}
+          {/* Bloc 5 - Emailing intelligent (nouveau visuel) */}
           <div ref={(el) => el && (refs.current[4] = el)} className="opacity-0 translate-y-6 transition-all duration-700 [transition-delay:200ms]">
             <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              {/* Carte e-mail complète */}
+              {/* Email composer stylisé */}
               <div className="absolute inset-0 p-6">
-                <div className="w-full h-full rounded-2xl border border-primary/10 bg-white">
-                  <div className="px-5 py-3 border-b border-gray-200 flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary to-accent" />
-                    <div className="text-sm font-medium text-secondary">Rédaction IA</div>
+                <div className="w-full h-full rounded-2xl border border-primary/10 bg-white overflow-hidden">
+                  {/* top bar */}
+                  <div className="h-8 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-gray-200 flex items-center gap-1 px-3">
+                    <span className="h-2.5 w-2.5 rounded-full bg-primary/60" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-accent/60" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
                   </div>
+                  {/* fields */}
                   <div className="px-5 py-3 space-y-2 text-sm">
-                    <div className="flex gap-2"><span className="text-gray-500 w-12">À:</span><span className="text-secondary">marketing@entreprise-x.fr</span></div>
-                    <div className="flex gap-2"><span className="text-gray-500 w-12">De:</span><span className="text-secondary">commercial@club-y.fr</span></div>
-                    <div className="flex gap-2"><span className="text-gray-500 w-12">Objet:</span><span className="text-secondary">Partenariat {"{Entreprise X}"} × {"{Club Y}"}</span></div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500 w-12">À:</span>
+                      <div className="flex gap-2 flex-wrap">
+                        <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-secondary border border-primary/20">
+                          <span className="h-4 w-4 rounded-full bg-gradient-to-br from-primary to-accent" /> marketing@entreprise.fr
+                        </span>
+                        <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-secondary border border-primary/20">
+                          <span className="h-4 w-4 rounded-full bg-gradient-to-br from-indigo-400 to-sky-400" /> communication@entreprise.fr
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-500 w-12">Objet:</span>
+                      <div className="flex-1 h-2 rounded bg-gray-100" />
+                    </div>
                   </div>
-                  <div className="px-5 py-4 text-sm text-secondary leading-relaxed">
-                    Bonjour {"{Nom}"},<br/><br/>
-                    En analysant votre image de marque et votre historique sponsoring, notre IA identifie une forte affinité avec le {"{Club Y}"}. Les valeurs partagées
-                    et vos campagnes récentes montrent un alignement naturel pour une activation commune (brand content + présence stade).<br/><br/>
-                    Nous proposons une collaboration axée sur la performance, avec des activations adaptées à vos objectifs et un suivi précis des KPI.
-                    <br/><br/>
-                    Seriez-vous disponible pour un échange de 15 minutes cette semaine ?
+                  {/* body */}
+                  <div className="px-5 pb-4">
+                    <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-secondary leading-relaxed">
+                      Bonjour {"{Nom}"},<br/>
+                      Nos analyses sur <span className="bg-primary/10 text-primary font-medium">votre image de marque</span> et votre
+                      <span className="bg-accent/10 text-primary font-medium"> historique sponsoring</span> indiquent une forte affinité avec le {"{Club Y}"}.<br/>
+                      Nous recommandons une activation conjointe mêlant brand content et visibilité stade, alignée sur vos KPI.
+                      <ul className="list-disc pl-5 mt-2">
+                        <li>Audience cible compatible</li>
+                        <li>Moments forts de calendrier adaptés</li>
+                        <li>Mesure de performance intégrée</li>
+                      </ul>
+                      Cordialement,<br/>
+                      L’équipe Dataxx
+                    </div>
+                  </div>
+                  {/* footer */}
+                  <div className="px-5 pb-4 flex items-center gap-2">
+                    <div className="meetsponsors-gradient text-white text-xs font-semibold px-3 py-2 rounded-full">Envoyer</div>
+                    <div className="text-primary border border-primary/30 text-xs font-medium px-3 py-2 rounded-full bg-white">Personnaliser</div>
                   </div>
                 </div>
               </div>
