@@ -125,15 +125,33 @@ const HowItWorksSection = () => {
           {/* Bloc 2 - Profilage & Agent IA (Listes) */}
           <div ref={(el) => el && (refs.current[1] = el)} className="opacity-0 translate-y-6 transition-all duration-700 [transition-delay:100ms]">
             <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              {/* Fiche identité entreprise (alignée au texte) */}
+              {/* Fiche identité entreprise (alignée à la DA du bloc 5) */}
               <div className="absolute inset-0 p-6">
-                <div className="h-full w-full rounded-2xl border border-primary/10 bg-white/90">
-                  {/* Header avec logo Dataxx */}
-                  <div className="px-5 py-4 border-b border-gray-200 flex items-center gap-3">
-                    <img src={dataxxLogo} alt="Dataxx" className="h-7 w-7 rounded-md" />
-                    <div className="flex-1">
-                      <div className="h-3 w-40 bg-gray-200 rounded" />
-                      <div className="h-3 w-24 bg-gray-100 rounded mt-2" />
+                <div className="h-full w-full rounded-2xl border border-primary/10 bg-white overflow-hidden">
+                  {/* top bar */}
+                  <div className="h-8 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-gray-200 flex items-center gap-1 px-3">
+                    <span className="h-2.5 w-2.5 rounded-full bg-primary/60" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-accent/60" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
+                  </div>
+                  {/* Header avec logo Dataxx + chips */}
+                  <div className="px-5 py-3 border-b border-gray-200 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <img src={dataxxLogo} alt="Dataxx" className="h-7 w-7 rounded-md" />
+                      <div>
+                        <div className="h-3 w-40 bg-gray-200 rounded" />
+                        <div className="h-3 w-24 bg-gray-100 rounded mt-2" />
+                      </div>
+                    </div>
+                    <div className="hidden sm:flex items-center gap-2">
+                      <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-secondary border border-primary/20 text-xs">
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary" fill="currentColor"><rect x="3" y="10" width="3" height="10" rx="1" /><rect x="9" y="6" width="3" height="14" rx="1" /><rect x="15" y="3" width="3" height="17" rx="1" /></svg>
+                        CA
+                      </span>
+                      <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-secondary border border-primary/20 text-xs">
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary" fill="currentColor"><circle cx="8" cy="8" r="3" /><circle cx="16" cy="8" r="3" /><rect x="5" y="13" width="14" height="6" rx="2" /></svg>
+                        Effectifs
+                      </span>
                     </div>
                   </div>
                   {/* Corps: lignes avec icônes dédiées */}
@@ -184,6 +202,11 @@ const HowItWorksSection = () => {
                       <span className="text-secondary/90 min-w-[150px]">Image de marque</span>
                       <span className="flex-1 h-2 bg-gray-100 rounded" />
                     </div>
+                  </div>
+                  {/* footer CTA */}
+                  <div className="px-5 pb-4 flex items-center gap-2">
+                    <div className="meetsponsors-gradient text-white text-xs font-semibold px-3 py-2 rounded-full">Voir fiche</div>
+                    <div className="text-primary border border-primary/30 text-xs font-medium px-3 py-2 rounded-full bg-white">Exporter</div>
                   </div>
                 </div>
               </div>
@@ -339,24 +362,37 @@ const HowItWorksSection = () => {
           {/* Bloc 6 - CRM intégré (Pipeline) */}
           <div ref={(el) => el && (refs.current[5] = el)} className="opacity-0 translate-y-6 transition-all duration-700 [transition-delay:300ms]">
             <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="absolute inset-0 grid grid-cols-3 gap-4 p-8">
-                {[
-                  { title: "Prospect", companies: ["Novalytics", "GreenFlux"] },
-                  { title: "En négo", companies: ["ThermaTech", "BlueWave", "Solaria"] },
-                  { title: "Signé", companies: ["UrbanEdge"] },
-                ].map((col) => (
-                  <div key={col.title} className="bg-primary/5 rounded-2xl border border-primary/10 p-3">
-                    <div className="text-secondary text-sm font-medium mb-3">{col.title}</div>
-                    <div className="space-y-2">
-                      {col.companies.map((name) => (
-                        <div key={name} className="h-10 rounded-xl bg-white border border-gray-200 flex items-center gap-3 px-3">
-                          <div className="h-6 w-6 rounded-md" style={{ background: "linear-gradient(135deg, hsl(268 83% 60%), hsl(292 76% 60%))" }} />
-                          <span className="text-sm text-secondary">{name}</span>
+              {/* Kanban avec DA unifiée */}
+              <div className="absolute inset-0 p-6">
+                <div className="w-full h-full rounded-2xl border border-primary/10 bg-white overflow-hidden">
+                  <div className="h-8 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-gray-200" />
+                  <div className="p-4 grid grid-cols-3 gap-4 text-sm">
+                    {["Prospect", "En négo", "Signé"].map((col, idx) => (
+                      <div key={col} className="bg-primary/5 rounded-xl border border-primary/10 p-3">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-secondary font-medium">{col}</span>
+                          <span className="h-5 w-5 rounded-full bg-primary/20" />
                         </div>
-                      ))}
-                    </div>
+                        <div className="space-y-2">
+                          <div className="h-9 rounded-lg bg-white border border-gray-200 flex items-center gap-2 px-2">
+                            <div className="h-5 w-5 rounded-md" style={{ background: "linear-gradient(135deg, hsl(268 83% 60%), hsl(292 76% 60%))" }} />
+                            <span className="text-secondary/90">Novalytics</span>
+                          </div>
+                          {(idx !== 2) && (
+                            <div className="h-9 rounded-lg bg-white border border-gray-200 flex items-center gap-2 px-2">
+                              <div className="h-5 w-5 rounded-md" style={{ background: "linear-gradient(135deg, #60a5fa, #a78bfa)" }} />
+                              <span className="text-secondary/90">ThermaTech</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                  <div className="px-4 pb-3 flex items-center gap-2">
+                    <div className="meetsponsors-gradient text-white text-xs font-semibold px-3 py-2 rounded-full">Créer opportunité</div>
+                    <div className="text-primary border border-primary/30 text-xs font-medium px-3 py-2 rounded-full bg-white">Importer</div>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="mt-6 text-center">
