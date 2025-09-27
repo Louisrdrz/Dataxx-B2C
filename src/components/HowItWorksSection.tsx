@@ -189,7 +189,11 @@ const HowItWorksSection = () => {
                   <img src={avatarDG} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Directeur général</div>
-                    <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · jean.dupond@XXX.fr</div>
+                    <div className="text-gray-500 text-xs flex items-center gap-2">
+                      <span>+33 6 XX XX XX XX</span>
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
+                      <span>jean.dupond@entreprise.fr</span>
+                    </div>
                   </div>
                 </div>
                 {/* DM */}
@@ -197,7 +201,11 @@ const HowItWorksSection = () => {
                   <img src={avatarDM} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Directeur Marketing</div>
-                    <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · claire.martin@XXX.fr</div>
+                    <div className="text-gray-500 text-xs flex items-center gap-2">
+                      <span>+33 6 XX XX XX XX</span>
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
+                      <span>claire.martin@entreprise.fr</span>
+                    </div>
                   </div>
                 </div>
                 {/* RS */}
@@ -205,7 +213,11 @@ const HowItWorksSection = () => {
                   <img src={avatarRS} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Responsable Sponsoring</div>
-                    <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · thomas.bernard@XXX.fr</div>
+                    <div className="text-gray-500 text-xs flex items-center gap-2">
+                      <span>+33 6 XX XX XX XX</span>
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gray-400/70" />
+                      <span>thomas.bernard@entreprise.fr</span>
+                    </div>
                   </div>
                 </div>
               </div>
