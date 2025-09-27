@@ -140,41 +140,45 @@ const HowItWorksSection = () => {
                   <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                     {/* CA */}
                     <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H7" strokeLinecap="round" />
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
+                        <rect x="3" y="10" width="3" height="10" rx="1" />
+                        <rect x="9" y="6" width="3" height="14" rx="1" />
+                        <rect x="15" y="3" width="3" height="17" rx="1" />
                       </svg>
                       <span className="text-secondary/90 min-w-[150px]">Chiffre d’affaires</span>
                       <span className="flex-1 h-2 bg-gray-100 rounded" />
                     </div>
                     {/* Effectifs */}
                     <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M16 14a4 4 0 10-8 0v5h8v-5z" />
-                        <circle cx="12" cy="7" r="3" />
-                        <path d="M20 21v-5a4 4 0 00-3-3.87M4 21v-5a4 4 0 013-3.87" strokeLinecap="round" />
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
+                        <circle cx="8" cy="8" r="3" />
+                        <circle cx="16" cy="8" r="3" />
+                        <rect x="5" y="13" width="14" height="6" rx="2" />
                       </svg>
                       <span className="text-secondary/90 min-w-[150px]">Effectifs</span>
                       <span className="flex-1 h-2 bg-gray-100 rounded" />
                     </div>
                     {/* Descriptif activité */}
                     <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M3 7h18M3 12h18M3 17h12" strokeLinecap="round" />
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
+                        <rect x="4" y="4" width="16" height="16" rx="2" />
+                        <rect x="7" y="8" width="10" height="2" rx="1" fill="#fff" />
+                        <rect x="7" y="12" width="8" height="2" rx="1" fill="#fff" />
                       </svg>
                       <span className="text-secondary/90 min-w-[150px]">Descriptif activité</span>
                       <span className="flex-1 h-2 bg-gray-100 rounded" />
                     </div>
                     {/* Historique sponsoring */}
                     <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M8 21l4-2 4 2V5a4 4 0 10-8 0v16z" />
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
+                        <path d="M12 2l2.39 4.84L20 8l-4 3.9.95 5.53L12 15.9 7.05 17.43 8 13.9 4 10l5.61-1.16L12 2z" />
                       </svg>
                       <span className="text-secondary/90 min-w-[150px]">Historique sponsoring</span>
                       <span className="flex-1 h-2 bg-gray-100 rounded" />
                     </div>
                     {/* Image de marque */}
                     <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
                         <path d="M12 21s-6-4.35-8.5-7A5.5 5.5 0 0112 5.5 5.5 5.5 0 0120.5 14c-2.5 2.65-8.5 7-8.5 7z" />
                       </svg>
                       <span className="text-secondary/90 min-w-[150px]">Image de marque</span>
