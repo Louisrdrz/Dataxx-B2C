@@ -183,13 +183,7 @@ const HowItWorksSection = () => {
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6">
                 {/* DG */}
                 <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
-                  <div className="w-8 h-8 rounded-full bg-white border border-primary/20 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor">
-                      <circle cx="8.5" cy="10" r="1.5" fill="currentColor" />
-                      <circle cx="15.5" cy="10" r="1.5" fill="currentColor" />
-                      <path d="M8 15c1.5 1.2 3.5 1.2 5 0" strokeWidth="1.6" strokeLinecap="round" />
-                    </svg>
-                  </div>
+                  <img src="https://fakeface.rest/face/view?minimum_age=35&maximum_age=60" alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Directeur général</div>
                     <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · jean.dupond@XXX.fr</div>
@@ -197,13 +191,7 @@ const HowItWorksSection = () => {
                 </div>
                 {/* DM */}
                 <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
-                  <div className="w-8 h-8 rounded-full bg-white border border-primary/20 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor">
-                      <circle cx="8.5" cy="10" r="1.5" fill="currentColor" />
-                      <circle cx="15.5" cy="10" r="1.5" fill="currentColor" />
-                      <path d="M8 15c1.5 1.2 3.5 1.2 5 0" strokeWidth="1.6" strokeLinecap="round" />
-                    </svg>
-                  </div>
+                  <img src="https://fakeface.rest/face/view?gender=female&minimum_age=28&maximum_age=50" alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Directeur Marketing</div>
                     <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · claire.martin@XXX.fr</div>
@@ -211,13 +199,7 @@ const HowItWorksSection = () => {
                 </div>
                 {/* RS */}
                 <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
-                  <div className="w-8 h-8 rounded-full bg-white border border-primary/20 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor">
-                      <circle cx="8.5" cy="10" r="1.5" fill="currentColor" />
-                      <circle cx="15.5" cy="10" r="1.5" fill="currentColor" />
-                      <path d="M8 15c1.5 1.2 3.5 1.2 5 0" strokeWidth="1.6" strokeLinecap="round" />
-                    </svg>
-                  </div>
+                  <img src="https://fakeface.rest/face/view?minimum_age=25&maximum_age=45" alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Responsable Sponsoring</div>
                     <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · thomas.bernard@XXX.fr</div>
