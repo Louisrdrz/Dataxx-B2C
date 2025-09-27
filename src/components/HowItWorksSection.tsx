@@ -70,30 +70,42 @@ const HowItWorksSection = () => {
                       <stop offset="0%" stopColor="hsl(268 83% 60% / .08)" />
                       <stop offset="100%" stopColor="hsl(292 76% 60% / 0)" />
                     </radialGradient>
+                    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" />
+                      <stop offset="100%" stopColor="#faf6ff" />
+                    </linearGradient>
+                    <linearGradient id="pathGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="hsl(268 83% 60%)" />
+                      <stop offset="100%" stopColor="hsl(292 76% 60%)" />
+                    </linearGradient>
+                    <filter id="ds" x="-50%" y="-50%" width="200%" height="200%">
+                      <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.15" />
+                    </filter>
                   </defs>
                   <rect width="600" height="340" fill="url(#halo1)" />
                   {/* Carte stylisée avec pins */}
                   <g transform="translate(60,40)">
-                    <rect x="0" y="0" width="360" height="220" rx="20" fill="#fafafa" stroke="#e5e7eb" />
-                    {/* routes/limites */}
-                    <path d="M30 60 L330 60 M30 110 L330 110 M30 160 L330 160" stroke="#e5e7eb" />
-                    <path d="M100 30 L100 190 M200 30 L200 190 M270 30 L270 190" stroke="#e5e7eb" />
-                    {/* pins */}
-                    <g>
-                      <path d="M85 95 a12 12 0 1 1 24 0 c0 10 -12 22 -12 22 s-12 -12 -12 -22" fill="hsl(268 83% 60%)" />
-                      <circle cx="97" cy="95" r="5" fill="#fff" />
-                    </g>
-                    <g>
-                      <path d="M220 145 a12 12 0 1 1 24 0 c0 10 -12 22 -12 22 s-12 -12 -12 -22" fill="hsl(292 76% 60%)" />
-                      <circle cx="232" cy="145" r="5" fill="#fff" />
-                    </g>
-                    <g>
-                      <path d="M290 80 a12 12 0 1 1 24 0 c0 10 -12 22 -12 22 s-12 -12 -12 -22" fill="#60a5fa" />
-                      <circle cx="302" cy="80" r="5" fill="#fff" />
-                    </g>
-                    <g>
-                      <path d="M160 60 a12 12 0 1 1 24 0 c0 10 -12 22 -12 22 s-12 -12 -12 -22" fill="#f59e0b" />
-                      <circle cx="172" cy="60" r="5" fill="#fff" />
+                    <rect x="0" y="0" width="360" height="220" rx="20" fill="url(#cardGrad)" stroke="#ececf1" />
+                    {/* grille */}
+                    <path d="M30 60 L330 60 M30 110 L330 110 M30 160 L330 160" stroke="#e9e9f2" />
+                    <path d="M100 30 L100 190 M200 30 L200 190 M270 30 L270 190" stroke="#e9e9f2" />
+                    {/* chemin de connexion */}
+                    <path d="M95 140 C 150 70 230 140 300 95" fill="none" stroke="url(#pathGrad)" strokeWidth="4" strokeLinecap="round" opacity="0.6" />
+                    {/* pins avec ombre et halo */}
+                    <g filter="url(#ds)">
+                      {/* pin violet (avec halo ping) */}
+                      <circle cx="97" cy="140" r="10" className="animate-ping" fill="hsl(268 83% 60% / .25)" />
+                      <path d="M85 140 a12 12 0 1 1 24 0 c0 10 -12 22 -12 22 s-12 -12 -12 -22" fill="hsl(268 83% 60%)" />
+                      <circle cx="97" cy="140" r="5" fill="#fff" />
+                      {/* pin orange */}
+                      <path d="M220 100 a12 12 0 1 1 24 0 c0 10 -12 22 -12 22 s-12 -12 -12 -22" fill="#f59e0b" />
+                      <circle cx="232" cy="100" r="5" fill="#fff" />
+                      {/* pin bleu */}
+                      <path d="M300 95 a12 12 0 1 1 24 0 c0 10 -12 22 -12 22 s-12 -12 -12 -22" fill="#60a5fa" />
+                      <circle cx="312" cy="95" r="5" fill="#fff" />
+                      {/* pin rose */}
+                      <path d="M170 165 a12 12 0 1 1 24 0 c0 10 -12 22 -12 22 s-12 -12 -12 -22" fill="hsl(292 76% 60%)" />
+                      <circle cx="182" cy="165" r="5" fill="#fff" />
                     </g>
                   </g>
                 </svg>
