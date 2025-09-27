@@ -3,6 +3,9 @@ import amixem from "@/assets/amixem.jpg";
 import mcfly from "@/assets/mcfly-carlito.jpg";
 import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
+import avatarDG from "@/assets/avatars/dg.jpg";
+import avatarDM from "@/assets/avatars/dm.jpg";
+import avatarRS from "@/assets/avatars/rs.jpg";
 
 // Section "Comment ça marche" style MeetSponsors (3 + 2 blocs)
 const HowItWorksSection = () => {
@@ -183,7 +186,7 @@ const HowItWorksSection = () => {
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-6">
                 {/* DG */}
                 <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
-                  <img src="https://fakeface.rest/face/view?minimum_age=35&maximum_age=60" alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
+                  <img src={avatarDG} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Directeur général</div>
                     <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · jean.dupond@XXX.fr</div>
@@ -191,7 +194,7 @@ const HowItWorksSection = () => {
                 </div>
                 {/* DM */}
                 <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
-                  <img src="https://fakeface.rest/face/view?gender=female&minimum_age=28&maximum_age=50" alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
+                  <img src={avatarDM} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Directeur Marketing</div>
                     <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · claire.martin@XXX.fr</div>
@@ -199,7 +202,7 @@ const HowItWorksSection = () => {
                 </div>
                 {/* RS */}
                 <div className="bg-primary/5 rounded-2xl w-full max-w-[420px] h-14 flex items-center gap-3 border border-primary/10 px-4">
-                  <img src="https://fakeface.rest/face/view?minimum_age=25&maximum_age=45" alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
+                  <img src={avatarRS} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
                   <div className="flex-1 text-left">
                     <div className="text-secondary text-sm font-medium">Responsable Sponsoring</div>
                     <div className="text-gray-500 text-xs">+33 6 XX XX XX XX · thomas.bernard@XXX.fr</div>
