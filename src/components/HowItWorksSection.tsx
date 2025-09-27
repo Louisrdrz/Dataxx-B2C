@@ -115,7 +115,7 @@ const HowItWorksSection = () => {
               <div className="mx-auto mb-3 h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">1</div>
               <h3 className="text-secondary text-2xl font-bold mb-2">Cartographie du territoire</h3>
               <p className="text-gray-600">
-                Cartographiez votre territoire de sponsoring. Accédez à une vision exhaustive des entreprises locales et nationales pertinentes,
+                Accédez à une vision exhaustive des entreprises locales et nationales pertinentes,
                 organisées par secteur, taille et potentiel de partenariat.
               </p>
             </div>
