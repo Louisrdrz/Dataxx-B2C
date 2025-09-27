@@ -62,7 +62,7 @@ const HowItWorksSection = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
           {/* Bloc 1 - Mapping intelligent (Loupe) */}
           <div ref={(el) => el && (refs.current[0] = el)} className="opacity-0 translate-y-6 transition-all duration-700">
-            <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="relative min-h-[320px] sm:h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="absolute inset-0">
                 <svg viewBox="0 0 600 340" className="w-full h-full">
                   {/* halo */}
@@ -135,15 +135,15 @@ const HowItWorksSection = () => {
                     <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
                   </div>
                   {/* Header avec logo Dataxx + chips */}
-                  <div className="px-5 py-3 border-b border-gray-200 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  <div className="px-5 py-3 border-b border-gray-200 flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-3 min-w-0">
                       <img src={dataxxLogo} alt="Dataxx" className="h-7 w-7 rounded-md" />
-                      <div>
+                      <div className="min-w-[140px]">
                         <div className="h-3 w-40 bg-gray-200 rounded" />
                         <div className="h-3 w-24 bg-gray-100 rounded mt-2" />
                       </div>
                     </div>
-                    <div className="hidden sm:flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap sm:justify-end">
                       <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-secondary border border-primary/20 text-xs">
                         <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary" fill="currentColor"><rect x="3" y="10" width="3" height="10" rx="1" /><rect x="9" y="6" width="3" height="14" rx="1" /><rect x="15" y="3" width="3" height="17" rx="1" /></svg>
                         CA
@@ -204,7 +204,7 @@ const HowItWorksSection = () => {
                     </div>
                   </div>
                   {/* footer CTA */}
-                  <div className="px-5 pb-4 flex items-center gap-2">
+                  <div className="px-5 pb-4 flex items-center gap-2 flex-wrap">
                     <div className="meetsponsors-gradient text-white text-xs font-semibold px-3 py-2 rounded-full">Voir fiche</div>
                     <div className="text-primary border border-primary/30 text-xs font-medium px-3 py-2 rounded-full bg-white">Exporter</div>
                   </div>
@@ -361,14 +361,14 @@ const HowItWorksSection = () => {
 
           {/* Bloc 6 - CRM intégré (Pipeline) */}
           <div ref={(el) => el && (refs.current[5] = el)} className="opacity-0 translate-y-6 transition-all duration-700 [transition-delay:300ms]">
-            <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <div className="relative min-h-[320px] sm:h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
               {/* Kanban avec DA unifiée */}
               <div className="absolute inset-0 p-6">
                 <div className="w-full h-full rounded-2xl border border-primary/10 bg-white overflow-hidden">
                   <div className="h-8 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-gray-200" />
-                  <div className="p-4 grid grid-cols-3 gap-4 text-sm">
+                  <div className="p-4 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
                     {["Prospect", "En négo", "Signé"].map((col, idx) => (
-                      <div key={col} className="bg-primary/5 rounded-xl border border-primary/10 p-3">
+                      <div key={col} className="bg-primary/5 rounded-xl border border-primary/10 p-3 min-w-0">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-secondary font-medium">{col}</span>
                           <span className="h-5 w-5 rounded-full bg-primary/20" />
@@ -388,7 +388,7 @@ const HowItWorksSection = () => {
                       </div>
                     ))}
                   </div>
-                  <div className="px-4 pb-3 flex items-center gap-2">
+                  <div className="px-4 pb-3 flex items-center gap-2 flex-wrap">
                     <div className="meetsponsors-gradient text-white text-xs font-semibold px-3 py-2 rounded-full">Créer opportunité</div>
                     <div className="text-primary border border-primary/30 text-xs font-medium px-3 py-2 rounded-full bg-white">Importer</div>
                   </div>
