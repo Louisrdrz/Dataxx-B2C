@@ -366,29 +366,29 @@ const HowItWorksSection = () => {
               <div className="absolute inset-0 p-6">
                 <div className="w-full h-full rounded-2xl border border-primary/10 bg-white overflow-hidden">
                   <div className="h-8 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-gray-200" />
-                  <div className="p-4 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                  <div className="p-4 flex gap-4 overflow-x-auto md:grid md:grid-cols-3 md:overflow-visible text-sm">
                     {["Prospect", "En négo", "Signé"].map((col, idx) => (
-                      <div key={col} className="bg-primary/5 rounded-xl border border-primary/10 p-3 min-w-0">
+                      <div key={col} className="bg-primary/5 rounded-xl border border-primary/10 p-3 min-w-[240px] md:min-w-0 flex-shrink-0 md:flex-shrink">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-secondary font-medium">{col}</span>
+                          <span className="text-secondary font-medium whitespace-nowrap">{col}</span>
                           <span className="h-5 w-5 rounded-full bg-primary/20" />
                         </div>
                         <div className="space-y-2">
                           <div className="h-9 rounded-lg bg-white border border-gray-200 flex items-center gap-2 px-2">
                             <div className="h-5 w-5 rounded-md" style={{ background: "linear-gradient(135deg, hsl(268 83% 60%), hsl(292 76% 60%))" }} />
-                            <span className="text-secondary/90">Novalytics</span>
+                            <span className="text-secondary/90 truncate">Novalytics</span>
                           </div>
                           {(idx !== 2) && (
                             <div className="h-9 rounded-lg bg-white border border-gray-200 flex items-center gap-2 px-2">
                               <div className="h-5 w-5 rounded-md" style={{ background: "linear-gradient(135deg, #60a5fa, #a78bfa)" }} />
-                              <span className="text-secondary/90">ThermaTech</span>
+                              <span className="text-secondary/90 truncate">ThermaTech</span>
                             </div>
                           )}
                         </div>
                       </div>
                     ))}
                   </div>
-                  <div className="px-4 pb-3 flex items-center gap-2 flex-wrap">
+                  <div className="px-4 pb-3 flex items-center gap-2 flex-wrap md:justify-start">
                     <div className="meetsponsors-gradient text-white text-xs font-semibold px-3 py-2 rounded-full">Créer opportunité</div>
                     <div className="text-primary border border-primary/30 text-xs font-medium px-3 py-2 rounded-full bg-white">Importer</div>
                   </div>
