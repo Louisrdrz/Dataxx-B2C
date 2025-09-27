@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import avatarDG from "@/assets/avatars/dg.jpg";
 import avatarDM from "@/assets/avatars/dm.jpg";
 import avatarRS from "@/assets/avatars/rs.jpg";
+import dataxxLogo from "@/assets/logo.png";
 
 // Section "Comment ça marche" style MeetSponsors (3 + 2 blocs)
 const HowItWorksSection = () => {
@@ -124,35 +125,61 @@ const HowItWorksSection = () => {
           {/* Bloc 2 - Profilage & Agent IA (Listes) */}
           <div ref={(el) => el && (refs.current[1] = el)} className="opacity-0 translate-y-6 transition-all duration-700 [transition-delay:100ms]">
             <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              {/* Fiche identité entreprise (IA) */}
+              {/* Fiche identité entreprise (alignée au texte) */}
               <div className="absolute inset-0 p-6">
                 <div className="h-full w-full rounded-2xl border border-primary/10 bg-white/90">
-                  {/* header */}
-                  <div className="px-5 py-3 border-b border-gray-200 flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-primary to-accent" />
+                  {/* Header avec logo Dataxx */}
+                  <div className="px-5 py-4 border-b border-gray-200 flex items-center gap-3">
+                    <img src={dataxxLogo} alt="Dataxx" className="h-7 w-7 rounded-md" />
                     <div className="flex-1">
                       <div className="h-3 w-40 bg-gray-200 rounded" />
                       <div className="h-3 w-24 bg-gray-100 rounded mt-2" />
                     </div>
-                    <span className="text-xs text-primary font-medium bg-primary/10 px-2 py-1 rounded-full">IA · temps réel</span>
                   </div>
-                  {/* body */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 px-5 py-4 text-sm">
-                    {[
-                      "Chiffre d’affaires",
-                      "Effectifs",
-                      "Historique sponsoring",
-                      "Signaux économiques",
-                      "Actualités",
-                      "Engagements RSE",
-                      "Image de marque",
-                    ].map((label) => (
-                      <div key={label} className="flex items-center gap-3">
-                        <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-                        <span className="text-secondary/80 min-w-[160px]">{label}</span>
-                        <span className="flex-1 h-2 bg-gray-100 rounded" />
-                      </div>
-                    ))}
+                  {/* Corps: lignes avec icônes dédiées */}
+                  <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                    {/* CA */}
+                    <div className="flex items-center gap-3">
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H7" strokeLinecap="round" />
+                      </svg>
+                      <span className="text-secondary/90 min-w-[150px]">Chiffre d’affaires</span>
+                      <span className="flex-1 h-2 bg-gray-100 rounded" />
+                    </div>
+                    {/* Effectifs */}
+                    <div className="flex items-center gap-3">
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M16 14a4 4 0 10-8 0v5h8v-5z" />
+                        <circle cx="12" cy="7" r="3" />
+                        <path d="M20 21v-5a4 4 0 00-3-3.87M4 21v-5a4 4 0 013-3.87" strokeLinecap="round" />
+                      </svg>
+                      <span className="text-secondary/90 min-w-[150px]">Effectifs</span>
+                      <span className="flex-1 h-2 bg-gray-100 rounded" />
+                    </div>
+                    {/* Descriptif activité */}
+                    <div className="flex items-center gap-3">
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 7h18M3 12h18M3 17h12" strokeLinecap="round" />
+                      </svg>
+                      <span className="text-secondary/90 min-w-[150px]">Descriptif activité</span>
+                      <span className="flex-1 h-2 bg-gray-100 rounded" />
+                    </div>
+                    {/* Historique sponsoring */}
+                    <div className="flex items-center gap-3">
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M8 21l4-2 4 2V5a4 4 0 10-8 0v16z" />
+                      </svg>
+                      <span className="text-secondary/90 min-w-[150px]">Historique sponsoring</span>
+                      <span className="flex-1 h-2 bg-gray-100 rounded" />
+                    </div>
+                    {/* Image de marque */}
+                    <div className="flex items-center gap-3">
+                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M12 21s-6-4.35-8.5-7A5.5 5.5 0 0112 5.5 5.5 5.5 0 0120.5 14c-2.5 2.65-8.5 7-8.5 7z" />
+                      </svg>
+                      <span className="text-secondary/90 min-w-[150px]">Image de marque</span>
+                      <span className="flex-1 h-2 bg-gray-100 rounded" />
+                    </div>
                   </div>
                 </div>
               </div>
