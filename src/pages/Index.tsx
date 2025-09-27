@@ -7,6 +7,8 @@ import HowItWorksSection from "@/components/HowItWorksSection";
 import SolutionSection from "@/components/SolutionSection";
 import PositioningSection from "@/components/PositioningSection";
 import LeadFormSection from "@/components/LeadFormSection";
+import FoundersSection from "@/components/FoundersSection";
+import SupportersMarqueeSection from "@/components/SupportersMarqueeSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -20,6 +22,8 @@ const Index = () => {
       <BenefitsSection />
       <PositioningSection />
       <HowItWorksSection />
+      <FoundersSection />
+      <SupportersMarqueeSection />
       <LeadFormSection />
       <Footer />
     </div>

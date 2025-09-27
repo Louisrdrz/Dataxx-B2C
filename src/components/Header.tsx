@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png";
 
 const Header = () => {
   return (
@@ -7,15 +8,8 @@ const Header = () => {
         {/* Logo */}
         <div className="flex items-center">
           <div className="flex items-center">
-            <div className="w-8 h-8 mr-2">
-              <svg viewBox="0 0 32 32" className="w-full h-full">
-                <circle cx="16" cy="16" r="16" fill="hsl(var(--primary))" />
-                <path d="M12 10 L20 16 L12 22 Z" fill="white" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold text-secondary">
-              Dataxx
-            </span>
+            <img src={logo} alt="Dataxx" className="w-8 h-8 mr-2 rounded-full" />
+            <span className="text-xl font-bold text-secondary">Dataxx</span>
           </div>
         </div>
 
