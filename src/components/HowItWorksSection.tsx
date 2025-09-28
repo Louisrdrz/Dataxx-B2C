@@ -125,88 +125,41 @@ const HowItWorksSection = () => {
           {/* Bloc 2 - Profilage & Agent IA (Listes) */}
           <div ref={(el) => el && (refs.current[1] = el)} className="opacity-0 translate-y-6 transition-all duration-700 [transition-delay:100ms]">
             <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-              {/* Fiche identité entreprise (alignée à la DA du bloc 5) */}
+              {/* Fiche identité entreprise – version épurée */}
               <div className="absolute inset-0 p-6">
                 <div className="h-full w-full rounded-2xl border border-primary/10 bg-white overflow-hidden">
-                  {/* top bar */}
-                  <div className="h-8 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-gray-200 flex items-center gap-1 px-3">
-                    <span className="h-2.5 w-2.5 rounded-full bg-primary/60" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-accent/60" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-gray-300" />
-                  </div>
-                  {/* Header avec logo Dataxx + chips */}
-                  <div className="px-5 py-3 border-b border-gray-200 flex items-center justify-between flex-wrap gap-2">
+                  {/* header minimal */}
+                  <div className="px-5 py-4 flex items-center justify-between gap-3 flex-wrap">
                     <div className="flex items-center gap-3 min-w-0">
                       <img src={dataxxLogo} alt="Dataxx" className="h-7 w-7 rounded-md" />
-                      <div className="min-w-[140px]">
+                      <div className="space-y-2">
                         <div className="h-3 w-40 bg-gray-200 rounded" />
-                        <div className="h-3 w-24 bg-gray-100 rounded mt-2" />
+                        <div className="h-3 w-28 bg-gray-100 rounded" />
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-wrap sm:justify-end">
-                      <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-secondary border border-primary/20 text-xs">
-                        <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary" fill="currentColor"><rect x="3" y="10" width="3" height="10" rx="1" /><rect x="9" y="6" width="3" height="14" rx="1" /><rect x="15" y="3" width="3" height="17" rx="1" /></svg>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-50 text-secondary border border-gray-200 text-xs">
+                        <svg viewBox=\"0 0 24 24\" className=\"w-4 h-4 text-primary\" fill=\"currentColor\"><rect x=\"3\" y=\"10\" width=\"3\" height=\"10\" rx=\"1\" /><rect x=\"9\" y=\"6\" width=\"3\" height=\"14\" rx=\"1\" /><rect x=\"15\" y=\"3\" width=\"3\" height=\"17\" rx=\"1\" /></svg>
                         CA
                       </span>
-                      <span className="inline-flex items-center gap-2 px-2 py-1 rounded-full bg-primary/10 text-secondary border border-primary/20 text-xs">
-                        <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary" fill="currentColor"><circle cx="8" cy="8" r="3" /><circle cx="16" cy="8" r="3" /><rect x="5" y="13" width="14" height="6" rx="2" /></svg>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-50 text-secondary border border-gray-200 text-xs">
+                        <svg viewBox=\"0 0 24 24\" className=\"w-4 h-4 text-primary\" fill=\"currentColor\"><circle cx=\"8\" cy=\"8\" r=\"3\" /><circle cx=\"16\" cy=\"8\" r=\"3\" /><rect x=\"5\" y=\"13\" width=\"14\" height=\"6\" rx=\"2\" /></svg>
                         Effectifs
                       </span>
                     </div>
                   </div>
-                  {/* Corps: lignes avec icônes dédiées */}
-                  <div className="px-5 py-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                    {/* CA */}
-                    <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
-                        <rect x="3" y="10" width="3" height="10" rx="1" />
-                        <rect x="9" y="6" width="3" height="14" rx="1" />
-                        <rect x="15" y="3" width="3" height="17" rx="1" />
-                      </svg>
-                      <span className="text-secondary/90 min-w-[150px]">Chiffre d’affaires</span>
-                      <span className="flex-1 h-2 bg-gray-100 rounded" />
-                    </div>
-                    {/* Effectifs */}
-                    <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
-                        <circle cx="8" cy="8" r="3" />
-                        <circle cx="16" cy="8" r="3" />
-                        <rect x="5" y="13" width="14" height="6" rx="2" />
-                      </svg>
-                      <span className="text-secondary/90 min-w-[150px]">Effectifs</span>
-                      <span className="flex-1 h-2 bg-gray-100 rounded" />
-                    </div>
-                    {/* Descriptif activité */}
-                    <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
-                        <rect x="4" y="4" width="16" height="16" rx="2" />
-                        <rect x="7" y="8" width="10" height="2" rx="1" fill="#fff" />
-                        <rect x="7" y="12" width="8" height="2" rx="1" fill="#fff" />
-                      </svg>
-                      <span className="text-secondary/90 min-w-[150px]">Descriptif activité</span>
-                      <span className="flex-1 h-2 bg-gray-100 rounded" />
-                    </div>
-                    {/* Historique sponsoring */}
-                    <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
-                        <path d="M12 2l2.39 4.84L20 8l-4 3.9.95 5.53L12 15.9 7.05 17.43 8 13.9 4 10l5.61-1.16L12 2z" />
-                      </svg>
-                      <span className="text-secondary/90 min-w-[150px]">Historique sponsoring</span>
-                      <span className="flex-1 h-2 bg-gray-100 rounded" />
-                    </div>
-                    {/* Image de marque */}
-                    <div className="flex items-center gap-3">
-                      <svg viewBox="0 0 24 24" className="w-5 h-5 text-primary" fill="currentColor">
-                        <path d="M12 21s-6-4.35-8.5-7A5.5 5.5 0 0112 5.5 5.5 5.5 0 0120.5 14c-2.5 2.65-8.5 7-8.5 7z" />
-                </svg>
-                      <span className="text-secondary/90 min-w-[150px]">Image de marque</span>
-                      <span className="flex-1 h-2 bg-gray-100 rounded" />
-                    </div>
+                  {/* body minimal */}
+                  <div className="px-5 pb-5 grid grid-cols-1 sm:grid-cols-2 gap-y-3 text-[0.95rem]">
+                    <div className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full bg-primary/80" /> Chiffre d’affaires</div>
+                    <div className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full bg-primary/80" /> Effectifs</div>
+                    <div className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full bg-primary/80" /> Descriptif activité</div>
+                    <div className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full bg-primary/80" /> Historique sponsoring</div>
+                    <div className="flex items-center gap-3"><span className="h-2.5 w-2.5 rounded-full bg-primary/80" /> Image de marque</div>
                   </div>
-                  {/* footer CTA */}
+                  {/* footer minimal */}
                   <div className="px-5 pb-4 flex items-center gap-2 flex-wrap">
-                    <div className="meetsponsors-gradient text-white text-xs font-semibold px-3 py-2 rounded-full">Voir fiche</div>
-                    <div className="text-primary border border-primary/30 text-xs font-medium px-3 py-2 rounded-full bg-white">Exporter</div>
+                    <button className="meetsponsors-gradient text-white text-xs font-semibold px-3.5 py-2 rounded-full">Voir fiche</button>
+                    <button className="text-primary border border-gray-200 text-xs font-medium px-3.5 py-2 rounded-full bg-white">Exporter</button>
                   </div>
                 </div>
               </div>
