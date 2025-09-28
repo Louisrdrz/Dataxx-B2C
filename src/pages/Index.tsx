@@ -4,6 +4,7 @@ import HeroHeader from "@/components/HeroHeader";
 // import YouTuberCarousel from "@/components/YouTuberCarousel";
 // Section Problème retirée
 import HowItWorksSection from "@/components/HowItWorksSection";
+import IAAgentsSection from "@/components/IAAgentsSection";
 // Sections supprimées de la structure demandée
 import PositioningSection from "@/components/PositioningSection";
 // import LeadFormSection from "@/components/LeadFormSection";
@@ -36,6 +37,7 @@ const Index = () => {
       <TrustedBySection />
       {/* Parcours classique ensuite */}
       <HowItWorksSection />
+      <IAAgentsSection />
       <PositioningSection />
       {/* Sections importées de l'ancien site (ajoutées tout en bas) */}
       <DataxxSlices />

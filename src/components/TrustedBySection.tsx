@@ -2,7 +2,7 @@ import stadeRennais from "@/assets/Logo_Stade_Rennais_FC.svg.png";
 
 const TrustedBySection = () => {
   return (
-    <section className="py-10 px-6">
+    <section className="py-10 px-6 bg-transparent">
       <div className="max-w-6xl mx-auto rounded-3xl overflow-hidden shadow-xl border border-gray-200">
         {/* Gradient banner style */}
         <div className="relative px-6 sm:px-10 py-14 sm:py-16 text-center bg-[radial-gradient(1200px_600px_at_50%_-20%,hsl(268_83%_60%_/0.35),transparent_60%),radial-gradient(1000px_600px_at_90%_120%,hsl(292_76%_60%_/0.35),transparent_60%),linear-gradient(135deg,hsl(261_65%_22%),hsl(270_55%_16%))] text-white">

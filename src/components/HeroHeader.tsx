@@ -33,7 +33,7 @@ export default function HeroHeader({
 }: HeroHeaderProps) {
   return (
     <>
-    <section className="pt-16 sm:pt-32 pb-8 px-4 sm:px-6 relative overflow-hidden bg-gradient-to-b from-violet-50/20 via-white to-blue-50/15">
+    <section className="pt-16 sm:pt-32 pb-8 px-4 sm:px-6 relative overflow-hidden bg-transparent">
       {/* Halo subtil en fond */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100/20 via-transparent to-transparent"></div>
       {/* Blobs animés élégants */}
@@ -44,20 +44,7 @@ export default function HeroHeader({
       </div>
 
       <div className="max-w-7xl mx-auto relative">
-        <div className="text-center max-w-6xl mx-auto mb-16 sm:mb-24">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center space-x-2 bg-slate-100 text-slate-700 px-4 py-2.5 rounded-full text-sm font-medium mb-6 sm:mb-8 border border-slate-200/50"
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M5 3l2 4 4 2-4 2-2 4-2-4-4-2 4-2 2-4zm11 2l1.2 2.4L19.6 9 17.2 9.6 16 12l-1.2-2.4L12.4 9l2.4-1.6L16 3zM21 14l.8 1.6L23 17l-1.2.4L21 19l-.8-1.6L18 17l1.2-1.4L21 14z" />
-            </svg>
-            <span className="tracking-wide">{badge}</span>
-          </motion.div>
-
+        <div className="text-center max-w-6xl mx-auto mb-10 sm:mb-16">
           {/* Titre principal */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}

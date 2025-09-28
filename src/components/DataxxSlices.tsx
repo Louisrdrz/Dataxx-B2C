@@ -6,9 +6,9 @@ export default function DataxxSlices() {
       {/* Rencontrez nos fondateurs */}
       <section
         id="team"
-        className="py-8 sm:py-12 relative overflow-hidden bg-gradient-to-b from-violet-50/20 via-white to-blue-50/15"
+        className="py-8 sm:py-12 relative overflow-hidden bg-transparent"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-100/20 via-transparent to-transparent"></div>
+        {/* Fond unifié par le body — pas de calque local */}
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
           <div className="text-center mb-12 sm:mb-16">
@@ -162,12 +162,84 @@ export default function DataxxSlices() {
         </div>
       </section>
 
+  {/* Logos défilants (sens inverse) */}
+  <section className="py-0 overflow-hidden bg-transparent">
+    <div className="relative py-8 sm:py-12">
+      {(() => {
+        // Récupère toutes les images dans assets et assets/logos
+        const all = import.meta.glob("/src/assets/**/*.{png,jpg,jpeg,svg,webp}", { eager: true, as: "url" }) as Record<string, string>;
+
+        // Normalisation insensible à la casse/diacritiques et aux séparateurs
+        const norm = (s: string) =>
+          s
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]/g, "");
+        const getBase = (p: string) => {
+          const file = p.split("/").pop() || "";
+          return file.replace(/\.(png|jpe?g|svg|webp)$/i, "");
+        };
+
+        const wantedRaw = [
+          "HEC_Paris",
+          "CloudforStartups",
+          "logo-french-tech",
+          "Logo_Stade_Rennais_FC",
+          "logo-polytechnique",
+        ];
+        const wanted = wantedRaw.map(norm);
+
+        // Sélectionne les logos correspondants aux basenames attendus
+        const entries = Object.entries(all);
+        const found: string[] = [];
+        entries.forEach(([path, url]) => {
+          const nbase = norm(getBase(path));
+          if (wanted.some((w) => nbase.includes(w) || w.includes(nbase))) {
+            found.push(url);
+          }
+        });
+
+        // Nettoyage: retirer explicitement certains fichiers non désirés
+        const blacklist = ["/rs.jpg", "/logo.png"]; // chemins partiels à exclure
+        const items = found.length
+          ? Array.from(new Set(found)).filter((url) => !blacklist.some((b) => url.toLowerCase().includes(b)))
+          : [];
+        // Ajoute un espace large entre les répétitions pour éviter de voir deux fois le même logo simultanément
+        const renderItems = ([...items, null, ...items]) as Array<string | null>;
+        return (
+          <div
+            className="flex items-center whitespace-nowrap animate-scroll-logos-reverse"
+            style={{ animation: "scroll-logos-reverse 30s linear infinite" }}
+          >
+            {renderItems.map((src, i) => (
+              src ? (
+                <img
+                  key={`logo-${i}`}
+                  src={src}
+                  alt="logo partenaire"
+                  className="h-[56px] sm:h-[64px] md:h-[72px] w-auto mx-12 sm:mx-16 object-contain opacity-80 hover:opacity-100 transition-opacity"
+                />
+              ) : (
+                <span key={`gap-${i}`} className="inline-block w-[100vw]" />
+              )
+            ))}
+          </div>
+        );
+      })()}
+    </div>
+  </section>
+
       {/* Keyframes nécessaires */}
       <style>
         {`
           @keyframes scroll-logos {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
+          }
+          @keyframes scroll-logos-reverse {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(0); }
           }
           @keyframes scroll-text {
             0% { transform: translateX(0); }
@@ -176,34 +248,7 @@ export default function DataxxSlices() {
         `}
       </style>
 
-      {/* Google Start Program (fond comme le footer gris du site) */}
-      <section className="bg-secondary text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center py-12 sm:py-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-            className="flex flex-col items-center space-y-4 sm:space-y-6"
-          >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white tracking-tight">
-              Membre du
-              <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-400">
-                Google Start Program
-              </span>
-            </h2>
-
-            <div className="relative">
-              <img
-                src="/src/assets/logo.png"
-                alt="Google Start Program"
-                className="h-[60px] sm:h-[80px] md:h-[100px] w-auto max-w-[200px] sm:max-w-[300px] md:max-w-[400px] object-contain opacity-90 mx-auto transition-all duration-300 hover:opacity-100 hover:scale-105"
-              />
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      {/* Section Google Start Program retirée à la demande (footer conservé ailleurs) */}
     </>
   );
 }
