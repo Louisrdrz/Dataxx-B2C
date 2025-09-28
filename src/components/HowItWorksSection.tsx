@@ -50,7 +50,7 @@ const HowItWorksSection = () => {
       <div className="max-w-7xl mx-auto">
         {/* En-tête */}
         <div className="text-center mb-16">
-          <div className="text-primary tracking-widest text-sm font-semibold mb-4 uppercase">Fonctionnalités clés</div>
+          <div className="text-primary tracking-widest text-sm font-semibold mb-4 uppercase">Comment ça marche</div>
           <h2 className="text-secondary text-4xl md:text-6xl font-extrabold leading-tight">
             Trouver des nouveaux sponsors n'a
             <br className="hidden md:block" />
@@ -139,11 +139,11 @@ const HowItWorksSection = () => {
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-50 text-secondary border border-gray-200 text-xs">
-                        <svg viewBox=\"0 0 24 24\" className=\"w-4 h-4 text-primary\" fill=\"currentColor\"><rect x=\"3\" y=\"10\" width=\"3\" height=\"10\" rx=\"1\" /><rect x=\"9\" y=\"6\" width=\"3\" height=\"14\" rx=\"1\" /><rect x=\"15\" y=\"3\" width=\"3\" height=\"17\" rx=\"1\" /></svg>
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary" fill="currentColor"><rect x="3" y="10" width="3" height="10" rx="1" /><rect x="9" y="6" width="3" height="14" rx="1" /><rect x="15" y="3" width="3" height="17" rx="1" /></svg>
                         CA
                       </span>
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-gray-50 text-secondary border border-gray-200 text-xs">
-                        <svg viewBox=\"0 0 24 24\" className=\"w-4 h-4 text-primary\" fill=\"currentColor\"><circle cx=\"8\" cy=\"8\" r=\"3\" /><circle cx=\"16\" cy=\"8\" r=\"3\" /><rect x=\"5\" y=\"13\" width=\"14\" height=\"6\" rx=\"2\" /></svg>
+                        <svg viewBox="0 0 24 24" className="w-4 h-4 text-primary" fill="currentColor"><circle cx="8" cy="8" r="3" /><circle cx="16" cy="8" r="3" /><rect x="5" y="13" width="14" height="6" rx="2" /></svg>
                         Effectifs
                       </span>
                     </div>

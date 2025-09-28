@@ -80,27 +80,7 @@ const HeroSection = () => {
           </button>
         </div>
 
-        {/* YouTube Channel Card */}
-        <div className="flex justify-center animate-fade-in-up" style={{ animationDelay: "0.8s" }}>
-          <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 max-w-sm hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-            <div className="flex items-center mb-4">
-              <img 
-                src={ppYoutuber} 
-                alt="Ma chaîne YouTube" 
-                className="w-12 h-12 rounded-full mr-4 object-cover"
-              />
-              <div className="text-left">
-                <h3 className="font-semibold text-secondary text-lg">Ma chaîne YouTube</h3>
-                <p className="text-gray-500 text-sm">24000 abonnés</p>
-              </div>
-            </div>
-            <div className="flex gap-2 justify-start">
-              <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Gaming</span>
-              <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Lifestyle</span>
-              <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">Tech</span>
-            </div>
-          </div>
-        </div>
+        {/* Espace réservé pour contenu suivant */}
       </div>
     </section>
   );
