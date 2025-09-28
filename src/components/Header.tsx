@@ -3,8 +3,8 @@ import logo from "@/assets/logo.png";
 
 const Header = () => {
   return (
-    <header className="w-full px-6 py-6 bg-white relative z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between border border-gray-200 rounded-full px-6 py-3 shadow-sm">
+    <header className="w-full px-6 py-6 bg-transparent relative z-50">
+      <div className="max-w-7xl mx-auto flex items-center justify-between border border-gray-200 rounded-full px-6 py-3 shadow-sm bg-white">
         {/* Logo */}
         <div className="flex items-center">
           <div className="flex items-center">

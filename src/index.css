@@ -20,7 +20,8 @@
     --meetsponsors-orange: 292 76% 60%; /* magenta accent */
     --meetsponsors-pink: 270 100% 98%; /* lavender tint */
     --meetsponsors-gradient: linear-gradient(135deg, hsl(268 83% 60%) 0%, hsl(292 76% 60%) 100%);
-    --meetsponsors-background-gradient: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(270 100% 98%) 50%, hsl(0 0% 100%) 100%);
+    /* Fond global harmonisé avec le hero */
+    --meetsponsors-background-gradient: linear-gradient(180deg, hsl(270 100% 98% / 0.85) 0%, hsl(0 0% 100%) 45%, hsl(217 100% 97% / 0.75) 100%);
     
     /* Curve colors */
     --curve-red: 268 83% 60%;
@@ -73,7 +74,11 @@
 
   body {
     @apply bg-background text-foreground;
-    background: var(--meetsponsors-background-gradient);
+    /* Applique le fond du hero partout, lissé sur les bords gauche/droit */
+    background:
+      radial-gradient(900px 320px at -10% 0%, hsl(270 100% 98% / 0.95), transparent 70%),
+      radial-gradient(900px 320px at 110% 0%, hsl(270 100% 98% / 0.9), transparent 70%),
+      linear-gradient(180deg, hsl(270 100% 98% / 0.9) 0%, hsl(0 0% 100%) 35%, hsl(217 100% 97% / 0.75) 100%);
     min-height: 100vh;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
@@ -81,6 +86,11 @@
   html {
     scroll-behavior: smooth;
   }
+  /* Typo globale alignée sur le hero (sans forcer la couleur) */
+  h1 { @apply font-bold tracking-tight leading-tight; }
+  h2 { @apply font-bold tracking-tight leading-tight; }
+  h3 { @apply text-slate-900 font-semibold tracking-tight; }
+  p { @apply text-slate-600; }
 }
 
 @layer components {
@@ -169,5 +179,13 @@
   .btn-secondary:hover {
     @apply border-primary text-primary;
     transform: translateY(-2px);
+  }
+
+  /* Boutons au style du hero réutilisables partout */
+  .btn-hero-primary {
+    @apply bg-slate-900 text-white px-6 py-3 rounded-md shadow-lg hover:bg-slate-800 hover:shadow-xl transition-all duration-300;
+  }
+  .btn-hero-secondary {
+    @apply bg-white border-2 border-slate-200 text-slate-700 px-6 py-3 rounded-md hover:bg-slate-50 hover:border-slate-300 transition-all duration-300;
   }
 }

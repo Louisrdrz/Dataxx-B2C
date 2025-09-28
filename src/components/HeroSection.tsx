@@ -44,38 +44,32 @@ const HeroSection = () => {
       </div>
 
       <div className="max-w-6xl mx-auto text-center relative z-10">
-        {/* Top Banner */}
-        <div className="flex items-center justify-center mb-12 animate-fade-in-up">
-          <div className="flex items-center bg-white/90 backdrop-blur-sm rounded-full px-5 py-3 border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-            <img src={fireIcon} alt="Fire" className="w-5 h-5 mr-3" />
-            <span className="text-sm font-medium text-secondary mr-3">
-              10000+ Sponsors actifs
-            </span>
-            <span className="text-sm font-semibold text-primary mr-3">
-              · Voir les sponsors
-            </span>
-            <img src={arrowIcon} alt="Arrow" className="w-4 h-4" />
+        {/* Badge style ancien site */}
+        <div className="flex items-center justify-center mb-8 animate-fade-in-up">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-600/10 to-fuchsia-500/10 border border-purple-500/20 text-purple-700 shadow-sm">
+            <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-yellow-400 text-yellow-900 text-xs">★</span>
+            <span className="text-sm font-semibold">Plateforme propulsée par l'IA</span>
           </div>
         </div>
 
         {/* Main Title */}
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-secondary mb-8 leading-tight animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
-          La plateforme IA qui accélère<br />
-          vos revenus sponsoring
+          La Plateforme IA qui réinvente<br />
+          le sponsoring sportif
         </h1>
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto mb-12 leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-          Dataxx analyse le marché et identifie les<br />
-          partenaires qui ont le plus de chances de collaborer avec vos talents
+          Dataxx aide les clubs, ligues, fédérations et athlètes à identifier,<br />
+          qualifier et signer plus de sponsors grâce à l’IA
         </p>
 
         {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
-          <button className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-4 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 text-lg">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
+          <button className="px-8 py-4 rounded-full text-white font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all bg-gradient-to-r from-purple-600 to-fuchsia-500">
             Découvrir Dataxx
           </button>
-          <button className="bg-white hover:bg-gray-50 text-secondary border-2 border-gray-200 hover:border-primary/20 font-semibold px-8 py-4 rounded-full transition-all duration-300 text-lg">
+          <button className="px-8 py-4 rounded-full text-secondary font-semibold text-lg border border-gray-300/80 bg-white/70 backdrop-blur hover:bg-white transition-all">
             Voir une démo
           </button>
         </div>
