@@ -1,3 +1,5 @@
+import logo from "@/assets/logo.png";
+
 const Footer = () => {
   return (
     <footer className="text-white bg-gradient-to-b from-[hsl(268_83%_22%)] to-[hsl(268_83%_18%)]">
@@ -24,7 +26,7 @@ const Footer = () => {
         {/* Bottom row: contact centré + mentions à droite + copyright à gauche */}
         <div className="border-t border-white/10 mt-4 pt-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src="/src/assets/logo.png" alt="Dataxx" className="h-7 w-7 object-contain" />
+            <img src={logo} alt="Dataxx" className="h-7 w-7 object-contain" />
             <span className="text-gray-300 text-sm">© 2025 Dataxx. Tous droits réservés.</span>
           </div>
           <div className="text-center flex-1">

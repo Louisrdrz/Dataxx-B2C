@@ -169,7 +169,8 @@ export default function DataxxSlices() {
             .replace(/[^a-z0-9]/g, "");
         const getBase = (p: string) => {
           const file = p.split("/").pop() || "";
-          return file.replace(/\.(png|jpe?g|svg|webp)$/i, "");
+          // supprime les extensions composées (.svg.png) et simples
+          return file.replace(/\.(?:svg\.png|png|jpe?g|svg|webp)$/i, "");
         };
 
         // Liste blanche stricte (noms de fichier sans extension)
