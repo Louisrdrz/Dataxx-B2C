@@ -172,30 +172,24 @@ export default function DataxxSlices() {
           return file.replace(/\.(png|jpe?g|svg|webp)$/i, "");
         };
 
-        const wantedRaw = [
-          "HEC_Paris",
-          "CloudforStartups",
-          "logo-french-tech",
-          "Logo_Stade_Rennais_FC",
-          "logo-polytechnique",
-        ];
-        const wanted = wantedRaw.map(norm);
+        // Liste blanche stricte (noms de fichier sans extension)
+        const whitelist = new Set([
+          "hecparis",
+          "cloudforstartups",
+          "logofrenchtech",
+          "logostaderennaisfc",
+          "logopolytechnique",
+        ]);
 
-        // Sélectionne les logos correspondants aux basenames attendus
+        // Sélectionne uniquement les fichiers dont le basename normalisé est dans la whitelist
         const entries = Object.entries(all);
-        const found: string[] = [];
-        entries.forEach(([path, url]) => {
-          const nbase = norm(getBase(path));
-          if (wanted.some((w) => nbase.includes(w) || w.includes(nbase))) {
-            found.push(url);
-          }
-        });
-
-        // Nettoyage: retirer explicitement certains fichiers non désirés
-        const blacklist = ["/rs.jpg", "/logo.png"]; // chemins partiels à exclure
-        const items = found.length
-          ? Array.from(new Set(found)).filter((url) => !blacklist.some((b) => url.toLowerCase().includes(b)))
-          : [];
+        const items = Array.from(
+          new Set(
+            entries
+              .filter(([path]) => whitelist.has(norm(getBase(path))))
+              .map(([, url]) => url)
+          )
+        );
         // Ajoute un espace large entre les répétitions pour éviter de voir deux fois le même logo simultanément
         const renderItems = ([...items, null, ...items]) as Array<string | null>;
         return (
