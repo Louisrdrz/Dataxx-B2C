@@ -75,8 +75,7 @@ export default function DemoStandalone() {
             <span className="bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">Réserver une démo</span>
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-center text-slate-600 mb-8 sm:mb-12 max-w-4xl mx-auto font-light leading-relaxed">
-            Vous voulez découvrir comment Dataxx peut booster vos performances de billetterie et marketing ?
-            Remplissez le formulaire et notre équipe vous recontactera pour une démo personnalisée.
+            Passez d’une prospection manuelle à une approche data‑driven: entreprises pertinentes, score d’affinité, contacts vérifiés et pipeline centralisé. Remplissez le formulaire pour une démo sur vos cas concrets.
           </p>
 
           <div className="flex flex-col lg:grid lg:grid-cols-[42%_58%] gap-6 sm:gap-10 items-start lg:items-stretch w-full max-w-7xl mx-auto">
