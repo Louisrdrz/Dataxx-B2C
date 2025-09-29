@@ -1,4 +1,7 @@
 import { motion } from "framer-motion";
+import clem from "@/assets/clem.jpeg";
+import martin from "@/assets/martin.jpeg";
+import louis from "@/assets/louis.jpeg";
 
 export default function DataxxSlices() {
   return (
@@ -31,11 +34,7 @@ export default function DataxxSlices() {
             >
               <div className="relative mb-6">
                 <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg relative">
-                  <img
-                    src="/src/assets/clem.jpeg"
-                    alt="Clément Authier"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={clem} alt="Clément Authier" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
                   <span className="bg-purple-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg">
@@ -69,11 +68,7 @@ export default function DataxxSlices() {
             >
               <div className="relative mb-6">
                 <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg relative">
-                  <img
-                    src="/src/assets/martin.jpeg"
-                    alt="Martin Masseline"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={martin} alt="Martin Masseline" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
                   <span className="bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg">
@@ -107,11 +102,7 @@ export default function DataxxSlices() {
             >
               <div className="relative mb-6">
                 <div className="w-32 h-32 sm:w-40 sm:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg relative">
-                  <img
-                    src="/src/assets/louis.jpeg"
-                    alt="Louis Rodriguez"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={louis} alt="Louis Rodriguez" className="w-full h-full object-cover" />
                 </div>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
                   <span className="bg-pink-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg">
