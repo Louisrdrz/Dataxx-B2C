@@ -33,7 +33,7 @@ export default function HeroHeader({
 }: HeroHeaderProps) {
   return (
     <>
-    <section className="pt-16 sm:pt-32 pb-8 px-4 sm:px-6 relative overflow-hidden bg-transparent">
+    <section className="pt-12 sm:pt-16 md:pt-32 pb-6 sm:pb-8 px-4 sm:px-6 relative overflow-hidden bg-transparent">
       {/* Halo subtil en fond */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-100/20 via-transparent to-transparent"></div>
       {/* Blobs animés élégants */}
@@ -44,13 +44,13 @@ export default function HeroHeader({
       </div>
 
       <div className="max-w-7xl mx-auto relative">
-        <div className="text-center max-w-6xl mx-auto mb-10 sm:mb-16">
+        <div className="text-center max-w-6xl mx-auto mb-6 sm:mb-10 md:mb-16">
           {/* Titre principal */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-slate-900 mb-6 sm:mb-8 leading-[1.1] tracking-tight"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-slate-900 mb-4 sm:mb-6 md:mb-8 leading-[1.1] tracking-tight"
           >
             <span className="inline-block mr-3 text-slate-900">{titleTarget}</span>
             {titleBetter && (
@@ -68,7 +68,7 @@ export default function HeroHeader({
                 {titleMore1}
               </span>
             )}
-            <br className="hidden sm:block" />
+            <br className="hidden md:block" />
             <span className="inline-block text-slate-900">{titleEarn}</span>
             <span className="inline-block ml-3 text-transparent bg-clip-text bg-gradient-to-r from-slate-600 to-slate-800">
               {titleMore2}
@@ -81,7 +81,7 @@ export default function HeroHeader({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.2 }}
-              className="text-lg sm:text-xl md:text-2xl text-slate-700 font-medium mb-4 sm:mb-6 leading-relaxed"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-700 font-medium mb-3 sm:mb-4 md:mb-6 leading-relaxed"
             >
               {subtitle}
             </motion.p>
@@ -92,7 +92,7 @@ export default function HeroHeader({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.25 }}
-            className="text-base sm:text-lg text-slate-600 mb-8 sm:mb-12 leading-relaxed max-w-4xl mx-auto font-light"
+            className="text-sm sm:text-base md:text-lg text-slate-600 mb-6 sm:mb-8 md:mb-12 leading-relaxed max-w-4xl mx-auto font-light px-4"
           >
             {description}
           </motion.p>
@@ -102,11 +102,11 @@ export default function HeroHeader({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4"
           >
             <button
               onClick={onPrimaryClick ?? (() => { window.location.href = "/demo"; })}
-              className="bg-slate-900 hover:bg-slate-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base shadow-lg hover:shadow-xl transition-all duration-300 font-medium border-0 rounded-md w-full sm:w-auto inline-flex items-center justify-center"
+              className="bg-slate-900 hover:bg-slate-800 text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base shadow-lg hover:shadow-xl transition-all duration-300 font-medium border-0 rounded-md w-full sm:w-auto inline-flex items-center justify-center"
             >
               {primaryCta}
               <svg className="ml-2 w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -116,7 +116,7 @@ export default function HeroHeader({
 
             <a
               href={secondaryHref}
-              className="px-6 sm:px-8 py-3 sm:py-4 text-base border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 font-medium bg-white rounded-md w-full sm:w-auto inline-flex items-center justify-center"
+              className="px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base border-2 border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 font-medium bg-white rounded-md w-full sm:w-auto inline-flex items-center justify-center"
             >
               {secondaryCta}
             </a>

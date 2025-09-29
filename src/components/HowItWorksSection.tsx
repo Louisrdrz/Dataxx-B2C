@@ -148,18 +148,18 @@ const HowItWorksSection = () => {
   // removed all scroll interception
 
   return (
-    <section ref={sectionRef as any} id="comment" className="relative pt-8 md:pt-10 pb-14 md:pb-18 px-6 overflow-hidden bg-transparent scroll-mt-28">
+    <section ref={sectionRef as any} id="comment" className="relative pt-6 sm:pt-8 md:pt-10 pb-10 sm:pb-14 md:pb-18 px-4 sm:px-6 overflow-hidden bg-transparent scroll-mt-28">
       {/* grille retirée à la demande */}
 
       {/* glow retiré pour uniformiser le fond */}
 
       <div className="max-w-7xl mx-auto">
         {/* En-tête */}
-        <div className="text-center mb-4 md:mb-6">
-          <div className="text-primary tracking-widest text-sm font-semibold mb-4 uppercase">Comment ça marche</div>
-          <h2 className="text-secondary text-3xl md:text-5xl font-extrabold leading-tight">
+        <div className="text-center mb-4 sm:mb-6 md:mb-8">
+          <div className="text-primary tracking-widest text-xs sm:text-sm font-semibold mb-3 sm:mb-4 uppercase">Comment ça marche</div>
+          <h2 className="text-secondary text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight px-4">
             Trouver des nouveaux sponsors n'a
-            <br className="hidden md:block" />
+            <br className="hidden sm:block" />
             jamais été aussi simple
           </h2>
         </div>
@@ -185,14 +185,14 @@ const HowItWorksSection = () => {
           >
             <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 5l7 7-7 7"/></svg>
           </button>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10 transition-opacity">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 lg:gap-10 transition-opacity">
             {(showSecond ? [3,4,5] : [0,1,2]).map((i) => (
               <div key={i}>
                 {/* bloc rendu inchangé */}
                 {i === 0 && (
                   <div className="opacity-100 translate-y-0">
-                    <div className="relative min-h-[320px] sm:h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
-                      <div className="absolute inset-0 p-6 flex">
+                    <div className="relative min-h-[280px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
+                      <div className="absolute inset-0 p-3 sm:p-6 flex">
                         <div className="mx-auto w-full max-w-[520px] h-full rounded-2xl border border-gray-100 bg-gradient-to-br from-slate-50 to-white shadow-sm overflow-hidden">
                           {/* Top bar */}
                           <div className="h-10 border-b border-gray-100 flex items-center justify-between px-3">
@@ -201,7 +201,7 @@ const HowItWorksSection = () => {
                             <div className="flex items-center gap-2"><span className="h-6 w-16 rounded-full bg-gray-100 border border-gray-200" /><span className="h-6 w-16 rounded-full bg-gray-100 border border-gray-200" /></div>
                           </div>
                           {/* Carte de France stylisée */}
-                          <div className="relative h-[230px]">
+                          <div className="relative h-[180px] sm:h-[230px]">
                             <svg viewBox="0 0 520 230" className="absolute inset-0 w-full h-full">
                               <defs>
                                 <clipPath id="hex-fr">
@@ -284,10 +284,10 @@ const HowItWorksSection = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-4 text-center">
-                      <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">1</div>
-                      <h3 className="text-secondary text-xl font-bold mb-1">Cartographie du territoire</h3>
-                      <p className="text-gray-600 text-sm md:text-base">
+                    <div className="mt-3 sm:mt-4 text-center px-2">
+                      <div className="mx-auto mb-2 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow text-sm sm:text-base">1</div>
+                      <h3 className="text-secondary text-lg sm:text-xl font-bold mb-1">Cartographie du territoire</h3>
+                      <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
                         Accédez à une vision exhaustive des entreprises locales et nationales pertinentes, organisées par secteur, taille et potentiel de partenariat.
                       </p>
                     </div>
@@ -295,8 +295,8 @@ const HowItWorksSection = () => {
                 )}
                 {i === 1 && (
                   <div className="opacity-100 translate-y-0">
-                    <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
-                      <div className="absolute inset-0 p-6">
+                    <div className="relative min-h-[280px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
+                      <div className="absolute inset-0 p-3 sm:p-6">
                         <div ref={card2Ref} className="h-full w-full rounded-2xl border border-gray-100 bg-gradient-to-br from-slate-50 to-white overflow-hidden relative">
                           <div className="px-3 py-2.5 flex items-center gap-2.5 border-b border-gray-100 relative z-10">
                             <img src={dataxxLogo} alt="Dataxx" className="h-7 w-7 rounded-md ring-1 ring-gray-200" />
@@ -321,34 +321,34 @@ const HowItWorksSection = () => {
                         </div>
               </div>
             </div>
-                    <div className="mt-4 text-center">
-                      <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">2</div>
-                      <h3 className="text-secondary text-xl font-bold mb-1">Profilage & Agent IA</h3>
-                      <p className="text-gray-600 text-sm md:text-base">
+                    <div className="mt-3 sm:mt-4 text-center px-2">
+                      <div className="mx-auto mb-2 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow text-sm sm:text-base">2</div>
+                      <h3 className="text-secondary text-lg sm:text-xl font-bold mb-1">Profilage & Agent IA</h3>
+                      <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
                         Notre IA collecte et met à jour en continu : CA, effectifs, historique sponsoring, signaux économiques, actualités et image de marque.
-            </p>
-          </div>
-                  </div>
-                )}
-                {i === 2 && (
-                  <div className="opacity-100 translate-y-0">
-                    <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <ScoreGauge target={86} durationMs={1200} />
-                      </div>
-                    </div>
-                    <div className="mt-4 text-center">
-                      <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">3</div>
-                      <h3 className="text-secondary text-xl font-bold mb-1">Scoring IA de compatibilité</h3>
-                      <p className="text-gray-600 text-sm md:text-base">
-                        Un score d’affinité calcule automatiquement le “fit” entre votre club et chaque entreprise, selon vos objectifs business et vos valeurs.
                       </p>
                     </div>
                   </div>
                 )}
+                {i === 2 && (
+                  <div className="opacity-100 translate-y-0">
+                    <div className="relative min-h-[280px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <ScoreGauge target={86} durationMs={1200} />
+                      </div>
+                    </div>
+                    <div className="mt-3 sm:mt-4 text-center px-2">
+                      <div className="mx-auto mb-2 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow text-sm sm:text-base">3</div>
+                      <h3 className="text-secondary text-lg sm:text-xl font-bold mb-1">Scoring IA de compatibilité</h3>
+                      <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
+                        Un score d'affinité calcule automatiquement le "fit" entre votre club et chaque entreprise, selon vos objectifs business et vos valeurs.
+            </p>
+          </div>
+                  </div>
+                )}
                 {i === 3 && (
                   <div className="opacity-100 translate-y-0">
-                    <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
+                    <div className="relative min-h-[280px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 px-4 sm:px-6">
                         <div className="bg-primary/5 rounded-2xl w-full max-w-[520px] min-h-14 flex items-center gap-3 border border-primary/10 px-4 py-2">
                           <img src={avatarDG} alt="Avatar IA" className="w-8 h-8 rounded-full object-cover border border-primary/20" />
@@ -382,19 +382,19 @@ const HowItWorksSection = () => {
                         </div>
               </div>
             </div>
-                    <div className="mt-4 text-center">
-                      <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">4</div>
-                      <h3 className="text-secondary text-xl font-bold mb-1">Identification des décideurs</h3>
-                      <p className="text-gray-600 text-sm md:text-base">
-                        Retrouvez les décideurs clés et laissez l’IA enrichir leurs coordonnées pour engager la conversation au bon niveau.
+                    <div className="mt-3 sm:mt-4 text-center px-2">
+                      <div className="mx-auto mb-2 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow text-sm sm:text-base">4</div>
+                      <h3 className="text-secondary text-lg sm:text-xl font-bold mb-1">Identification des décideurs</h3>
+                      <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">
+                         Retrouvez les décideurs clés et laissez l'IA enrichir leurs coordonnées pour engager la conversation au bon niveau.
             </p>
           </div>
                   </div>
                 )}
                 {i === 4 && (
                   <div className="opacity-100 translate-y-0">
-                    <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
-                      <div className="absolute inset-0 p-6">
+                    <div className="relative min-h-[280px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
+                      <div className="absolute inset-0 p-3 sm:p-6">
                         <div className="w-full h-full rounded-2xl border border-primary/10 bg-white overflow-hidden">
                           <div className="h-8 bg-gradient-to-r from-primary/10 to-accent/10 border-b border-gray-200 flex items-center gap-1 px-3">
                             <span className="h-2.5 w-2.5 rounded-full bg-primary/60" />
@@ -435,17 +435,17 @@ Bien à vous,`}</div>
                         </div>
                       </div>
                     </div>
-                    <div className="mt-4 text-center">
-                      <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">5</div>
-                      <h3 className="text-secondary text-xl font-bold mb-1">Emailing intelligent</h3>
-                      <p className="text-gray-600 text-sm md:text-base">L’IA génère des messages personnalisés et optimisés pour maximiser vos taux de réponse.</p>
+                    <div className="mt-3 sm:mt-4 text-center px-2">
+                      <div className="mx-auto mb-2 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow text-sm sm:text-base">5</div>
+                      <h3 className="text-secondary text-lg sm:text-xl font-bold mb-1">Emailing intelligent</h3>
+                      <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">L'IA génère des messages personnalisés et optimisés pour maximiser vos taux de réponse.</p>
                     </div>
                   </div>
                 )}
                 {i === 5 && (
                   <div className="opacity-100 translate-y-0">
-                    <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
-                      <div className="absolute inset-0 p-6">
+                    <div className="relative min-h-[280px] sm:min-h-[320px] rounded-2xl sm:rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
+                      <div className="absolute inset-0 p-3 sm:p-6">
                         <div className="w-full h-full rounded-2xl bg-white/90 ring-1 ring-primary/10 overflow-hidden flex flex-col">
                           <div className="px-5 py-3 border-b border-gray-100">
                             <div className="text-secondary font-semibold">Mes contrats</div>
@@ -475,10 +475,10 @@ Bien à vous,`}</div>
                         </div>
                       </div>
                     </div>
-                    <div className="mt-4 text-center">
-                      <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">6</div>
-                      <h3 className="text-secondary text-xl font-bold mb-1">CRM intégré</h3>
-                      <p className="text-gray-600 text-sm md:text-base">Centralisez vos échanges, suivez vos discussions, organisez vos relances et pilotez vos opportunités.</p>
+                    <div className="mt-3 sm:mt-4 text-center px-2">
+                      <div className="mx-auto mb-2 h-8 w-8 sm:h-9 sm:w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow text-sm sm:text-base">6</div>
+                      <h3 className="text-secondary text-lg sm:text-xl font-bold mb-1">CRM intégré</h3>
+                      <p className="text-gray-600 text-xs sm:text-sm md:text-base leading-relaxed">Centralisez vos échanges, suivez vos discussions, organisez vos relances et pilotez vos opportunités.</p>
                     </div>
                   </div>
                 )}
@@ -486,8 +486,8 @@ Bien à vous,`}</div>
             ))}
             </div>
           {/* Indicateur de pagination discret mais plus lisible */}
-          <div className="mt-3 flex justify-center">
-            <span className="text-xs font-medium text-primary px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
+          <div className="mt-3 sm:mt-4 flex justify-center">
+            <span className="text-xs sm:text-sm font-medium text-primary px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
               {showSecond ? '2/2' : '1/2'}
             </span>
           </div>
