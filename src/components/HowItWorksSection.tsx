@@ -1,7 +1,7 @@
 import squeezie from "@/assets/squeezie.jpg";
 import amixem from "@/assets/amixem.jpg";
 import mcfly from "@/assets/mcfly-carlito.jpg";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import avatarDG from "@/assets/avatars/dg.jpg";
 import avatarDM from "@/assets/avatars/dm.jpg";
@@ -9,8 +9,75 @@ import avatarRS from "@/assets/avatars/rs.jpg";
 import dataxxLogo from "@/assets/logo.png";
 
 // Section "Comment ça marche" style MeetSponsors (3 + 2 blocs)
+function ScoreGauge({ target = 86, durationMs = 1200 }: { target?: number; durationMs?: number }) {
+  const [value, setValue] = useState(0);
+  const rafRef = useRef<number>(0);
+  const startRef = useRef<number | null>(null);
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  const startAnim = () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    startRef.current = null;
+    setValue(0);
+    const animate = (t: number) => {
+      if (startRef.current === null) startRef.current = t;
+      const elapsed = t - (startRef.current || t);
+      const progress = Math.min(elapsed / durationMs, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const next = Math.max(1, Math.round(eased * target));
+      setValue(next);
+      if (progress < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    startAnim();
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [target, durationMs]);
+
+  // Rejoue à chaque entrée dans le viewport
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          startAnim();
+        }
+      });
+    }, { threshold: 0.5 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <svg ref={svgRef} viewBox="0 0 300 200" className="w-[85%]" onMouseEnter={startAnim}>
+      <defs>
+        <linearGradient id="grad-top" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="hsl(268 83% 60%)" />
+          <stop offset="100%" stopColor="hsl(292 76% 60%)" />
+        </linearGradient>
+      </defs>
+      {/* arc de fond */}
+      <path d="M20 160 A130 130 0 0 1 280 160" fill="none" stroke="#e5e7eb" strokeWidth="14" strokeLinecap="round" />
+      {/* arc animé proportionnel au pourcentage */}
+      <path d="M20 160 A130 130 0 0 1 280 160" fill="none" stroke="url(#grad-top)" strokeWidth="14" strokeLinecap="round" pathLength={100} strokeDasharray={100} strokeDashoffset={100 - value} />
+      <circle cx="150" cy="160" r="6" fill="#6d28d9" />
+      <text x="150" y="110" textAnchor="middle" fill="#111827" fontSize="28" fontWeight="700">{value}%</text>
+    </svg>
+  );
+}
+
 const HowItWorksSection = () => {
   const refs = useRef<HTMLDivElement[]>([]);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [showSecond, setShowSecond] = useState(false);
+  const card2Ref = useRef<HTMLDivElement | null>(null);
+  const [scan2, setScan2] = useState(false);
+  const [reveal2, setReveal2] = useState(false);
+  const [reveal2Step, setReveal2Step] = useState(0); // 0 -> rien, 1..4 lignes visibles
+  const scan2Timers = useRef<number[]>([]);
 
   useEffect(() => {
     const elements = refs.current.filter(Boolean);
@@ -30,26 +97,65 @@ const HowItWorksSection = () => {
     return () => observer.disconnect();
   }, []);
 
-  return (
-    <section className="relative py-24 px-6 overflow-hidden bg-transparent">
-      {/* grille de fond subtile */}
-      <div className="absolute inset-0 -z-10">
-        <svg viewBox="0 0 1440 900" className="w-full h-full opacity-60">
-          <defs>
-            <pattern id="ms-grid" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M60 0H0V60" fill="none" stroke="#eef2ff" />
-            </pattern>
-          </defs>
-          <rect width="1440" height="900" fill="url(#ms-grid)" />
-        </svg>
-      </div>
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    let revealTimer: number | undefined;
+    let stopScanTimer: number | undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            // reset
+            if (revealTimer) clearTimeout(revealTimer);
+            if (stopScanTimer) clearTimeout(stopScanTimer);
+            scan2Timers.current.forEach((id) => clearTimeout(id));
+            scan2Timers.current = [];
 
-      {/* glow radial */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,hsl(268_83%_60%_/_0.15),transparent_60%)]" />
+            setReveal2(false);
+            setReveal2Step(0);
+            setScan2(true);
+
+            // Première info à 2s (après la fin du scan), puis les suivantes toutes les 250ms
+            revealTimer = window.setTimeout(() => {
+              setReveal2(true);
+              [1, 2, 3, 4].forEach((step, idx) => {
+                const id = window.setTimeout(() => setReveal2Step(step), idx * 250) as unknown as number;
+                scan2Timers.current.push(id);
+              });
+            }, 2000);
+
+            // Arrête le scan à 2s (il ne chevauche pas le texte)
+            stopScanTimer = window.setTimeout(() => setScan2(false), 2000);
+          }
+        }
+      },
+      { threshold: 0.05, rootMargin: "0px 0px -5% 0px" }
+    );
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      if (revealTimer) clearTimeout(revealTimer);
+      if (stopScanTimer) clearTimeout(stopScanTimer);
+      scan2Timers.current.forEach((id) => clearTimeout(id));
+    };
+  }, []);
+
+  // no-op (we removed previous scroll logic)
+
+  // removed pinned scroll logic
+
+  // removed all scroll interception
+
+  return (
+    <section ref={sectionRef as any} id="comment" className="relative pt-8 md:pt-10 pb-14 md:pb-18 px-6 overflow-hidden bg-transparent scroll-mt-28">
+      {/* grille retirée à la demande */}
+
+      {/* glow retiré pour uniformiser le fond */}
 
       <div className="max-w-7xl mx-auto">
         {/* En-tête */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-4 md:mb-6">
           <div className="text-primary tracking-widest text-sm font-semibold mb-4 uppercase">Comment ça marche</div>
           <h2 className="text-secondary text-3xl md:text-5xl font-extrabold leading-tight">
             Trouver des nouveaux sponsors n'a
@@ -58,11 +164,31 @@ const HowItWorksSection = () => {
           </h2>
         </div>
 
-        {/* Carrousel en continu - 3 cartes visibles */}
-        <div className="relative overflow-hidden">
-          <div className="flex gap-6 md:gap-10 animate-[how-scroll_22s_linear_infinite] hover:pause">
-            {[0,1,2,3,4,5,0,1,2].map((i, idx) => (
-              <div key={idx} className="min-w-[280px] sm:min-w-[320px] md:min-w-[360px]">
+        {/* Carrousel 3 + 3 avec flèches */}
+        <div className="relative">
+          {/* Flèches centrées verticalement, look accentué (même couleur que badges) */}
+          <button
+            aria-label="Précédent"
+            onClick={() => setShowSecond(false)}
+            disabled={!showSecond}
+            className={`hidden md:flex items-center justify-center absolute left-0 top-[160px] h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent text-white shadow-lg z-10 ${showSecond ? '' : 'opacity-50 cursor-not-allowed'}`}
+            style={{ animation: showSecond ? 'pulse-soft 2s ease-out infinite' : undefined }}
+          >
+            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <button
+            aria-label="Suivant"
+            onClick={() => setShowSecond(true)}
+            disabled={showSecond}
+            className={`hidden md:flex items-center justify-center absolute right-0 top-[160px] h-12 w-12 rounded-full bg-gradient-to-br from-primary to-accent text-white shadow-lg z-10 ${!showSecond ? '' : 'opacity-50 cursor-not-allowed'}`}
+            style={{ animation: !showSecond ? 'pulse-soft 2s ease-out infinite' : undefined }}
+          >
+            <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10 transition-opacity">
+            {(showSecond ? [3,4,5] : [0,1,2]).map((i) => (
+              <div key={i}>
+                {/* bloc rendu inchangé */}
                 {i === 0 && (
                   <div className="opacity-100 translate-y-0">
                     <div className="relative min-h-[320px] sm:h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
@@ -101,40 +227,53 @@ const HowItWorksSection = () => {
                                 </filter>
                               </defs>
 
-                              {/* Hexagone (France) */}
+                              {/* Radar circulaire (sans hexagone) */}
+                              <defs>
+                                <radialGradient id="radar-sweep" cx="260" cy="115" r="110" gradientUnits="userSpaceOnUse">
+                                  <stop offset="0%" stopColor="hsl(268 83% 60% / .15)" />
+                                  <stop offset="65%" stopColor="hsl(292 76% 60% / .08)" />
+                                  <stop offset="100%" stopColor="transparent" />
+                                </radialGradient>
+                              </defs>
                               <g>
-                                <polygon points="380,115 320,219 200,219 140,115 200,11 320,11" fill="url(#hex-fill)" stroke="#e7e7f3" strokeWidth="2" />
-                                <g clipPath="url(#hex-fr)">
-                                  <rect x="140" y="11" width="240" height="208" fill="url(#grid-fr)" />
-                                  <circle cx="260" cy="115" r="120" fill="url(#halo-fr)" />
+                                {/* grille subtile + anneaux */}
+                                <circle cx="260" cy="115" r="110" fill="url(#grid-fr)" stroke="#e7e7f3" strokeWidth="2" />
+                                <circle cx="260" cy="115" r="80" fill="none" stroke="#eef2ff" />
+                                <circle cx="260" cy="115" r="50" fill="none" stroke="#f1f5ff" />
+                                <circle cx="260" cy="115" r="20" fill="none" stroke="#f6f8ff" />
+                                <circle cx="260" cy="115" r="112" fill="url(#halo-fr)" />
+
+                                {/* balayage radar rotatif */}
+                                <g>
+                                  <g>
+                                    <path d="M260 115 L260 5 A110 110 0 0 1 360 60 Z" fill="url(#radar-sweep)" opacity="0.45">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 260 115" to="360 260 115" dur="6s" repeatCount="indefinite" />
+                                    </path>
+                                    <line x1="260" y1="115" x2="360" y2="60" stroke="url(#link-fr)" strokeWidth="3" strokeLinecap="round" opacity="0.6">
+                                      <animateTransform attributeName="transform" type="rotate" from="0 260 115" to="360 260 115" dur="6s" repeatCount="indefinite" />
+                                    </line>
+                                  </g>
                                 </g>
                               </g>
 
-                              {/* Villes principales */}
+                              {/* Villes principales (légère pulsation) */}
                               <g filter="url(#dot-shadow)" fill="#10b981">
-                                <circle cx="280" cy="85" r="6" />
-                                <circle cx="325" cy="135" r="6" />
-                                <circle cx="350" cy="170" r="6" />
-                                <circle cx="205" cy="150" r="6" />
-                                <circle cx="215" cy="120" r="6" />
-                                <circle cx="295" cy="45" r="6" />
-                                <circle cx="210" cy="95" r="6" />
-                                <circle cx="265" cy="170" r="6" />
-                                <circle cx="365" cy="160" r="6" />
+                                <circle cx="280" cy="85" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" repeatCount="indefinite" /></circle>
+                                <circle cx="325" cy="135" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" begin="0.3s" repeatCount="indefinite" /></circle>
+                                <circle cx="350" cy="170" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" begin="0.6s" repeatCount="indefinite" /></circle>
+                                <circle cx="205" cy="150" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" begin="0.9s" repeatCount="indefinite" /></circle>
+                                <circle cx="215" cy="120" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" begin="1.2s" repeatCount="indefinite" /></circle>
+                                <circle cx="295" cy="45" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" begin="1.5s" repeatCount="indefinite" /></circle>
+                                <circle cx="210" cy="95" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" begin="1.8s" repeatCount="indefinite" /></circle>
+                                <circle cx="265" cy="170" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" begin="2.1s" repeatCount="indefinite" /></circle>
+                                {/* ajusté pour rester dans le cercle */}
+                                <circle cx="350" cy="150" r="6"><animate attributeName="r" values="6;7;6" dur="2.4s" begin="2.4s" repeatCount="indefinite" /></circle>
                               </g>
 
-                              {/* Liaisons */}
-                              <path d="M280 85 C 300 95 315 115 325 135" stroke="url(#link-fr)" strokeWidth="3.5" fill="none" strokeLinecap="round" opacity="0.8" />
-                              <path d="M280 85 C 310 120 335 145 350 170" stroke="url(#link-fr)" strokeWidth="3.5" fill="none" strokeLinecap="round" opacity="0.6" />
-                              <path d="M280 85 C 260 110 235 135 205 150" stroke="url(#link-fr)" strokeWidth="3.5" fill="none" strokeLinecap="round" opacity="0.6" />
+                              {/* Liaisons retirées à la demande; on garde uniquement la barre radar rotative */}
 
-                              {/* Légende */}
-                              <g transform="translate(345,22)">
-                                <rect width="135" height="28" rx="8" fill="#ffffff" stroke="#e5e7eb" />
-                                <circle cx="14" cy="14" r="5" fill="#10b981" />
-                                <text x="28" y="19" fill="#0f172a" fontSize="11" fontWeight="600">Villes à fort potentiel</text>
-                              </g>
-                            </svg>
+                              {/* Légende retirée à la demande */}
+                </svg>
                             {/* Filtres chips */}
                             <div className="absolute left-3 top-3 flex gap-2">
                               <span className="px-2.5 py-1 rounded-full bg-primary/10 text-secondary text-xs border border-primary/20">Région</span>
@@ -149,8 +288,7 @@ const HowItWorksSection = () => {
                       <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">1</div>
                       <h3 className="text-secondary text-xl font-bold mb-1">Cartographie du territoire</h3>
                       <p className="text-gray-600 text-sm md:text-base">
-                        Accédez à une vision exhaustive des entreprises locales et nationales pertinentes,
-                        organisées par secteur, taille et potentiel de partenariat.
+                        Accédez à une vision exhaustive des entreprises locales et nationales pertinentes, organisées par secteur, taille et potentiel de partenariat.
                       </p>
                     </div>
                   </div>
@@ -159,58 +297,51 @@ const HowItWorksSection = () => {
                   <div className="opacity-100 translate-y-0">
                     <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
                       <div className="absolute inset-0 p-6">
-                        <div className="h-full w-full rounded-2xl border border-gray-100 bg-gradient-to-br from-slate-50 to-white overflow-hidden">
-                          <div className="px-3 py-2.5 flex items-center gap-2.5 border-b border-gray-100">
+                        <div ref={card2Ref} className="h-full w-full rounded-2xl border border-gray-100 bg-gradient-to-br from-slate-50 to-white overflow-hidden relative">
+                          <div className="px-3 py-2.5 flex items-center gap-2.5 border-b border-gray-100 relative z-10">
                             <img src={dataxxLogo} alt="Dataxx" className="h-7 w-7 rounded-md ring-1 ring-gray-200" />
                             <div className="min-w-0">
                               <div className="text-secondary font-semibold leading-tight text-[13px]">Dataxx</div>
                               <div className="text-[10px] text-gray-500">Fiche identité</div>
                             </div>
                           </div>
-                          <div className="px-3 py-2.5 space-y-2 text-[12px]">
-                            <div className="flex items-center gap-2"><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor"><path d="M9 7h6a1 1 0 110 2H9a1 1 0 100 2h5a1 1 0 110 2H9v1a1 1 0 11-2 0v-1H6a1 1 0 110-2h1a3 3 0 010-2H6a1 1 0 110-2h1V7a1 1 0 112 0v1Zm4 6H9a1 1 0 100 2h4a1 1 0 110 2H9a3 3 0 01-3-3v-4a3 3 0 013-3h4a1 1 0 110 2Z"/></svg></span><div className="flex-1 flex items-center justify-between gap-2"><span className="text-gray-700 font-semibold">Chiffre d’affaires</span><span className="font-medium text-secondary text-[12px]">250M – 500M€</span></div></div>
-                            <div className="flex items-start gap-2"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h10v2H4v-2Z"/></svg></span><div className="flex-1"><div className="text-gray-700 font-semibold">Activité</div><p className="text-secondary/90 leading-snug">Plateforme IA de cartographie et qualification des entreprises pour le sponsoring sportif.</p></div></div>
-                            <div className="flex items-start gap-2"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor"><path d="M5 4h14v2H5V4Zm2 4h10v2H7V8Zm-2 4h14v2H5v-2Zm2 4h7v2H7v-2Z"/></svg></span><div className="flex-1"><div className="text-gray-700 font-semibold">Historique sponsoring</div><p className="text-secondary/90 leading-snug">Partenariats récents avec clubs pros et événements nationaux.</p></div></div>
-                            <div className="flex items-start gap-2"><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor"><path d="M12 4l2.39 4.84 5.34.78-3.86 3.76.91 5.32L12 16.9 6.22 18.7l.91-5.32L3.27 9.62l5.34-.78L12 4Z"/></svg></span><div className="flex-1"><div className="text-gray-700 font-semibold">Image de marque</div><p className="text-secondary/90 leading-snug">Innovante, data‑driven et orientée performance mesurable.</p></div></div>
+                          {/* Scan 3s puis reveal */}
+                          {scan2 && (
+                            <div className="pointer-events-none absolute inset-0 overflow-hidden z-20">
+                              <div className="absolute left-0 right-0 -top-full h-full bg-gradient-to-b from-violet-700/0 via-violet-700/65 to-violet-900/0" style={{ animation: 'scan-vert 2s linear 1' }} />
+                            </div>
+                          )}
+                          <div className={`px-3 py-2.5 space-y-2 text-[12px] relative z-10 transition-opacity duration-500 ${reveal2 ? 'opacity-100' : 'opacity-0'}`}>
+                            <div className={`flex items-center gap-2 transition-opacity duration-300 ${reveal2Step >= 1 ? 'opacity-100' : 'opacity-0'}`}><span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor"><path d="M9 7h6a1 1 0 110 2H9a1 1 0 100 2h5a1 1 0 110 2H9v1a1 1 0 11-2 0v-1H6a1 1 0 110-2h1a3 3 0 010-2H6a1 1 0 110-2h1V7a1 1 0 112 0v1Zm4 6H9a1 1 0 100 2h4a1 1 0 110 2H9a3 3 0 01-3-3v-4a3 3 0 013-3h4a1 1 0 110 2Z"/></svg></span><div className="flex-1 flex items-center justify-between gap-2"><span className="text-gray-700 font-semibold">Chiffre d’affaires</span><span className="font-medium text-secondary text-[12px]">250M – 500M€</span></div></div>
+                            <div className={`flex items-start gap-2 transition-opacity duration-300 ${reveal2Step >= 2 ? 'opacity-100' : 'opacity-0'}`}><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor"><path d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h10v2H4v-2Z"/></svg></span><div className="flex-1"><div className="text-gray-700 font-semibold">Activité</div><p className="text-secondary/90 leading-snug">Plateforme IA de cartographie et qualification des entreprises pour le sponsoring sportif.</p></div></div>
+                            <div className={`flex items-start gap-2 transition-opacity duration-300 ${reveal2Step >= 3 ? 'opacity-100' : 'opacity-0'}`}><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor"><path d="M5 4h14v2H5V4Zm2 4h10v2H7V8Zm-2 4h14v2H5v-2Zm2 4h7v2H7v-2Z"/></svg></span><div className="flex-1"><div className="text-gray-700 font-semibold">Historique sponsoring</div><p className="text-secondary/90 leading-snug">Partenariats récents avec clubs pros et événements nationaux.</p></div></div>
+                            <div className={`flex items-start gap-2 transition-opacity duration-300 ${reveal2Step >= 4 ? 'opacity-100' : 'opacity-0'}`}><span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-white"><svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor"><path d="M12 4l2.39 4.84 5.34.78-3.86 3.76.91 5.32L12 16.9 6.22 18.7l.91-5.32L3.27 9.62l5.34-.78L12 4Z"/></svg></span><div className="flex-1"><div className="text-gray-700 font-semibold">Image de marque</div><p className="text-secondary/90 leading-snug">Innovante, data‑driven et orientée performance mesurable.</p></div></div>
                           </div>
                           <div className="px-3 pb-3 flex items-center gap-2"><span className="meetsponsors-gradient text-white text-[10px] font-semibold px-2.5 py-1.5 rounded-full">Voir fiche</span><span className="text-primary border border-primary/20 text-[10px] font-medium px-2.5 py-1.5 rounded-full bg-white">Exporter</span></div>
                         </div>
-                      </div>
-                    </div>
+              </div>
+            </div>
                     <div className="mt-4 text-center">
                       <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">2</div>
                       <h3 className="text-secondary text-xl font-bold mb-1">Profilage & Agent IA</h3>
                       <p className="text-gray-600 text-sm md:text-base">
-                        Notre IA collecte et met à jour en continu : chiffre d’affaires, effectifs, historique sponsoring,
-                        signaux économiques, actualités, engagements RSE et image de marque.
-                      </p>
-                    </div>
+                        Notre IA collecte et met à jour en continu : CA, effectifs, historique sponsoring, signaux économiques, actualités et image de marque.
+            </p>
+          </div>
                   </div>
                 )}
                 {i === 2 && (
                   <div className="opacity-100 translate-y-0">
                     <div className="relative h-[320px] rounded-3xl overflow-hidden bg-white/90 backdrop-blur-sm ring-1 ring-primary/10 shadow-md group">
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <svg viewBox="0 0 300 200" className="w-[85%]">
-                          <defs>
-                            <linearGradient id="grad-top" x1="0" y1="0" x2="1" y2="0">
-                              <stop offset="0%" stopColor="hsl(268 83% 60%)" />
-                              <stop offset="100%" stopColor="hsl(292 76% 60%)" />
-                            </linearGradient>
-                          </defs>
-                          <path d="M20 160 A130 130 0 0 1 280 160" fill="none" stroke="#e5e7eb" strokeWidth="14" strokeLinecap="round" />
-                          <path d="M20 160 A130 130 0 0 1 200 70" fill="none" stroke="url(#grad-top)" strokeWidth="14" strokeLinecap="round" />
-                          <circle cx="150" cy="160" r="6" fill="#6d28d9" />
-                          <text x="150" y="110" textAnchor="middle" fill="#111827" fontSize="28" fontWeight="700">86%</text>
-                        </svg>
+                        <ScoreGauge target={86} durationMs={1200} />
                       </div>
                     </div>
                     <div className="mt-4 text-center">
                       <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">3</div>
                       <h3 className="text-secondary text-xl font-bold mb-1">Scoring IA de compatibilité</h3>
                       <p className="text-gray-600 text-sm md:text-base">
-                        Un score d’affinité calcule automatiquement le “fit” entre votre club et chaque entreprise,
-                        selon vos objectifs business et vos valeurs.
+                        Un score d’affinité calcule automatiquement le “fit” entre votre club et chaque entreprise, selon vos objectifs business et vos valeurs.
                       </p>
                     </div>
                   </div>
@@ -249,15 +380,15 @@ const HowItWorksSection = () => {
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+              </div>
+            </div>
                     <div className="mt-4 text-center">
                       <div className="mx-auto mb-2 h-9 w-9 rounded-full bg-gradient-to-br from-primary to-accent text-white flex items-center justify-center font-semibold shadow">4</div>
                       <h3 className="text-secondary text-xl font-bold mb-1">Identification des décideurs</h3>
                       <p className="text-gray-600 text-sm md:text-base">
                         Retrouvez les décideurs clés et laissez l’IA enrichir leurs coordonnées pour engager la conversation au bon niveau.
-                      </p>
-                    </div>
+            </p>
+          </div>
                   </div>
                 )}
                 {i === 4 && (
@@ -353,9 +484,14 @@ Bien à vous,`}</div>
                 )}
               </div>
             ))}
+            </div>
+          {/* Indicateur de pagination discret mais plus lisible */}
+          <div className="mt-3 flex justify-center">
+            <span className="text-xs font-medium text-primary px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20">
+              {showSecond ? '2/2' : '1/2'}
+            </span>
           </div>
         </div>
-        <style>{`@keyframes how-scroll { 0%{ transform: translateX(0);} 100%{ transform: translateX(-50%);} }`}</style>
         {/* Frise retirée à la demande */}
       </div>
     </section>

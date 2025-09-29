@@ -22,7 +22,7 @@ const Feature = ({
 
 const IAAgentsSection = () => {
   return (
-    <section id="ia-agents" className="py-16 px-6 bg-transparent">
+    <section id="ia-agents" className="py-12 px-6 bg-transparent">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">

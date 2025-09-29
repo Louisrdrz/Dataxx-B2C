@@ -79,7 +79,7 @@
     /* Fond global identique au hero (violet + bleu bien visibles) */
     background:
       radial-gradient(1200px 600px at -10% -10%, rgba(124,58,237,0.30), transparent 70%),
-      radial-gradient(1200px 600px at 110% -10%, rgba(99,102,241,0.28), transparent 70%),
+      radial-gradient(1200px 600px at 120% -20%, rgba(99,102,241,0.12), transparent 70%),
       linear-gradient(180deg, #efe7ff 0%, #f7f2ff 50%, #e8f2ff 100%);
     background-attachment: fixed, fixed, fixed;
     min-height: 100vh;
@@ -147,6 +147,30 @@
     animation: float 3s ease-in-out infinite;
   }
 
+  /* Soft pulse for CTA arrows */
+  @keyframes pulse-soft {
+    0% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.45); }
+    70% { box-shadow: 0 0 0 14px hsl(var(--primary) / 0); }
+    100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0); }
+  }
+
+  /* Radar sweep animation for mapping visual */
+  @keyframes dash-rotate {
+    to { stroke-dashoffset: -600; }
+  }
+
+  /* Vertical scan sheen */
+  @keyframes scan-vert {
+    0% { transform: translateY(-120%); opacity: .0; }
+    10% { opacity: .45; }
+    90% { opacity: .45; }
+    100% { transform: translateY(220%); opacity: 0; }
+  }
+
+  .animate-scan-vert {
+    animation: scan-vert 5.5s linear infinite;
+  }
+
   /* YouTube card styles */
   .youtube-card {
     @apply bg-white rounded-2xl p-6 shadow-card border border-gray-100;
@@ -191,4 +215,15 @@
   .btn-hero-secondary {
     @apply bg-white border-2 border-slate-200 text-slate-700 px-6 py-3 rounded-md hover:bg-slate-50 hover:border-slate-300 transition-all duration-300;
   }
+}
+
+/* Reveal (apparition au scroll) */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 600ms var(--curve-animation), transform 600ms var(--curve-animation);
+}
+.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
 }

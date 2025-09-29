@@ -36,7 +36,7 @@ const LeadFormSection = () => {
               </div>
             </div>
             <div className="mt-6">
-              <button type="submit" className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300">Demander une démo</button>
+              <a href="/demo" className="inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300">Demander une démo</a>
             </div>
           </form>
         )}

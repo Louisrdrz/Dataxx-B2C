@@ -5,8 +5,8 @@ export default function DataxxSlices() {
     <>
       {/* Rencontrez nos fondateurs */}
       <section
-        id="team"
-        className="py-8 sm:py-12 relative overflow-hidden bg-transparent"
+        id="equipe"
+        className="py-8 sm:py-12 relative overflow-hidden bg-transparent scroll-mt-28"
       >
         {/* Fond unifié par le body — pas de calque local */}
 
@@ -77,12 +77,12 @@ export default function DataxxSlices() {
                 </div>
                 <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
                   <span className="bg-blue-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg">
-                    COO
+                    CPO
                   </span>
                 </div>
               </div>
               <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-2 tracking-tight">Martin Masseline</h3>
-              <p className="text-blue-600 font-semibold mb-4 text-base sm:text-lg">COO & Co-founder</p>
+              <p className="text-blue-600 font-semibold mb-4 text-base sm:text-lg">CPO & Co-founder</p>
               <div className="mt-auto">
                 <a
                   href="https://www.linkedin.com/in/martin-masseline-5282a01ba/"

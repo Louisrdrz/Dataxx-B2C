@@ -105,7 +105,7 @@ export default function HeroHeader({
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <button
-              onClick={onPrimaryClick}
+              onClick={onPrimaryClick ?? (() => { window.location.href = "/demo"; })}
               className="bg-slate-900 hover:bg-slate-800 text-white px-6 sm:px-8 py-3 sm:py-4 text-base shadow-lg hover:shadow-xl transition-all duration-300 font-medium border-0 rounded-md w-full sm:w-auto inline-flex items-center justify-center"
             >
               {primaryCta}

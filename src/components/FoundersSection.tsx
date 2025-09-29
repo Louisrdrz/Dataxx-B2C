@@ -4,7 +4,7 @@ import louis from "@/assets/louis.jpeg";
 
 type Founder = {
   name: string;
-  roleShort: "CEO" | "COO" | "CTO";
+  roleShort: "CEO" | "CPO" | "CTO";
   title: string;
   photo: string;
   linkedin?: string;
@@ -21,7 +21,7 @@ const founders: Founder[] = [
   {
     name: "Martin Masseline",
     roleShort: "CPO",
-    title: "COO & Co-founder",
+    title: "CPO & Co-founder",
     photo: martin,
     linkedin: "https://www.linkedin.com/in/martin-masseline-5282a01ba/",
   },
