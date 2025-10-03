@@ -178,7 +178,7 @@ export default function DataxxSlices() {
           "hecparis",
           "cloudforstartups",
           "logofrenchtech",
-          "logostaderennaisfc",
+          // "logostaderennaisfc", // Temporairement retiré
           "logopolytechnique",
         ]);
 

@@ -34,10 +34,10 @@ const Index = () => {
         secondaryCta="En savoir plus"
         secondaryHref="#features"
       />
-      {/* Confiance juste sous les CTA */}
-      <Reveal>
+      {/* Confiance juste sous les CTA - Temporairement retirée */}
+      {/* <Reveal>
         <TrustedBySection />
-      </Reveal>
+      </Reveal> */}
       {/* Parcours classique ensuite */}
       <Reveal>
         <HowItWorksSection />
