@@ -1,7 +1,11 @@
 {
   "redirects": [
-    { "source": "http://dataxx.fr/:path*", "destination": "https://dataxx.fr/:path*", "permanent": true },
-    { "source": "https://www.dataxx.fr/:path*", "destination": "https://dataxx.fr/:path*", "permanent": true }
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.dataxx.fr" }],
+      "destination": "https://dataxx.fr/:path*",
+      "permanent": true
+    }
   ],
   "headers": [
     {
