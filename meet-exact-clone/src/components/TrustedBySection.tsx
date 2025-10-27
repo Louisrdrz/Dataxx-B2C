@@ -1,6 +1,4 @@
 import stadeRennais from "@/assets/Logo_Stade_Rennais_FC.svg.png";
-import logoDFCO from "@/assets/LogoDFCO.svg";
-import logoPB from "@/assets/LogoPB.png";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
@@ -13,18 +11,6 @@ const TrustedBySection = () => {
       name: t('trust.club.rennais.name'),
       league: t('trust.club.rennais.league'),
       alt: "Stade Rennais F.C.",
-    },
-    {
-      src: logoDFCO,
-      name: "Dijon Football Côtes d'Armor",
-      league: "National",
-      alt: "Dijon Football Côtes d'Armor",
-    },
-    {
-      src: logoPB,
-      name: "Paris Basketball",
-      league: "Betclic Élite",
-      alt: "Paris Basketball",
     },
   ];
 
@@ -95,37 +81,7 @@ const TrustedBySection = () => {
             </div>
           </div>
 
-            {/* Separator */}
-            <div className="hidden sm:block h-12 md:h-16 w-px bg-gradient-to-b from-transparent via-white/50 to-transparent"></div>
-
-            {/* DFCO */}
-            <div className="group flex flex-col items-center">
-              <img 
-                src={logoDFCO} 
-                alt="Dijon Football Côtes d'Armor" 
-                className="h-14 sm:h-20 md:h-24 object-contain transition-all duration-300 group-hover:scale-105" 
-              />
-              <div className="mt-3 text-center">
-                <p className="text-sm font-semibold text-white">Dijon Football Côtes d'Armor</p>
-                <p className="text-xs text-white/70">National</p>
-              </div>
-            </div>
-
-            {/* Separator */}
-            <div className="hidden sm:block h-12 md:h-16 w-px bg-gradient-to-b from-transparent via-white/50 to-transparent"></div>
-
-            {/* Paris Basketball */}
-            <div className="group flex flex-col items-center">
-              <img 
-                src={logoPB} 
-                alt="Paris Basketball" 
-                className="h-14 sm:h-20 md:h-24 object-contain transition-all duration-300 group-hover:scale-105" 
-              />
-              <div className="mt-3 text-center">
-                <p className="text-sm font-semibold text-white">Paris Basketball</p>
-                <p className="text-xs text-white/70">Betclic Élite</p>
-              </div>
-            </div>
+            {/* autres logos retirés */}
             </div>
           </div>
         </div>

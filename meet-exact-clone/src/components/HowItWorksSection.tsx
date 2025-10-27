@@ -231,11 +231,11 @@ const HowItWorksSection = () => {
                       <circle cx="350" cy="150" r="7"><animate attributeName="r" values="7;8;7" dur="2.4s" begin="2.4s" repeatCount="indefinite" /></circle>
                     </g>
                   </svg>
-                  <div className="absolute left-3 top-2 sm:top-3 flex flex-wrap sm:flex-nowrap gap-2 pr-2">
-                    <span className="px-2.5 py-1 rounded-full bg-primary/10 text-secondary text-xs border border-primary/20">{t('features.mapping.filters.region')}</span>
-                    <span className="px-2.5 py-1 rounded-full bg-primary/10 text-secondary text-xs border border-primary/20">{t('features.mapping.filters.sector')}</span>
-                    <span className="px-2.5 py-1 rounded-full bg-primary/10 text-secondary text-xs border border-primary/20">{t('features.mapping.filters.potential')}</span>
-                    <span className="px-2.5 py-1 rounded-full bg-primary/10 text-secondary text-xs border border-primary/20">Tranche de CA</span>
+                  <div className="absolute left-3 right-3 top-1.5 sm:top-3 flex items-center gap-1.5 whitespace-nowrap pr-2">
+                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-secondary text-[10px] border border-primary/20">{t('features.mapping.filters.region')}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-secondary text-[10px] border border-primary/20">{t('features.mapping.filters.sector')}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-secondary text-[10px] border border-primary/20">{t('features.mapping.filters.potential')}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-primary/10 text-secondary text-[10px] border border-primary/20">CA</span>
                   </div>
                 </div>
               </div>

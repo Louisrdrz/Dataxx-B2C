@@ -202,8 +202,6 @@ export default function DataxxSlices() {
           "logofrenchtech",
           "logostaderennaisfc",
           "logopolytechnique",
-          "logopb", // Paris Basketball
-          "logodfco", // Dijon FCO
         ]);
 
         // Sélectionne uniquement les fichiers dont le basename normalisé est dans la whitelist
