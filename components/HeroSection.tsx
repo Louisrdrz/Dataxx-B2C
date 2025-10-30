@@ -63,8 +63,8 @@ const HeroSection = () => {
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-gray-600 max-w-4xl mx-auto mb-12 leading-relaxed animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
-          Dataxx aide les clubs, ligues, fédérations et athlètes à identifier,<br />
-          qualifier et signer plus de sponsors grâce à l’IA
+          Dataxx aide les sportifs à identifier,<br />
+          qualifier et signer plus de sponsors grâce à l'IA
         </p>
 
         {/* CTA Buttons */}

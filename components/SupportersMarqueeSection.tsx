@@ -1,8 +1,8 @@
 const SupportersMarqueeSection = () => {
   const phrase = (
     <>
-      <span className="mx-12">Pour les <span className="font-extrabold">Clubs</span>.</span>
-      <span className="mx-12">Par les <span className="font-extrabold">Supporters</span>.</span>
+      <span className="mx-12">Pour les <span className="font-extrabold">Sportifs</span>.</span>
+      <span className="mx-12">Par les <span className="font-extrabold">Sportifs</span>.</span>
     </>
   );
 

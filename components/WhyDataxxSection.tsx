@@ -54,8 +54,8 @@ const WhyDataxxSection: React.FC = () => {
             </div>
             {/* CTA primaire (centré en mobile, gauche en desktop) */}
             <div className="mt-6 flex justify-center md:justify-start">
-              <a href="/demo" className="inline-flex items-center gap-2 rounded-[14px] px-7 py-3.5 bg-[#0b1220] text-white shadow-lg shadow-black/10 hover:shadow-black/20 transition">
-                {t('hero.cta-primary')}
+              <a href="/login" className="inline-flex items-center gap-2 rounded-[14px] px-7 py-3.5 bg-[#0b1220] text-white shadow-lg shadow-black/10 hover:shadow-black/20 transition">
+                Se connecter
                 <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
               </a>
             </div>

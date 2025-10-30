@@ -44,9 +44,8 @@ const Header = () => {
             </svg>
           </button>
 
-          <Link href="/demo" className="bg-slate-900 hover:bg-slate-800 text-white px-3 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 text-xs sm:text-sm lg:text-base shadow-lg hover:shadow-xl transition-all duration-300 font-medium border-0 rounded-md inline-flex items-center justify-center">
-            <span className="hidden sm:inline">{t('nav.demander-demo')}</span>
-            <span className="sm:hidden">Démo</span>
+          <Link href="/login" className="bg-slate-900 hover:bg-slate-800 text-white px-3 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 text-xs sm:text-sm lg:text-base shadow-lg hover:shadow-xl transition-all duration-300 font-medium border-0 rounded-md inline-flex items-center justify-center">
+            Se connecter
           </Link>
         </div>
       </div>
