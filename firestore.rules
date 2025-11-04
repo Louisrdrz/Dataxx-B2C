@@ -1,0 +1,120 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Fonction helper pour vérifier si l'utilisateur est authentifié
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Fonction helper pour vérifier si l'utilisateur est le propriétaire
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Fonction helper pour vérifier si l'utilisateur a un abonnement actif
+    function hasActiveSubscription() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/subscriptions/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/subscriptions/$(request.auth.uid)).data.status == 'active';
+    }
+    
+    // Collection users - Chaque utilisateur peut lire et modifier uniquement son propre document
+    match /users/{userId} {
+      // Lecture : l'utilisateur peut lire son propre document
+      allow read: if isOwner(userId);
+      
+      // Création : uniquement lors de la première connexion
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == userId &&
+                       request.resource.data.uid == userId &&
+                       request.resource.data.email == request.auth.token.email;
+      
+      // Mise à jour : l'utilisateur peut modifier son propre document
+      // mais ne peut pas modifier certains champs sensibles
+      allow update: if isOwner(userId) &&
+                       request.resource.data.uid == resource.data.uid &&
+                       request.resource.data.email == resource.data.email &&
+                       request.resource.data.createdAt == resource.data.createdAt;
+      
+      // Suppression : interdite (soft delete recommandé via un champ 'deleted')
+      allow delete: if false;
+    }
+    
+    // Collection subscriptions - Gestion des abonnements Stripe
+    match /subscriptions/{subscriptionId} {
+      // Lecture : l'utilisateur peut lire son propre abonnement
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Création/modification : uniquement par les webhooks Stripe (backend)
+      // ou Cloud Functions authentifiées
+      allow create, update: if false; // Sera géré par Cloud Functions
+      
+      // Suppression : interdite
+      allow delete: if false;
+    }
+    
+    // Collection userData - Données collectées par les utilisateurs
+    match /userData/{dataId} {
+      // Lecture : l'utilisateur peut lire ses propres données
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Création : l'utilisateur peut créer ses propres données
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Mise à jour : l'utilisateur peut modifier ses propres données
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Suppression : l'utilisateur peut supprimer ses propres données
+      allow delete: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
+    // Collection auditLogs - Logs d'audit (lecture seule pour les utilisateurs)
+    match /auditLogs/{logId} {
+      // Lecture : l'utilisateur peut lire ses propres logs
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Création/modification : uniquement par Cloud Functions
+      allow create, update, delete: if false;
+    }
+    
+    // Collection userSessions - Sessions utilisateur
+    match /userSessions/{sessionId} {
+      // Lecture : l'utilisateur peut lire ses propres sessions
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Création/modification : géré par l'application
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid;
+      
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == request.auth.uid;
+      
+      // Suppression : interdite
+      allow delete: if false;
+    }
+    
+    // Collection appSettings - Paramètres de l'application (lecture seule)
+    match /appSettings/{settingId} {
+      // Lecture : tous les utilisateurs authentifiés
+      allow read: if isAuthenticated();
+      
+      // Création/modification : uniquement par les admins (géré par Cloud Functions)
+      allow create, update, delete: if false;
+    }
+    
+    // Règle par défaut : interdire tout accès
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
