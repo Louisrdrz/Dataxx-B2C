@@ -32,9 +32,14 @@ export const signUpWithEmail = async (
       await updateProfile(userCredential.user, { displayName });
     }
     
-    // Envoyer l'email de vérification
+    // Envoyer l'email de vérification (en mode silencieux, ne pas bloquer l'inscription)
     if (userCredential.user) {
-      await sendEmailVerification(userCredential.user);
+      try {
+        await sendEmailVerification(userCredential.user);
+      } catch (emailError) {
+        console.warn('Impossible d\'envoyer l\'email de vérification:', emailError);
+        // Ne pas bloquer l'inscription si l'envoi d'email échoue
+      }
     }
     
     return userCredential;

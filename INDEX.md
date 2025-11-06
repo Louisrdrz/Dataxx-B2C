@@ -60,6 +60,20 @@ lib/firebase/
 
 **Référence** : `QUICK_REFERENCE.md` - Section "Services"
 
+### 🔐 Configuration Firestore (Nouveau !)
+
+```
+Root/
+├── FIRESTORE_RECAP.md           → ⭐ Résumé de la configuration Firestore
+├── FIRESTORE_CONFIG.md          → Documentation complète Firestore
+├── FIRESTORE_DATA_STRUCTURE.md  → Structure des collections
+├── QUICK_START_FIRESTORE.md     → Quick start Firestore
+├── deploy-firestore.sh          → Script de déploiement
+└── verify-firestore.sh          → Script de vérification
+```
+
+**Référence** : `FIRESTORE_RECAP.md` - Configuration complète
+
 ### 🪝 Hooks React
 
 ```
@@ -85,10 +99,12 @@ types/
 pages/
 ├── register.tsx       → Inscription (email + Google)
 ├── login.tsx          → Connexion (email + Google)
-└── dashboard.tsx      → Dashboard protégé (exemple)
+├── dashboard.tsx      → Dashboard protégé (mis à jour)
+└── profile.tsx        → ⭐ Page d'espace personnel (NOUVEAU)
 ```
 
-**Référence** : `FIREBASE_SETUP.md` - Section "Pages"
+**Référence** : `FIREBASE_SETUP.md` - Section "Pages"  
+**Nouveau** : Page de profil complète avec édition des informations personnelles
 
 ### ⚙️ Configuration Firebase
 
@@ -271,10 +287,20 @@ Documentation/
 Vous avez à votre disposition :
 - ✅ **27 fichiers** de code et configuration
 - ✅ **~4000 lignes** de code TypeScript
-- ✅ **10 fichiers** de documentation
+- ✅ **16 fichiers** de documentation
 - ✅ **1 infrastructure** Firebase complète
+- ✅ **Règles Firestore** déployées sur le projet
+- ✅ **Index Firestore** optimisés et déployés
+- ✅ **Page d'espace personnel** fonctionnelle
 
 **Tout est prêt pour développer ! 🚀**
+
+### 🆕 Nouveautés (6 novembre 2025)
+- ✅ Configuration Firestore complète
+- ✅ Page d'espace personnel (`/profile`)
+- ✅ Dashboard amélioré avec navigation
+- ✅ Scripts de déploiement Firestore
+- ✅ Documentation Firestore complète
 
 ---
 

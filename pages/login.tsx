@@ -20,7 +20,7 @@ const LoginPage = () => {
     
     try {
       await signInWithEmail(email, password);
-      router.push("/");
+      router.push("/dashboard");
     } catch (err: any) {
       console.error("Erreur lors de la connexion:", err);
       
@@ -46,7 +46,7 @@ const LoginPage = () => {
     
     try {
       await signInWithGoogle();
-      router.push("/");
+      router.push("/dashboard");
     } catch (err: any) {
       console.error("Erreur lors de la connexion Google:", err);
       setError("Une erreur est survenue lors de la connexion avec Google");

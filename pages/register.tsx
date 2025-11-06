@@ -84,18 +84,20 @@ const RegisterPage = () => {
         ["profile", "sport"]
       );
       
-      // Rediriger vers la page d'accueil ou dashboard
-      router.push("/");
+      // Rediriger vers le dashboard
+      router.push("/dashboard");
     } catch (err: any) {
       console.error("Erreur lors de l'inscription:", err);
       
       // Gérer les erreurs Firebase
       if (err.code === "auth/email-already-in-use") {
-        setError("Cette adresse email est déjà utilisée");
+        setError("Cette adresse email est déjà utilisée. Veuillez vous connecter ou utiliser un autre email.");
       } else if (err.code === "auth/invalid-email") {
         setError("Adresse email invalide");
       } else if (err.code === "auth/weak-password") {
         setError("Le mot de passe est trop faible");
+      } else if (err.code === "invalid-argument") {
+        setError("Erreur lors de la création du profil. Veuillez réessayer.");
       } else {
         setError("Une erreur est survenue lors de l'inscription. Veuillez réessayer.");
       }
@@ -111,7 +113,7 @@ const RegisterPage = () => {
     try {
       const userCredential = await signInWithGoogle();
       await createOrUpdateUserDocument(userCredential.user);
-      router.push("/");
+      router.push("/dashboard");
     } catch (err: any) {
       console.error("Erreur lors de la connexion Google:", err);
       setError("Une erreur est survenue lors de la connexion avec Google");

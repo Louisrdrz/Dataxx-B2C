@@ -96,9 +96,50 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
             </div>
           </div>
 
+          {/* Quick Actions */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
+            <h3 className="text-xl font-bold text-secondary mb-4">Actions rapides</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <button
+                onClick={() => router.push('/profile')}
+                className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-purple-50 transition-all"
+              >
+                <span className="text-3xl mb-2">👤</span>
+                <span className="font-semibold text-secondary">Mon Profil</span>
+                <span className="text-sm text-gray-500 mt-1">Gérer mes informations</span>
+              </button>
+              
+              <button
+                onClick={() => router.push('/subscription')}
+                className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-purple-50 transition-all"
+              >
+                <span className="text-3xl mb-2">💳</span>
+                <span className="font-semibold text-secondary">Abonnement</span>
+                <span className="text-sm text-gray-500 mt-1">Gérer mon plan</span>
+              </button>
+              
+              <button
+                onClick={() => router.push('/data')}
+                className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-purple-50 transition-all"
+              >
+                <span className="text-3xl mb-2">📊</span>
+                <span className="font-semibold text-secondary">Mes Données</span>
+                <span className="text-sm text-gray-500 mt-1">Consulter mes données</span>
+              </button>
+            </div>
+          </div>
+
           {/* User Info */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-            <h3 className="text-xl font-bold text-secondary mb-6">Informations du compte</h3>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-secondary">Informations du compte</h3>
+              <button
+                onClick={() => router.push('/profile')}
+                className="text-sm text-primary hover:text-primary/80 font-medium"
+              >
+                Modifier →
+              </button>
+            </div>
             <div className="space-y-4">
               <div className="flex items-center justify-between py-3 border-b border-gray-200">
                 <span className="text-gray-600 font-medium">Email</span>

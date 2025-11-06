@@ -39,6 +39,23 @@ service cloud.firestore {
       
       // Suppression : interdite (soft delete recommandé via un champ 'deleted')
       allow delete: if false;
+      
+      // Sous-collection userProfile pour les informations détaillées du profil
+      match /profile/{profileId} {
+        // Lecture : l'utilisateur peut lire son propre profil
+        allow read: if isOwner(userId);
+        
+        // Création : l'utilisateur peut créer son profil
+        allow create: if isOwner(userId) && 
+                         request.resource.data.userId == userId;
+        
+        // Mise à jour : l'utilisateur peut modifier son profil
+        allow update: if isOwner(userId) &&
+                         request.resource.data.userId == userId;
+        
+        // Suppression : interdite
+        allow delete: if false;
+      }
     }
     
     // Collection subscriptions - Gestion des abonnements Stripe

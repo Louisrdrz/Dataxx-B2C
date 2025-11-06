@@ -33,12 +33,9 @@ export const createOrUpdateUserDocument = async (
   }
 
   // Créer un nouveau document utilisateur
-  const userData: Partial<User> = {
+  const userData: any = {
     uid: firebaseUser.uid,
     email: firebaseUser.email || '',
-    displayName: firebaseUser.displayName || undefined,
-    photoURL: firebaseUser.photoURL || undefined,
-    phoneNumber: firebaseUser.phoneNumber || undefined,
     emailVerified: firebaseUser.emailVerified,
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
@@ -48,8 +45,28 @@ export const createOrUpdateUserDocument = async (
       email: true,
       push: true,
     },
-    ...additionalData,
   };
+
+  // Ajouter les champs optionnels seulement s'ils existent
+  if (firebaseUser.displayName) {
+    userData.displayName = firebaseUser.displayName;
+  }
+  if (firebaseUser.photoURL) {
+    userData.photoURL = firebaseUser.photoURL;
+  }
+  if (firebaseUser.phoneNumber) {
+    userData.phoneNumber = firebaseUser.phoneNumber;
+  }
+
+  // Fusionner avec les données additionnelles (en filtrant les undefined)
+  if (additionalData) {
+    Object.keys(additionalData).forEach(key => {
+      const value = additionalData[key as keyof typeof additionalData];
+      if (value !== undefined) {
+        userData[key] = value;
+      }
+    });
+  }
 
   await setDoc(userRef, userData);
 };
