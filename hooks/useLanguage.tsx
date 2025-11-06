@@ -181,7 +181,7 @@ const translations = {
     'founders.martin.role': 'CPO & Co-founder',
     'founders.louis.name': 'Louis Rodriguez',
     'founders.louis.role': 'CTO & Co-founder',
-    'founders.tagline': 'Pour les Clubs. Par les Supporters',
+    'founders.tagline': 'Pour les Sportifs. Par des Sportifs',
     
     // Demo page
     'demo.title': 'Réserver une démo',
@@ -381,7 +381,7 @@ const translations = {
     'founders.martin.role': 'CPO & Co-founder',
     'founders.louis.name': 'Louis Rodriguez',
     'founders.louis.role': 'CTO & Co-founder',
-    'founders.tagline': 'For the Clubs. By the Supporters',
+    'founders.tagline': 'For Athletes. By Athletes',
     
     // Demo page
     'demo.title': 'Book a demo',

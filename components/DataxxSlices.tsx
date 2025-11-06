@@ -133,7 +133,7 @@ export default function DataxxSlices() {
         </div>
       </section>
 
-      {/* Pour les Clubs. Par les Supporters */}
+      {/* Pour les Sportifs. Par des Sportifs */}
       <section className="pt-0 pb-0 overflow-hidden relative">
         <div className="relative py-12 sm:py-20">
           {/* Mobile faster */}
