@@ -13,8 +13,19 @@ import {
 } from 'firebase/auth';
 import { auth } from './config';
 
-// Provider Google
+// Provider Google avec scopes pour calendrier et contacts
 const googleProvider = new GoogleAuthProvider();
+
+// Ajouter les scopes pour accéder aux calendriers et contacts
+googleProvider.addScope('https://www.googleapis.com/auth/calendar.readonly');
+googleProvider.addScope('https://www.googleapis.com/auth/calendar.events.readonly');
+googleProvider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+
+// Forcer la demande de consentement à chaque connexion pour afficher les permissions
+googleProvider.setCustomParameters({
+  prompt: 'consent',
+  access_type: 'offline'
+});
 
 /**
  * Inscription avec email et mot de passe
@@ -65,15 +76,36 @@ export const signInWithEmail = async (
 };
 
 /**
- * Connexion avec Google
+ * Connexion avec Google (avec accès calendrier et contacts)
  */
 export const signInWithGoogle = async (): Promise<UserCredential> => {
   try {
-    return await signInWithPopup(auth, googleProvider);
+    const result = await signInWithPopup(auth, googleProvider);
+    
+    // Récupérer le token d'accès Google
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    if (credential) {
+      const accessToken = credential.accessToken;
+      
+      // Stocker le token pour une utilisation ultérieure
+      if (accessToken) {
+        localStorage.setItem('google_access_token', accessToken);
+        console.log('Token d\'accès Google stocké');
+      }
+    }
+    
+    return result;
   } catch (error: any) {
     console.error('Erreur lors de la connexion Google:', error);
     throw error;
   }
+};
+
+/**
+ * Récupérer le token d'accès Google stocké
+ */
+export const getGoogleAccessToken = (): string | null => {
+  return localStorage.getItem('google_access_token');
 };
 
 /**
