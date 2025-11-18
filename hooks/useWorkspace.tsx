@@ -4,6 +4,8 @@ import { Workspace } from '@/types/firestore';
 import { getUserWorkspaces, getWorkspace } from '@/lib/firebase/workspaces';
 import { getUserRoleInWorkspace } from '@/lib/firebase/workspaceMembers';
 import { useAuth } from './useAuth';
+import { collection, query, where, orderBy, doc, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
 
 interface WorkspaceContextType {
   currentWorkspace: Workspace | null;
@@ -170,8 +172,10 @@ export function useWorkspace() {
 }
 
 /**
- * Hook simple pour récupérer les workspaces d'un utilisateur
+ * Hook simple pour récupérer les workspaces d'un utilisateur EN TEMPS RÉEL
  * (Sans utiliser le contexte)
+ * 
+ * ⚡ Ce hook utilise des listeners Firestore pour des mises à jour automatiques
  */
 export function useUserWorkspaces(userId: string | undefined) {
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
@@ -185,28 +189,96 @@ export function useUserWorkspaces(userId: string | undefined) {
       return;
     }
 
-    const loadWorkspaces = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await getUserWorkspaces(userId);
-        setWorkspaces(data);
-      } catch (err) {
-        console.error('Erreur lors du chargement des workspaces:', err);
-        setError('Impossible de charger les workspaces');
-      } finally {
+    setIsLoading(true);
+    setError(null);
+
+    // ⚡ ÉCOUTE EN TEMPS RÉEL des changements dans workspaceMembers
+    const unsubscribeMembers = onSnapshot(
+      query(
+        collection(db, 'workspaceMembers'),
+        where('userId', '==', userId),
+        orderBy('joinedAt', 'desc')
+      ),
+      async (membersSnapshot) => {
+        try {
+          const workspaceIds = membersSnapshot.docs.map(doc => doc.data().workspaceId);
+          
+          if (workspaceIds.length === 0) {
+            setWorkspaces([]);
+            setIsLoading(false);
+            return;
+          }
+
+          // Créer des listeners pour chaque workspace
+          const workspaceUnsubscribers: (() => void)[] = [];
+          const workspacesMap = new Map<string, Workspace>();
+
+          // Fonction pour mettre à jour l'état avec les workspaces actuels
+          const updateWorkspaces = () => {
+            const sortedWorkspaces = Array.from(workspacesMap.values())
+              .sort((a, b) => {
+                const aIndex = workspaceIds.indexOf(a.id);
+                const bIndex = workspaceIds.indexOf(b.id);
+                return aIndex - bIndex;
+              });
+            setWorkspaces(sortedWorkspaces);
+          };
+
+          // ⚡ Écouter chaque workspace individuellement
+          for (const workspaceId of workspaceIds) {
+            const workspaceRef = doc(db, 'workspaces', workspaceId);
+            const unsubWorkspace = onSnapshot(
+              workspaceRef,
+              (workspaceDoc) => {
+                if (workspaceDoc.exists()) {
+                  workspacesMap.set(workspaceId, {
+                    id: workspaceDoc.id,
+                    ...workspaceDoc.data()
+                  } as Workspace);
+                } else {
+                  workspacesMap.delete(workspaceId);
+                }
+                updateWorkspaces();
+              },
+              (err) => {
+                console.error(`Erreur listener workspace ${workspaceId}:`, err);
+              }
+            );
+            workspaceUnsubscribers.push(unsubWorkspace);
+          }
+
+          setIsLoading(false);
+
+          // Cleanup des listeners de workspaces lors du changement de liste
+          return () => {
+            workspaceUnsubscribers.forEach(unsub => unsub());
+          };
+        } catch (err) {
+          console.error('Erreur lors de la récupération des workspaces:', err);
+          setError('Impossible de charger les workspaces');
+          setIsLoading(false);
+        }
+      },
+      (err) => {
+        console.error('Erreur listener workspaceMembers:', err);
+        setError('Erreur de connexion aux workspaces');
         setIsLoading(false);
       }
-    };
+    );
 
-    loadWorkspaces();
+    // Cleanup du listener principal
+    return () => {
+      unsubscribeMembers();
+    };
   }, [userId]);
 
   return { workspaces, isLoading, error };
 }
 
 /**
- * Hook pour récupérer un workspace spécifique
+ * Hook pour récupérer un workspace spécifique EN TEMPS RÉEL
+ * 
+ * ⚡ Ce hook utilise un listener Firestore pour des mises à jour automatiques
  */
 export function useWorkspaceById(workspaceId: string | undefined) {
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
@@ -220,21 +292,36 @@ export function useWorkspaceById(workspaceId: string | undefined) {
       return;
     }
 
-    const loadWorkspace = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-        const data = await getWorkspace(workspaceId);
-        setWorkspace(data);
-      } catch (err) {
-        console.error('Erreur lors du chargement du workspace:', err);
-        setError('Impossible de charger le workspace');
-      } finally {
+    setIsLoading(true);
+    setError(null);
+
+    // ⚡ ÉCOUTE EN TEMPS RÉEL du workspace
+    const workspaceRef = doc(db, 'workspaces', workspaceId);
+    const unsubscribe = onSnapshot(
+      workspaceRef,
+      (workspaceDoc) => {
+        if (workspaceDoc.exists()) {
+          setWorkspace({
+            id: workspaceDoc.id,
+            ...workspaceDoc.data()
+          } as Workspace);
+        } else {
+          setWorkspace(null);
+          setError('Workspace introuvable');
+        }
+        setIsLoading(false);
+      },
+      (err) => {
+        console.error('Erreur listener workspace:', err);
+        setError('Erreur de connexion au workspace');
         setIsLoading(false);
       }
-    };
+    );
 
-    loadWorkspace();
+    // Cleanup du listener
+    return () => {
+      unsubscribe();
+    };
   }, [workspaceId]);
 
   return { workspace, isLoading, error };

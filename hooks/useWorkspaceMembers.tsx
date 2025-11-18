@@ -12,42 +12,67 @@ import {
   isUserWorkspaceMember,
   getUserRoleInWorkspace
 } from '@/lib/firebase/workspaceMembers';
+import { collection, query, where, orderBy, doc, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase/config';
 
 /**
- * Hook pour récupérer tous les membres d'un workspace
+ * Hook pour récupérer tous les membres d'un workspace EN TEMPS RÉEL
+ * 
+ * ⚡ Ce hook utilise un listener Firestore pour des mises à jour automatiques
+ * Les changements (ajout, suppression, modification de rôle) sont reflétés instantanément
  */
 export function useWorkspaceMembers(workspaceId: string | undefined) {
   const [members, setMembers] = useState<WorkspaceMember[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadMembers = useCallback(async () => {
+  useEffect(() => {
     if (!workspaceId) {
       setMembers([]);
       setIsLoading(false);
       return;
     }
 
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await getWorkspaceMembers(workspaceId);
-      setMembers(data);
-    } catch (err) {
-      console.error('Erreur lors du chargement des membres:', err);
-      setError('Impossible de charger les membres');
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    setError(null);
+
+    // ⚡ ÉCOUTE EN TEMPS RÉEL des membres du workspace
+    const membersQuery = query(
+      collection(db, 'workspaceMembers'),
+      where('workspaceId', '==', workspaceId),
+      orderBy('joinedAt', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(
+      membersQuery,
+      (snapshot) => {
+        const membersData = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as WorkspaceMember[];
+        
+        setMembers(membersData);
+        setIsLoading(false);
+      },
+      (err) => {
+        console.error('Erreur listener membres:', err);
+        setError('Erreur de connexion aux membres');
+        setIsLoading(false);
+      }
+    );
+
+    // Cleanup du listener
+    return () => {
+      unsubscribe();
+    };
   }, [workspaceId]);
 
-  useEffect(() => {
-    loadMembers();
-  }, [loadMembers]);
-
+  // Note: refresh n'est plus nécessaire car le listener se met à jour automatiquement
+  // On le garde pour la compatibilité avec le code existant
   const refresh = useCallback(() => {
-    loadMembers();
-  }, [loadMembers]);
+    // Le listener se met à jour automatiquement, donc on ne fait rien
+    console.log('⚡ Refresh non nécessaire: les données se mettent à jour automatiquement');
+  }, []);
 
   return { members, isLoading, error, refresh };
 }

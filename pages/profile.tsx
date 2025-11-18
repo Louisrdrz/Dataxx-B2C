@@ -110,24 +110,30 @@ const ProfilePage = ({ user, userData: initialUserData }: ProfileProps) => {
         <meta name="description" content="Gérez vos informations personnelles" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-fuchsia-50">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200">
+        <header className="bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200 sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className="text-gray-600 hover:text-gray-900 transition-colors"
+                  className="text-slate-600 hover:text-indigo-600 transition-colors flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-slate-100 font-medium"
                 >
-                  ← Retour
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  Retour
                 </button>
-                <h1 className="text-2xl font-bold text-secondary">Mon Profil</h1>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Mon Profil</h1>
               </div>
               <button
                 onClick={handleSignOut}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="px-5 py-2.5 text-sm font-medium text-slate-700 hover:text-slate-900 border border-slate-300 rounded-xl hover:bg-slate-50 hover:shadow-sm transition-all duration-200 flex items-center gap-2"
               >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
                 Déconnexion
               </button>
             </div>
@@ -137,24 +143,49 @@ const ProfilePage = ({ user, userData: initialUserData }: ProfileProps) => {
         {/* Main Content */}
         <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
           {/* Profile Header */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
-            <div className="flex items-center gap-6">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white text-3xl font-bold">
-                {userData?.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || '?'}
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200 p-10 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-full -mr-48 -mt-48 opacity-30"></div>
+            <div className="relative z-10 flex items-center gap-8">
+              <div className="relative">
+                <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-5xl font-bold shadow-2xl ring-4 ring-white">
+                  {userData?.displayName?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || '?'}
+                </div>
+                <div className="absolute -bottom-2 -right-2 p-2 bg-white rounded-xl shadow-lg">
+                  {user.emailVerified ? (
+                    <svg className="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                  )}
+                </div>
               </div>
-              <div>
-                <h2 className="text-3xl font-bold text-secondary mb-2">
+              <div className="flex-1">
+                <h2 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
                   {userData?.displayName || 'Utilisateur'}
                 </h2>
-                <p className="text-gray-600 mb-2">{user.email}</p>
-                <div className="flex gap-2">
+                <p className="text-slate-600 text-lg mb-3 flex items-center gap-2">
+                  <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  {user.email}
+                </p>
+                <div className="flex gap-3">
                   {user.emailVerified ? (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                      ✓ Email vérifié
+                    <span className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200 shadow-sm">
+                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Email vérifié
                     </span>
                   ) : (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
-                      ⚠ Email non vérifié
+                    <span className="inline-flex items-center px-4 py-2 rounded-xl text-sm font-bold bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 border border-amber-200 shadow-sm">
+                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      Email non vérifié
                     </span>
                   )}
                 </div>
@@ -163,14 +194,17 @@ const ProfilePage = ({ user, userData: initialUserData }: ProfileProps) => {
           </div>
 
           {/* Profile Form */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-secondary">Informations personnelles</h3>
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200 p-8">
+            <div className="flex items-center justify-between mb-8">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Informations personnelles</h3>
               {!isEditing && (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="px-4 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+                  className="px-6 py-3 text-sm font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-xl rounded-xl transition-all duration-200 flex items-center gap-2"
                 >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
                   Modifier
                 </button>
               )}
@@ -241,8 +275,13 @@ const ProfilePage = ({ user, userData: initialUserData }: ProfileProps) => {
               </div>
 
               {/* Professional Information */}
-              <div className="border-t border-gray-200 pt-6">
-                <h4 className="text-lg font-semibold text-secondary mb-4">Informations professionnelles</h4>
+              <div className="border-t-2 border-slate-200 pt-8">
+                <h4 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                  <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Informations professionnelles
+                </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-2">
@@ -277,8 +316,14 @@ const ProfilePage = ({ user, userData: initialUserData }: ProfileProps) => {
               </div>
 
               {/* Preferences */}
-              <div className="border-t border-gray-200 pt-6">
-                <h4 className="text-lg font-semibold text-secondary mb-4">Préférences</h4>
+              <div className="border-t-2 border-slate-200 pt-8">
+                <h4 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                  <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Préférences
+                </h4>
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="language" className="block text-sm font-medium text-gray-700 mb-2">
@@ -334,24 +379,44 @@ const ProfilePage = ({ user, userData: initialUserData }: ProfileProps) => {
               </div>
 
               {/* Account Information (Read-only) */}
-              <div className="border-t border-gray-200 pt-6">
-                <h4 className="text-lg font-semibold text-secondary mb-4">Informations du compte</h4>
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-600">Email</span>
-                    <span className="text-gray-900 font-medium">{user.email}</span>
+              <div className="border-t-2 border-slate-200 pt-8">
+                <h4 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                  <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Informations du compte
+                </h4>
+                <div className="space-y-2">
+                  <div className="flex justify-between py-4 px-4 hover:bg-slate-50 rounded-xl transition-colors duration-150">
+                    <span className="text-slate-600 font-medium flex items-center gap-2">
+                      <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                      Email
+                    </span>
+                    <span className="text-slate-800 font-semibold">{user.email}</span>
                   </div>
-                  <div className="flex justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-600">Compte créé le</span>
-                    <span className="text-gray-900 font-medium">
+                  <div className="flex justify-between py-4 px-4 hover:bg-slate-50 rounded-xl transition-colors duration-150">
+                    <span className="text-slate-600 font-medium flex items-center gap-2">
+                      <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      Compte créé le
+                    </span>
+                    <span className="text-slate-800 font-semibold">
                       {userData?.createdAt 
                         ? new Date(userData.createdAt.seconds * 1000).toLocaleDateString('fr-FR')
                         : 'N/A'}
                     </span>
                   </div>
-                  <div className="flex justify-between py-2">
-                    <span className="text-gray-600">Dernière connexion</span>
-                    <span className="text-gray-900 font-medium">
+                  <div className="flex justify-between py-4 px-4 hover:bg-slate-50 rounded-xl transition-colors duration-150">
+                    <span className="text-slate-600 font-medium flex items-center gap-2">
+                      <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Dernière connexion
+                    </span>
+                    <span className="text-slate-800 font-semibold">
                       {userData?.lastLoginAt 
                         ? new Date(userData.lastLoginAt.seconds * 1000).toLocaleString('fr-FR')
                         : 'N/A'}
@@ -362,30 +427,35 @@ const ProfilePage = ({ user, userData: initialUserData }: ProfileProps) => {
 
               {/* Action Buttons */}
               {isEditing && (
-                <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">
+                <div className="flex justify-end gap-4 pt-8 border-t-2 border-slate-200">
                   <button
                     type="button"
                     onClick={handleCancel}
                     disabled={isSaving}
-                    className="px-6 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+                    className="px-8 py-3 text-sm font-bold text-slate-700 hover:text-slate-900 border-2 border-slate-300 rounded-xl hover:bg-slate-50 transition-all duration-200 disabled:opacity-50"
                   >
                     Annuler
                   </button>
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="px-6 py-2 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+                    className="px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:shadow-xl rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center gap-2"
                   >
                     {isSaving ? (
                       <>
-                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                         Enregistrement...
                       </>
                     ) : (
-                      'Enregistrer'
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        Enregistrer
+                      </>
                     )}
                   </button>
                 </div>

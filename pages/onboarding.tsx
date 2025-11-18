@@ -51,9 +51,9 @@ export default function OnboardingPage() {
 
       setStep('complete');
       
-      // Rediriger vers le dashboard après 2 secondes
+      // Rediriger vers le dashboard après 2 secondes avec rechargement complet
       setTimeout(() => {
-        router.push('/dashboard');
+        window.location.href = '/dashboard';
       }, 2000);
     } catch (err: any) {
       console.error('Erreur création workspace:', err);

@@ -132,3 +132,30 @@ export const updateUserPreferences = async (
     throw error;
   }
 };
+
+/**
+ * Définir le workspace par défaut d'un utilisateur
+ */
+export const setDefaultWorkspace = async (
+  userId: string,
+  workspaceId: string | null
+): Promise<void> => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const updateData: any = {
+      updatedAt: serverTimestamp(),
+    };
+    
+    if (workspaceId === null) {
+      // Supprimer le workspace par défaut
+      updateData.defaultWorkspaceId = null;
+    } else {
+      updateData.defaultWorkspaceId = workspaceId;
+    }
+    
+    await updateDoc(userRef, updateData);
+  } catch (error) {
+    console.error('Erreur lors de la définition du workspace par défaut:', error);
+    throw error;
+  }
+};
