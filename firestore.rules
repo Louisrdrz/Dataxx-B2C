@@ -2,24 +2,51 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Fonction helper pour vérifier si l'utilisateur est authentifié
+    // ============================================
+    // FONCTIONS HELPER
+    // ============================================
+    
+    // Vérifier si l'utilisateur est authentifié
     function isAuthenticated() {
       return request.auth != null;
     }
     
-    // Fonction helper pour vérifier si l'utilisateur est le propriétaire
+    // Vérifier si l'utilisateur est le propriétaire
     function isOwner(userId) {
       return isAuthenticated() && request.auth.uid == userId;
     }
     
-    // Fonction helper pour vérifier si l'utilisateur a un abonnement actif
-    function hasActiveSubscription() {
+    // Vérifier si l'utilisateur est membre d'un workspace
+    function isWorkspaceMember(workspaceId) {
       return isAuthenticated() && 
-             exists(/databases/$(database)/documents/subscriptions/$(request.auth.uid)) &&
-             get(/databases/$(database)/documents/subscriptions/$(request.auth.uid)).data.status == 'active';
+             exists(/databases/$(database)/documents/workspaceMembers/$(workspaceId + '_' + request.auth.uid));
     }
     
-    // Collection users - Chaque utilisateur peut lire et modifier uniquement son propre document
+    // Vérifier si l'utilisateur est admin d'un workspace
+    function isWorkspaceAdmin(workspaceId) {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/workspaceMembers/$(workspaceId + '_' + request.auth.uid)) &&
+             get(/databases/$(database)/documents/workspaceMembers/$(workspaceId + '_' + request.auth.uid)).data.role == 'admin';
+    }
+    
+    // Vérifier si l'utilisateur a un rôle spécifique dans un workspace
+    function hasWorkspaceRole(workspaceId, role) {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/workspaceMembers/$(workspaceId + '_' + request.auth.uid)) &&
+             get(/databases/$(database)/documents/workspaceMembers/$(workspaceId + '_' + request.auth.uid)).data.role == role;
+    }
+    
+    // Compter le nombre d'admins dans un workspace
+    function getAdminCount(workspaceId) {
+      // Note: Cette fonction ne peut pas être implémentée efficacement dans les règles Firestore
+      // Elle doit être gérée côté application
+      return true; // Placeholder - la validation doit être faite côté application
+    }
+    
+    // ============================================
+    // COLLECTION USERS
+    // ============================================
+    
     match /users/{userId} {
       // Lecture : l'utilisateur peut lire son propre document
       allow read: if isOwner(userId);
@@ -42,27 +69,130 @@ service cloud.firestore {
       
       // Sous-collection userProfile pour les informations détaillées du profil
       match /profile/{profileId} {
-        // Lecture : l'utilisateur peut lire son propre profil
         allow read: if isOwner(userId);
-        
-        // Création : l'utilisateur peut créer son profil
-        allow create: if isOwner(userId) && 
-                         request.resource.data.userId == userId;
-        
-        // Mise à jour : l'utilisateur peut modifier son profil
-        allow update: if isOwner(userId) &&
-                         request.resource.data.userId == userId;
-        
-        // Suppression : interdite
+        allow create: if isOwner(userId) && request.resource.data.userId == userId;
+        allow update: if isOwner(userId) && request.resource.data.userId == userId;
         allow delete: if false;
       }
     }
     
-    // Collection subscriptions - Gestion des abonnements Stripe
-    match /subscriptions/{subscriptionId} {
-      // Lecture : l'utilisateur peut lire son propre abonnement
+    // ============================================
+    // COLLECTION WORKSPACES
+    // ============================================
+    
+    match /workspaces/{workspaceId} {
+      // Lecture : les membres du workspace peuvent lire
+      allow read: if isWorkspaceMember(workspaceId);
+      
+      // Création : utilisateurs authentifiés peuvent créer un workspace
+      // Le créateur doit s'ajouter comme admin dans workspaceMembers immédiatement après
+      allow create: if isAuthenticated() &&
+                       request.resource.data.ownerId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['name', 'ownerId', 'createdAt']);
+      
+      // Mise à jour : seuls les admins peuvent modifier
+      allow update: if isWorkspaceAdmin(workspaceId) &&
+                       request.resource.data.ownerId == resource.data.ownerId &&
+                       request.resource.data.createdAt == resource.data.createdAt;
+      
+      // Suppression : seuls les admins peuvent supprimer
+      // Note: La vérification du nombre de membres doit être faite côté application
+      allow delete: if isWorkspaceAdmin(workspaceId);
+    }
+    
+    // ============================================
+    // COLLECTION WORKSPACE MEMBERS
+    // ============================================
+    
+    match /workspaceMembers/{memberId} {
+      // Format du memberId: {workspaceId}_{userId}
+      
+      // Lecture : les membres du même workspace peuvent lire
       allow read: if isAuthenticated() && 
-                     resource.data.userId == request.auth.uid;
+                     isWorkspaceMember(resource.data.workspaceId);
+      
+      // Création : 
+      // - Admin du workspace peut ajouter des membres
+      // - OU l'utilisateur lui-même lors de l'acceptation d'une invitation
+      allow create: if isAuthenticated() &&
+                       request.resource.data.workspaceId != null &&
+                       request.resource.data.userId != null &&
+                       memberId == request.resource.data.workspaceId + '_' + request.resource.data.userId &&
+                       (
+                         // Admin ajoute un membre
+                         (isWorkspaceAdmin(request.resource.data.workspaceId)) ||
+                         // Utilisateur s'ajoute lui-même via invitation (vérifié côté app)
+                         (request.resource.data.userId == request.auth.uid)
+                       );
+      
+      // Mise à jour : seuls les admins peuvent modifier (changer de rôle)
+      allow update: if isAuthenticated() &&
+                       isWorkspaceAdmin(resource.data.workspaceId) &&
+                       request.resource.data.workspaceId == resource.data.workspaceId &&
+                       request.resource.data.userId == resource.data.userId;
+      
+      // Suppression : 
+      // - Admin peut retirer des membres
+      // - OU l'utilisateur peut se retirer lui-même
+      // Note: La vérification du dernier admin doit être faite côté application
+      allow delete: if isAuthenticated() &&
+                       (
+                         isWorkspaceAdmin(resource.data.workspaceId) ||
+                         resource.data.userId == request.auth.uid
+                       );
+    }
+    
+    // ============================================
+    // COLLECTION WORKSPACE INVITATIONS
+    // ============================================
+    
+    match /workspaceInvitations/{invitationId} {
+      // Lecture : 
+      // - Admins du workspace
+      // - OU l'email de l'invitation correspond à l'email de l'utilisateur
+      allow read: if isAuthenticated() && 
+                     (
+                       isWorkspaceAdmin(resource.data.workspaceId) ||
+                       resource.data.email == request.auth.token.email
+                     );
+      
+      // Création : seuls les admins du workspace peuvent inviter
+      allow create: if isAuthenticated() &&
+                       request.resource.data.workspaceId != null &&
+                       isWorkspaceAdmin(request.resource.data.workspaceId) &&
+                       request.resource.data.invitedBy == request.auth.uid &&
+                       request.resource.data.status == 'pending' &&
+                       request.resource.data.email is string &&
+                       request.resource.data.role in ['admin', 'member'];
+      
+      // Mise à jour : 
+      // - Le destinataire peut accepter/refuser (changer status)
+      // - OU les admins peuvent annuler
+      allow update: if isAuthenticated() &&
+                       (
+                         // Destinataire accepte/refuse
+                         (resource.data.email == request.auth.token.email &&
+                          request.resource.data.status in ['accepted', 'declined'] &&
+                          resource.data.status == 'pending') ||
+                         // Admin annule
+                         (isWorkspaceAdmin(resource.data.workspaceId) &&
+                          request.resource.data.status == 'cancelled')
+                       );
+      
+      // Suppression : seuls les admins peuvent supprimer
+      allow delete: if isAuthenticated() && 
+                       isWorkspaceAdmin(resource.data.workspaceId);
+    }
+    
+    // ============================================
+    // COLLECTION SUBSCRIPTIONS
+    // ============================================
+    
+    match /subscriptions/{subscriptionId} {
+      // Lecture : les admins du workspace peuvent lire
+      allow read: if isAuthenticated() && 
+                     resource.data.workspaceId != null &&
+                     isWorkspaceAdmin(resource.data.workspaceId);
       
       // Création/modification : uniquement par les webhooks Stripe (backend)
       // ou Cloud Functions authentifiées
@@ -72,27 +202,43 @@ service cloud.firestore {
       allow delete: if false;
     }
     
-    // Collection userData - Données collectées par les utilisateurs
+    // ============================================
+    // COLLECTION USER DATA
+    // ============================================
+    
     match /userData/{dataId} {
-      // Lecture : l'utilisateur peut lire ses propres données
+      // Lecture : les membres du workspace peuvent lire
       allow read: if isAuthenticated() && 
-                     resource.data.userId == request.auth.uid;
+                     resource.data.workspaceId != null &&
+                     isWorkspaceMember(resource.data.workspaceId);
       
-      // Création : l'utilisateur peut créer ses propres données
+      // Création : les membres du workspace peuvent créer des données
       allow create: if isAuthenticated() && 
-                       request.resource.data.userId == request.auth.uid;
+                       request.resource.data.workspaceId != null &&
+                       isWorkspaceMember(request.resource.data.workspaceId) &&
+                       request.resource.data.createdBy == request.auth.uid;
       
-      // Mise à jour : l'utilisateur peut modifier ses propres données
+      // Mise à jour : les membres du workspace peuvent modifier
       allow update: if isAuthenticated() && 
-                       resource.data.userId == request.auth.uid &&
-                       request.resource.data.userId == request.auth.uid;
+                       resource.data.workspaceId != null &&
+                       isWorkspaceMember(resource.data.workspaceId) &&
+                       request.resource.data.workspaceId == resource.data.workspaceId;
       
-      // Suppression : l'utilisateur peut supprimer ses propres données
+      // Suppression : 
+      // - Admins du workspace
+      // - OU le créateur de la donnée
       allow delete: if isAuthenticated() && 
-                       resource.data.userId == request.auth.uid;
+                       resource.data.workspaceId != null &&
+                       (
+                         isWorkspaceAdmin(resource.data.workspaceId) ||
+                         resource.data.createdBy == request.auth.uid
+                       );
     }
     
-    // Collection auditLogs - Logs d'audit (lecture seule pour les utilisateurs)
+    // ============================================
+    // COLLECTION AUDIT LOGS
+    // ============================================
+    
     match /auditLogs/{logId} {
       // Lecture : l'utilisateur peut lire ses propres logs
       allow read: if isAuthenticated() && 
@@ -102,7 +248,10 @@ service cloud.firestore {
       allow create, update, delete: if false;
     }
     
-    // Collection userSessions - Sessions utilisateur
+    // ============================================
+    // COLLECTION USER SESSIONS
+    // ============================================
+    
     match /userSessions/{sessionId} {
       // Lecture : l'utilisateur peut lire ses propres sessions
       allow read: if isAuthenticated() && 
@@ -120,7 +269,10 @@ service cloud.firestore {
       allow delete: if false;
     }
     
-    // Collection appSettings - Paramètres de l'application (lecture seule)
+    // ============================================
+    // COLLECTION APP SETTINGS
+    // ============================================
+    
     match /appSettings/{settingId} {
       // Lecture : tous les utilisateurs authentifiés
       allow read: if isAuthenticated();
@@ -128,6 +280,10 @@ service cloud.firestore {
       // Création/modification : uniquement par les admins (géré par Cloud Functions)
       allow create, update, delete: if false;
     }
+    
+    // ============================================
+    // RÈGLE PAR DÉFAUT
+    // ============================================
     
     // Règle par défaut : interdire tout accès
     match /{document=**} {
