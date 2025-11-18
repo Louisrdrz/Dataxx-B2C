@@ -63,29 +63,19 @@ const RegisterPage = () => {
       await createOrUpdateUserDocument(userCredential.user, {
         firstName: formData.firstName,
         lastName: formData.lastName,
-        // Stocker les données sportives dans userData après la création
+        // Note: Les données sportives seront stockées dans le workspace après sa création
+        birthDate: formData.birthDate,
+        sport: formData.sport,
+        sportDuration: formData.sportDuration,
+        achievements: formData.achievements,
+        links: formData.links,
+        nextEvent: formData.nextEvent,
+        sponsorType: formData.sponsorType,
+        targetAmount: formData.targetAmount,
       });
       
-      // Stocker les données sportives
-      const { createUserData } = await import("@/lib/firebase/userData");
-      await createUserData(
-        userCredential.user.uid,
-        {
-          birthDate: formData.birthDate,
-          sport: formData.sport,
-          sportDuration: formData.sportDuration,
-          achievements: formData.achievements,
-          links: formData.links,
-          nextEvent: formData.nextEvent,
-          sponsorType: formData.sponsorType,
-          targetAmount: formData.targetAmount,
-        },
-        "registration",
-        ["profile", "sport"]
-      );
-      
-      // Rediriger vers le dashboard
-      router.push("/dashboard");
+      // Rediriger vers l'onboarding pour créer le premier workspace
+      router.push("/onboarding");
     } catch (err: any) {
       console.error("Erreur lors de l'inscription:", err);
       
@@ -113,7 +103,8 @@ const RegisterPage = () => {
     try {
       const userCredential = await signInWithGoogle();
       await createOrUpdateUserDocument(userCredential.user);
-      router.push("/dashboard");
+      // Rediriger vers l'onboarding pour créer le premier workspace
+      router.push("/onboarding");
     } catch (err: any) {
       console.error("Erreur lors de la connexion Google:", err);
       setError("Une erreur est survenue lors de la connexion avec Google");

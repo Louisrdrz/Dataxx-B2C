@@ -20,7 +20,8 @@ const LoginPage = () => {
     
     try {
       await signInWithEmail(email, password);
-      router.push("/dashboard");
+      // Rediriger vers onboarding qui vérifiera si l'utilisateur a un workspace
+      router.push("/onboarding");
     } catch (err: any) {
       console.error("Erreur lors de la connexion:", err);
       
@@ -46,7 +47,8 @@ const LoginPage = () => {
     
     try {
       await signInWithGoogle();
-      router.push("/dashboard");
+      // Rediriger vers onboarding qui vérifiera si l'utilisateur a un workspace
+      router.push("/onboarding");
     } catch (err: any) {
       console.error("Erreur lors de la connexion Google:", err);
       setError("Une erreur est survenue lors de la connexion avec Google");

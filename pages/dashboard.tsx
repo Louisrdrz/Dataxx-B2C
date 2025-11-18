@@ -99,7 +99,25 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
           {/* Quick Actions */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8">
             <h3 className="text-xl font-bold text-secondary mb-4">Actions rapides</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <button
+                onClick={() => router.push('/my-workspaces')}
+                className="flex flex-col items-center justify-center p-6 border-2 border-blue-200 bg-blue-50 rounded-xl hover:border-blue-400 hover:bg-blue-100 transition-all"
+              >
+                <span className="text-3xl mb-2">📁</span>
+                <span className="font-semibold text-secondary">Mes Workspaces</span>
+                <span className="text-sm text-gray-500 mt-1">Gérer mes espaces</span>
+              </button>
+              
+              <button
+                onClick={() => router.push('/google-data')}
+                className="flex flex-col items-center justify-center p-6 border-2 border-green-200 bg-green-50 rounded-xl hover:border-green-400 hover:bg-green-100 transition-all"
+              >
+                <span className="text-3xl mb-2">🔗</span>
+                <span className="font-semibold text-secondary">Données Google</span>
+                <span className="text-sm text-gray-500 mt-1">Importer calendrier/contacts</span>
+              </button>
+              
               <button
                 onClick={() => router.push('/profile')}
                 className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-purple-50 transition-all"
@@ -116,15 +134,6 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
                 <span className="text-3xl mb-2">💳</span>
                 <span className="font-semibold text-secondary">Abonnement</span>
                 <span className="text-sm text-gray-500 mt-1">Gérer mon plan</span>
-              </button>
-              
-              <button
-                onClick={() => router.push('/data')}
-                className="flex flex-col items-center justify-center p-6 border-2 border-gray-200 rounded-xl hover:border-primary hover:bg-purple-50 transition-all"
-              >
-                <span className="text-3xl mb-2">📊</span>
-                <span className="font-semibold text-secondary">Mes Données</span>
-                <span className="text-sm text-gray-500 mt-1">Consulter mes données</span>
               </button>
             </div>
           </div>

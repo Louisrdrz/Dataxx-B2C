@@ -1,7 +1,9 @@
 // Page de démonstration pour afficher les données Google (Calendrier et Contacts)
+// Intégré avec le système de workspaces
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCalendarEvents, useContacts, useCalendarList, useGoogleData } from '@/hooks/useGoogleData';
+import { useUserWorkspaces } from '@/hooks/useWorkspace';
 import { signInWithGoogle } from '@/lib/firebase/auth';
 import { useRouter } from 'next/router';
 
@@ -11,11 +13,21 @@ export default function GoogleDataPage() {
   const { accessToken, hasPermissions, isLoading: permissionsLoading } = useGoogleData();
   
   const [activeTab, setActiveTab] = useState<'calendar' | 'contacts' | 'calendars'>('calendar');
+  const [selectedWorkspace, setSelectedWorkspace] = useState<string>('');
+  const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
   
   // Hooks pour récupérer les données
-  const { events, isLoading: eventsLoading, error: eventsError, refetch: refetchEvents } = useCalendarEvents(20);
-  const { contacts, isLoading: contactsLoading, error: contactsError, refetch: refetchContacts } = useContacts(false);
-  const { calendars, isLoading: calendarsLoading, error: calendarsError, refetch: refetchCalendars } = useCalendarList();
+  const { events, isLoading: eventsLoading, error: eventsError, refetch: refetchEvents, saveToWorkspace: saveEventsToWorkspace } = useCalendarEvents(20);
+  const { contacts, isLoading: contactsLoading, error: contactsError, refetch: refetchContacts, saveToWorkspace: saveContactsToWorkspace } = useContacts(false);
+  const { calendars, isLoading: calendarsLoading, error: calendarsError, refetch: refetchCalendars, saveToWorkspace: saveCalendarsToWorkspace } = useCalendarList();
+  
+  // Récupérer les workspaces de l'utilisateur
+  const { workspaces, loading: workspacesLoading } = useUserWorkspaces(user?.uid || '');
+  
+  // Sélectionner automatiquement le premier workspace
+  if (!selectedWorkspace && workspaces.length > 0 && !workspacesLoading) {
+    setSelectedWorkspace(workspaces[0].id);
+  }
 
   const handleGoogleSignIn = async () => {
     try {
@@ -23,6 +35,34 @@ export default function GoogleDataPage() {
       // Le token sera automatiquement stocké et les données seront récupérées
     } catch (error) {
       console.error('Erreur lors de la connexion Google:', error);
+    }
+  };
+
+  const handleSaveToWorkspace = async (type: 'events' | 'contacts' | 'calendars') => {
+    if (!selectedWorkspace || !user?.uid) {
+      alert('Veuillez sélectionner un workspace');
+      return;
+    }
+
+    try {
+      setSaveSuccess(null);
+      let dataId: string;
+      
+      if (type === 'events') {
+        dataId = await saveEventsToWorkspace(selectedWorkspace, user.uid);
+        setSaveSuccess(`${events.length} événement(s) sauvegardé(s) dans le workspace !`);
+      } else if (type === 'contacts') {
+        dataId = await saveContactsToWorkspace(selectedWorkspace, user.uid);
+        setSaveSuccess(`${contacts.length} contact(s) sauvegardé(s) dans le workspace !`);
+      } else {
+        dataId = await saveCalendarsToWorkspace(selectedWorkspace, user.uid);
+        setSaveSuccess(`${calendars.length} calendrier(s) sauvegardé(s) dans le workspace !`);
+      }
+      
+      // Effacer le message après 5 secondes
+      setTimeout(() => setSaveSuccess(null), 5000);
+    } catch (error: any) {
+      alert('Erreur lors de la sauvegarde : ' + error.message);
     }
   };
 
@@ -125,6 +165,33 @@ export default function GoogleDataPage() {
               Retour
             </button>
           </div>
+
+          {/* Sélection du workspace */}
+          {workspaces.length > 0 && (
+            <div className="mt-4 flex items-center gap-4">
+              <label className="text-sm font-medium text-gray-700">
+                Workspace pour sauvegarder :
+              </label>
+              <select
+                value={selectedWorkspace}
+                onChange={(e) => setSelectedWorkspace(e.target.value)}
+                className="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {workspaces.map((workspace) => (
+                  <option key={workspace.id} value={workspace.id}>
+                    {workspace.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Message de succès */}
+          {saveSuccess && (
+            <div className="mt-4 bg-green-50 text-green-700 p-3 rounded-lg">
+              ✅ {saveSuccess}
+            </div>
+          )}
         </div>
 
         {/* Tabs */}
@@ -172,13 +239,23 @@ export default function GoogleDataPage() {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">Événements à venir</h2>
-                <button
-                  onClick={refetchEvents}
-                  disabled={eventsLoading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-                >
-                  {eventsLoading ? 'Chargement...' : 'Actualiser'}
-                </button>
+                <div className="flex gap-2">
+                  {selectedWorkspace && events.length > 0 && (
+                    <button
+                      onClick={() => handleSaveToWorkspace('events')}
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      💾 Sauvegarder dans workspace
+                    </button>
+                  )}
+                  <button
+                    onClick={refetchEvents}
+                    disabled={eventsLoading}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                  >
+                    {eventsLoading ? 'Chargement...' : 'Actualiser'}
+                  </button>
+                </div>
               </div>
 
               {eventsError && (
@@ -227,13 +304,23 @@ export default function GoogleDataPage() {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">Mes calendriers</h2>
-                <button
-                  onClick={refetchCalendars}
-                  disabled={calendarsLoading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-                >
-                  {calendarsLoading ? 'Chargement...' : 'Actualiser'}
-                </button>
+                <div className="flex gap-2">
+                  {selectedWorkspace && calendars.length > 0 && (
+                    <button
+                      onClick={() => handleSaveToWorkspace('calendars')}
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      💾 Sauvegarder dans workspace
+                    </button>
+                  )}
+                  <button
+                    onClick={refetchCalendars}
+                    disabled={calendarsLoading}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                  >
+                    {calendarsLoading ? 'Chargement...' : 'Actualiser'}
+                  </button>
+                </div>
               </div>
 
               {calendarsError && (
@@ -277,13 +364,23 @@ export default function GoogleDataPage() {
             <div>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-gray-900">Mes contacts</h2>
-                <button
-                  onClick={refetchContacts}
-                  disabled={contactsLoading}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-                >
-                  {contactsLoading ? 'Chargement...' : 'Actualiser'}
-                </button>
+                <div className="flex gap-2">
+                  {selectedWorkspace && contacts.length > 0 && (
+                    <button
+                      onClick={() => handleSaveToWorkspace('contacts')}
+                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                      💾 Sauvegarder dans workspace
+                    </button>
+                  )}
+                  <button
+                    onClick={refetchContacts}
+                    disabled={contactsLoading}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                  >
+                    {contactsLoading ? 'Chargement...' : 'Actualiser'}
+                  </button>
+                </div>
               </div>
 
               {contactsError && (

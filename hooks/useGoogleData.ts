@@ -1,4 +1,5 @@
 // Hook personnalisé pour utiliser les APIs Google (Calendrier et Contacts)
+// Intégré avec le système de workspaces
 import { useState, useEffect } from 'react';
 import { getGoogleAccessToken } from '@/lib/firebase/auth';
 import {
@@ -12,6 +13,7 @@ import {
   CalendarEvent,
   Contact,
 } from '@/lib/firebase/googleApis';
+import { createUserData } from '@/lib/firebase/userData';
 
 export const useGoogleData = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -62,6 +64,31 @@ export const useCalendarEvents = (maxResults: number = 50) => {
     }
   };
 
+  /**
+   * Sauvegarder les événements dans un workspace
+   */
+  const saveToWorkspace = async (workspaceId: string, userId: string) => {
+    try {
+      const formattedEvents = events.map(formatCalendarEvent);
+      const dataId = await createUserData(
+        workspaceId,
+        userId,
+        {
+          source: 'google_calendar',
+          events: formattedEvents,
+          totalEvents: formattedEvents.length,
+          importedAt: new Date().toISOString(),
+        },
+        'google_calendar',
+        ['google', 'calendar', 'events']
+      );
+      return dataId;
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde dans le workspace:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (accessToken && hasPermissions) {
       fetchEvents();
@@ -75,6 +102,7 @@ export const useCalendarEvents = (maxResults: number = 50) => {
     isLoading,
     error,
     refetch: fetchEvents,
+    saveToWorkspace,
   };
 };
 
@@ -106,6 +134,31 @@ export const useContacts = (fetchAll: boolean = false) => {
     }
   };
 
+  /**
+   * Sauvegarder les contacts dans un workspace
+   */
+  const saveToWorkspace = async (workspaceId: string, userId: string) => {
+    try {
+      const formattedContacts = contacts.map(formatContact);
+      const dataId = await createUserData(
+        workspaceId,
+        userId,
+        {
+          source: 'google_contacts',
+          contacts: formattedContacts,
+          totalContacts: formattedContacts.length,
+          importedAt: new Date().toISOString(),
+        },
+        'google_contacts',
+        ['google', 'contacts', 'people']
+      );
+      return dataId;
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde dans le workspace:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (accessToken && hasPermissions) {
       fetchContacts();
@@ -119,6 +172,7 @@ export const useContacts = (fetchAll: boolean = false) => {
     isLoading,
     error,
     refetch: fetchContacts,
+    saveToWorkspace,
   };
 };
 
@@ -148,6 +202,30 @@ export const useCalendarList = () => {
     }
   };
 
+  /**
+   * Sauvegarder la liste des calendriers dans un workspace
+   */
+  const saveToWorkspace = async (workspaceId: string, userId: string) => {
+    try {
+      const dataId = await createUserData(
+        workspaceId,
+        userId,
+        {
+          source: 'google_calendars',
+          calendars: calendars,
+          totalCalendars: calendars.length,
+          importedAt: new Date().toISOString(),
+        },
+        'google_calendars',
+        ['google', 'calendar', 'list']
+      );
+      return dataId;
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde dans le workspace:', error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if (accessToken && hasPermissions) {
       fetchCalendars();
@@ -159,5 +237,6 @@ export const useCalendarList = () => {
     isLoading,
     error,
     refetch: fetchCalendars,
+    saveToWorkspace,
   };
 };

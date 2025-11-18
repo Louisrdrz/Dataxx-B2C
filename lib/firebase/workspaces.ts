@@ -37,20 +37,26 @@ export async function createWorkspace(
     const workspaceRef = doc(collection(db, 'workspaces'));
     const workspaceId = workspaceRef.id;
     
-    const workspace: Omit<Workspace, 'id'> = {
+    const workspace: any = {
       name: workspaceData.name,
-      description: workspaceData.description,
       type: workspaceData.type || 'personal',
       ownerId: userId,
-      createdAt: serverTimestamp() as Timestamp,
-      updatedAt: serverTimestamp() as Timestamp,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
       settings: {
         allowMemberInvite: false,
         visibility: 'private'
       },
-      memberCount: 1,
-      logoURL: workspaceData.logoURL
+      memberCount: 1
     };
+    
+    // Ajouter les champs optionnels seulement s'ils sont définis
+    if (workspaceData.description) {
+      workspace.description = workspaceData.description;
+    }
+    if (workspaceData.logoURL) {
+      workspace.logoURL = workspaceData.logoURL;
+    }
     
     batch.set(workspaceRef, workspace);
     
