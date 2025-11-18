@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { createWorkspace } from '@/lib/firebase/workspaces';
+import { createWorkspace, updateWorkspace } from '@/lib/firebase/workspaces';
 import { useRouter } from 'next/router';
+import DeckUploader from '@/components/DeckUploader';
+import { ExtractedWorkspaceData } from '@/lib/openai/deckAnalyzer';
+import { Timestamp } from 'firebase/firestore';
 
 export default function CreateWorkspacePage() {
   const { firebaseUser } = useAuth();
@@ -11,6 +14,29 @@ export default function CreateWorkspacePage() {
   const [type, setType] = useState<'personal' | 'club' | 'athlete' | 'other'>('personal');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showUploader, setShowUploader] = useState(false);
+  const [extractedData, setExtractedData] = useState<ExtractedWorkspaceData & { 
+    fileURL?: string; 
+    fileName?: string;
+    fileSize?: number;
+  } | null>(null);
+
+  const handleDataExtracted = (data: ExtractedWorkspaceData & { 
+    fileURL?: string; 
+    fileName?: string;
+    fileSize?: number;
+  }) => {
+    setExtractedData(data);
+    
+    // Pré-remplir le formulaire avec les données extraites
+    if (data.name) setName(data.name);
+    if (data.description) setDescription(data.description);
+    if (data.type) setType(data.type);
+    
+    // Fermer l'uploader et afficher le formulaire pré-rempli
+    setShowUploader(false);
+    setError('');
+  };
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,11 +55,53 @@ export default function CreateWorkspacePage() {
     setError('');
 
     try {
+      // Créer le workspace de base
       const workspaceId = await createWorkspace(firebaseUser.uid, {
         name: name.trim(),
         description: description.trim() || undefined,
         type,
       });
+
+      // Si on a des données extraites, mettre à jour le workspace
+      if (extractedData) {
+        // Fonction pour nettoyer les valeurs undefined
+        const cleanObject = (obj: any): any => {
+          if (obj === null || obj === undefined) return null;
+          if (typeof obj !== 'object') return obj;
+          if (Array.isArray(obj)) return obj.filter(item => item !== undefined).map(cleanObject);
+          
+          const cleaned: any = {};
+          for (const [key, value] of Object.entries(obj)) {
+            if (value !== undefined) {
+              cleaned[key] = cleanObject(value);
+            }
+          }
+          return cleaned;
+        };
+
+        const updateData: any = {};
+
+        // Ajouter enrichedData si disponible
+        if (extractedData.enrichedData) {
+          updateData.enrichedData = cleanObject(extractedData.enrichedData);
+        }
+
+        // Ajouter les infos du document si disponibles
+        if (extractedData.fileURL) {
+          updateData.deckDocument = {
+            url: extractedData.fileURL,
+            fileName: extractedData.fileName || 'deck.pdf',
+            fileSize: extractedData.fileSize || 0,
+            mimeType: 'application/pdf',
+            uploadedAt: Timestamp.now(),
+            uploadedBy: firebaseUser.uid,
+          };
+        }
+
+        console.log('Mise à jour du workspace avec:', updateData);
+        await updateWorkspace(workspaceId, updateData);
+        console.log('Workspace mis à jour avec succès');
+      }
 
       alert(`✅ Workspace créé avec succès ! Vous êtes maintenant admin de "${name}"`);
       
@@ -105,6 +173,60 @@ export default function CreateWorkspacePage() {
                 </p>
               </div>
             </div>
+          </div>
+
+          {/* Option d'upload de deck */}
+          <div className="mb-8">
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <button
+                type="button"
+                onClick={() => setShowUploader(false)}
+                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 ${
+                  !showUploader
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                Saisie manuelle
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowUploader(true)}
+                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 ${
+                  showUploader
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Upload deck avec IA
+              </button>
+            </div>
+
+            {showUploader && (
+              <div className="animate-in fade-in slide-in-from-top-4 duration-300">
+                <DeckUploader
+                  userId={firebaseUser.uid}
+                  onDataExtracted={handleDataExtracted}
+                  onError={setError}
+                />
+                {extractedData && (
+                  <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                    <div className="flex items-center gap-2 text-green-800 font-semibold mb-2">
+                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Données extraites avec succès !
+                    </div>
+                    <p className="text-sm text-green-700">
+                      Le formulaire ci-dessous a été pré-rempli. Vous pouvez modifier les informations avant de créer le workspace.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           
           <form onSubmit={handleCreate} className="space-y-8">

@@ -1,0 +1,39 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Règles pour les uploads de deck commercial dans les workspaces
+    match /workspaces/{workspaceId}/decks/{fileName} {
+      // Lecture : autorisée pour tous les utilisateurs authentifiés
+      allow read: if request.auth != null;
+      
+      // Écriture : autorisée pour les utilisateurs authentifiés
+      // Permet les uploads temporaires (workspaceId commence par "temp_")
+      // ou les uploads normaux avec validation de taille
+      allow write: if request.auth != null
+                   && request.resource.size < 50 * 1024 * 1024  // Max 50 MB
+                   && (
+                     // Permet les uploads temporaires
+                     workspaceId.matches('temp_.*')
+                     // Ou uploads dans un workspace réel avec type MIME valide
+                     || request.resource.contentType.matches('application/pdf|application/vnd.openxmlformats-officedocument.*')
+                   );
+      
+      // Suppression : autorisée pour les utilisateurs authentifiés
+      allow delete: if request.auth != null;
+    }
+    
+    // Autres fichiers (logos, avatars, etc.)
+    match /workspaces/{workspaceId}/{allPaths=**} {
+      // Permet lecture et écriture pour utilisateurs authentifiés
+      allow read: if request.auth != null;
+      allow write: if request.auth != null 
+                   && request.resource.size < 10 * 1024 * 1024; // Max 10 MB pour autres fichiers
+    }
+    
+    // Par défaut, refuser tout accès
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

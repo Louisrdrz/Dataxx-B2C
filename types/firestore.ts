@@ -62,6 +62,67 @@ export interface Workspace {
   
   // Image du workspace
   logoURL?: string;
+  
+  // Données enrichies extraites du deck commercial
+  enrichedData?: {
+    // Palmarès (titres, récompenses, victoires)
+    achievements?: string[];
+    
+    // Sponsors et partenaires
+    sponsors?: Array<{
+      name: string;
+      type?: 'title' | 'official' | 'technical' | 'media' | 'other';
+      logo?: string;
+    }>;
+    
+    // Statistiques clés
+    statistics?: {
+      [key: string]: string | number; // Ex: "founded": 1970, "members": 50000
+    };
+    
+    // Historique important
+    history?: string[];
+    
+    // Valeurs et mission
+    values?: string[];
+    mission?: string;
+    
+    // Informations athlète spécifiques
+    athleteInfo?: {
+      sport?: string;
+      position?: string;
+      birthDate?: string;
+      nationality?: string;
+      height?: string;
+      weight?: string;
+      currentTeam?: string;
+    };
+    
+    // Informations club spécifiques
+    clubInfo?: {
+      sport?: string;
+      founded?: number;
+      stadium?: string;
+      capacity?: number;
+      league?: string;
+      colors?: string[];
+    };
+    
+    // Autres informations extraites
+    customData?: {
+      [key: string]: any;
+    };
+  };
+  
+  // Document uploadé
+  deckDocument?: {
+    url: string; // URL du fichier dans Firebase Storage
+    fileName: string;
+    fileSize: number;
+    mimeType: string;
+    uploadedAt: Timestamp;
+    uploadedBy: string; // UID de l'utilisateur qui a uploadé
+  };
 }
 
 // Type pour les membres d'un workspace
