@@ -103,6 +103,18 @@
   h2 { @apply font-bold tracking-tight leading-tight; }
   h3 { @apply text-slate-900 font-semibold tracking-tight; }
   p { @apply text-slate-600; }
+  
+  /* Assure que le texte saisi dans les formulaires est noir et bien visible */
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
+    color: #000000 !important;
+  }
+  
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af !important; /* gray-400 pour les placeholders */
+  }
 }
 
 @layer components {
