@@ -1,6 +1,9 @@
 // Types pour Firestore
 import { Timestamp } from 'firebase/firestore';
 
+// Type pour les rôles dans les workspaces
+export type WorkspaceRole = 'admin' | 'member';
+
 // Type pour les informations utilisateur
 export interface User {
   uid: string;
@@ -28,14 +31,91 @@ export interface User {
     push: boolean;
   };
   
-  // Lien vers l'abonnement actif
-  activeSubscriptionId?: string;
+  // Workspace par défaut (le dernier workspace utilisé)
+  defaultWorkspaceId?: string;
 }
 
-// Type pour les abonnements Stripe
+// Type pour les workspaces
+export interface Workspace {
+  id: string; // ID unique du workspace
+  name: string; // Nom du workspace (ex: "TFC Masculin", "Mbappé")
+  description?: string; // Description optionnelle
+  
+  // Propriétaire initial (le créateur)
+  ownerId: string; // UID du créateur
+  
+  // Type de workspace
+  type?: 'club' | 'athlete' | 'personal' | 'other';
+  
+  // Métadonnées
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  
+  // Paramètres du workspace
+  settings?: {
+    allowMemberInvite?: boolean; // Les membres peuvent-ils inviter d'autres membres
+    visibility?: 'private' | 'public'; // Visibilité du workspace
+  };
+  
+  // Statistiques
+  memberCount?: number; // Nombre de membres
+  
+  // Image du workspace
+  logoURL?: string;
+}
+
+// Type pour les membres d'un workspace
+export interface WorkspaceMember {
+  id: string; // Format: {workspaceId}_{userId}
+  workspaceId: string; // Référence au workspace
+  userId: string; // Référence à l'utilisateur
+  
+  // Rôle dans le workspace
+  role: WorkspaceRole; // 'admin' ou 'member'
+  
+  // Métadonnées
+  joinedAt: Timestamp; // Date d'adhésion au workspace
+  invitedBy?: string; // UID de l'utilisateur qui a invité
+  
+  // Informations utilisateur dénormalisées (pour performance)
+  userEmail?: string;
+  userDisplayName?: string;
+  userPhotoURL?: string;
+}
+
+// Type pour les invitations à un workspace
+export interface WorkspaceInvitation {
+  id: string; // ID unique de l'invitation
+  workspaceId: string; // Référence au workspace
+  
+  // Destinataire
+  email: string; // Email de la personne invitée
+  
+  // Inviteur
+  invitedBy: string; // UID de l'utilisateur qui a invité
+  invitedByName?: string; // Nom de l'inviteur (dénormalisé)
+  
+  // Rôle proposé
+  role: WorkspaceRole; // 'admin' ou 'member'
+  
+  // Statut de l'invitation
+  status: 'pending' | 'accepted' | 'declined' | 'expired' | 'cancelled';
+  
+  // Dates
+  createdAt: Timestamp;
+  expiresAt: Timestamp; // L'invitation expire après 7 jours
+  respondedAt?: Timestamp; // Date de réponse (accepté/refusé)
+  
+  // Informations du workspace (dénormalisées)
+  workspaceName?: string;
+  workspaceLogoURL?: string;
+}
+
+// Type pour les abonnements Stripe (modifié pour workspaces)
 export interface Subscription {
   id: string; // ID de la souscription
-  userId: string; // Référence à l'utilisateur
+  workspaceId: string; // Référence au workspace (modifié: anciennement userId)
+  managedBy: string; // UID de l'admin qui gère la facturation
   
   // Informations Stripe
   stripeCustomerId: string;
@@ -51,6 +131,9 @@ export interface Subscription {
   planInterval: 'month' | 'year';
   amount: number; // Montant en centimes
   currency: string; // Ex: "eur"
+  
+  // Limites du plan
+  maxMembers?: number; // Nombre maximum de membres dans le workspace
   
   // Dates importantes
   currentPeriodStart: Timestamp;
@@ -70,9 +153,11 @@ export interface Subscription {
 }
 
 // Type pour les données utilisateur (informations collectées au fil de l'utilisation)
+// Modifié: maintenant lié au workspace au lieu de l'utilisateur individuel
 export interface UserData {
   id: string;
-  userId: string; // Référence à l'utilisateur
+  workspaceId: string; // Référence au workspace (modifié: anciennement userId)
+  createdBy: string; // UID de l'utilisateur qui a créé cette donnée
   
   // Données métier - adaptez selon vos besoins
   dataCollected: {
@@ -82,6 +167,7 @@ export interface UserData {
   // Métadonnées
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  updatedBy?: string; // UID de l'utilisateur qui a fait la dernière modification
   
   // Catégorisation des données (optionnel)
   category?: string;
