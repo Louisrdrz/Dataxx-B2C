@@ -1,16 +1,20 @@
 // Hook React pour gérer les abonnements
 import { useEffect, useState } from 'react';
 import { Subscription } from '@/types/firestore';
-import { getActiveSubscription, getUserSubscriptions } from '@/lib/firebase/subscriptions';
+import { getActiveSubscription, getWorkspaceSubscriptions } from '@/lib/firebase/subscriptions';
 
-export const useSubscription = (userId: string | undefined) => {
+/**
+ * Hook pour gérer l'abonnement d'un workspace
+ * @param workspaceId - ID du workspace pour lequel récupérer l'abonnement
+ */
+export const useSubscription = (workspaceId: string | undefined) => {
   const [activeSubscription, setActiveSubscription] = useState<Subscription | null>(null);
   const [allSubscriptions, setAllSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
-    if (!userId) {
+    if (!workspaceId) {
       setActiveSubscription(null);
       setAllSubscriptions([]);
       setLoading(false);
@@ -23,8 +27,8 @@ export const useSubscription = (userId: string | undefined) => {
 
       try {
         const [active, all] = await Promise.all([
-          getActiveSubscription(userId),
-          getUserSubscriptions(userId),
+          getActiveSubscription(workspaceId),
+          getWorkspaceSubscriptions(workspaceId),
         ]);
 
         setActiveSubscription(active);
@@ -38,15 +42,18 @@ export const useSubscription = (userId: string | undefined) => {
     };
 
     fetchSubscriptions();
-  }, [userId]);
+  }, [workspaceId]);
 
   return {
     activeSubscription,
     allSubscriptions,
     loading,
     error,
-    hasActiveSubscription: !!activeSubscription,
+    hasActiveSubscription: !!activeSubscription && 
+      (activeSubscription.status === 'active' || activeSubscription.status === 'trialing'),
+    isBasic: activeSubscription?.planName === 'Basic',
     isPro: activeSubscription?.planName === 'Pro',
-    isEnterprise: activeSubscription?.planName === 'Enterprise',
+    isTrialing: activeSubscription?.status === 'trialing',
+    maxMembers: activeSubscription?.maxMembers || 1,
   };
 };
