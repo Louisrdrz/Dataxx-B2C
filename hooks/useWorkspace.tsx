@@ -24,7 +24,7 @@ const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefin
  * Provider pour le contexte workspace
  */
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { firebaseUser: user } = useAuth();
   const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(null);
   const [userWorkspaces, setUserWorkspaces] = useState<Workspace[]>([]);
   const [userRole, setUserRole] = useState<'admin' | 'member' | null>(null);
@@ -192,6 +192,8 @@ export function useUserWorkspaces(userId: string | undefined) {
     setIsLoading(true);
     setError(null);
 
+    let workspaceUnsubscribers: (() => void)[] = [];
+
     // ⚡ ÉCOUTE EN TEMPS RÉEL des changements dans workspaceMembers
     const unsubscribeMembers = onSnapshot(
       query(
@@ -199,64 +201,65 @@ export function useUserWorkspaces(userId: string | undefined) {
         where('userId', '==', userId),
         orderBy('joinedAt', 'desc')
       ),
-      async (membersSnapshot) => {
-        try {
-          const workspaceIds = membersSnapshot.docs.map(doc => doc.data().workspaceId);
+      (membersSnapshot) => {
+        // Nettoyer les anciens listeners de workspaces
+        workspaceUnsubscribers.forEach(unsub => unsub());
+        workspaceUnsubscribers = [];
+
+        const workspaceIds = membersSnapshot.docs.map(doc => doc.data().workspaceId);
+        
+        console.log('useUserWorkspaces - IDs trouvés:', workspaceIds);
+        
+        if (workspaceIds.length === 0) {
+          setWorkspaces([]);
+          setIsLoading(false);
+          return;
+        }
+
+        const workspacesMap = new Map<string, Workspace>();
+        let loadedCount = 0;
+
+        // Fonction pour mettre à jour l'état avec les workspaces actuels
+        const updateWorkspaces = () => {
+          const sortedWorkspaces = Array.from(workspacesMap.values())
+            .sort((a, b) => {
+              const aIndex = workspaceIds.indexOf(a.id);
+              const bIndex = workspaceIds.indexOf(b.id);
+              return aIndex - bIndex;
+            });
+          console.log('useUserWorkspaces - Mise à jour:', sortedWorkspaces.length, 'workspaces');
+          setWorkspaces(sortedWorkspaces);
           
-          if (workspaceIds.length === 0) {
-            setWorkspaces([]);
+          // Marquer comme chargé une fois qu'on a au moins récupéré le premier workspace
+          if (loadedCount >= workspaceIds.length) {
             setIsLoading(false);
-            return;
           }
+        };
 
-          // Créer des listeners pour chaque workspace
-          const workspaceUnsubscribers: (() => void)[] = [];
-          const workspacesMap = new Map<string, Workspace>();
-
-          // Fonction pour mettre à jour l'état avec les workspaces actuels
-          const updateWorkspaces = () => {
-            const sortedWorkspaces = Array.from(workspacesMap.values())
-              .sort((a, b) => {
-                const aIndex = workspaceIds.indexOf(a.id);
-                const bIndex = workspaceIds.indexOf(b.id);
-                return aIndex - bIndex;
-              });
-            setWorkspaces(sortedWorkspaces);
-          };
-
-          // ⚡ Écouter chaque workspace individuellement
-          for (const workspaceId of workspaceIds) {
-            const workspaceRef = doc(db, 'workspaces', workspaceId);
-            const unsubWorkspace = onSnapshot(
-              workspaceRef,
-              (workspaceDoc) => {
-                if (workspaceDoc.exists()) {
-                  workspacesMap.set(workspaceId, {
-                    id: workspaceDoc.id,
-                    ...workspaceDoc.data()
-                  } as Workspace);
-                } else {
-                  workspacesMap.delete(workspaceId);
-                }
-                updateWorkspaces();
-              },
-              (err) => {
-                console.error(`Erreur listener workspace ${workspaceId}:`, err);
+        // ⚡ Écouter chaque workspace individuellement
+        for (const workspaceId of workspaceIds) {
+          const workspaceRef = doc(db, 'workspaces', workspaceId);
+          const unsubWorkspace = onSnapshot(
+            workspaceRef,
+            (workspaceDoc) => {
+              if (workspaceDoc.exists()) {
+                workspacesMap.set(workspaceId, {
+                  id: workspaceDoc.id,
+                  ...workspaceDoc.data()
+                } as Workspace);
+                loadedCount++;
+              } else {
+                workspacesMap.delete(workspaceId);
               }
-            );
-            workspaceUnsubscribers.push(unsubWorkspace);
-          }
-
-          setIsLoading(false);
-
-          // Cleanup des listeners de workspaces lors du changement de liste
-          return () => {
-            workspaceUnsubscribers.forEach(unsub => unsub());
-          };
-        } catch (err) {
-          console.error('Erreur lors de la récupération des workspaces:', err);
-          setError('Impossible de charger les workspaces');
-          setIsLoading(false);
+              updateWorkspaces();
+            },
+            (err) => {
+              console.error(`Erreur listener workspace ${workspaceId}:`, err);
+              loadedCount++;
+              updateWorkspaces();
+            }
+          );
+          workspaceUnsubscribers.push(unsubWorkspace);
         }
       },
       (err) => {
@@ -266,9 +269,10 @@ export function useUserWorkspaces(userId: string | undefined) {
       }
     );
 
-    // Cleanup du listener principal
+    // Cleanup de tous les listeners
     return () => {
       unsubscribeMembers();
+      workspaceUnsubscribers.forEach(unsub => unsub());
     };
   }, [userId]);
 

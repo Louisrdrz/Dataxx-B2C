@@ -31,6 +31,15 @@ export interface User {
     push: boolean;
   };
   
+  // Informations sportives (optionnelles - à remplir dans le profil)
+  sport?: string; // Sport pratiqué
+  sportDuration?: string; // Depuis combien de temps
+  achievements?: string; // Palmarès
+  links?: string; // Liens utiles (réseaux sociaux, site web, etc.)
+  nextEvent?: string; // Prochaine échéance sportive
+  sponsorType?: string; // Type de sponsors recherchés
+  targetAmount?: string; // Montant cible recherché
+  
   // Workspace par défaut (le dernier workspace utilisé)
   defaultWorkspaceId?: string;
 }

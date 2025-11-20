@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { User as FirebaseUser } from 'firebase/auth';
 import { User } from '@/types/firestore';
 import { useUserWorkspaces } from '@/hooks/useWorkspace';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface DashboardProps {
   user: FirebaseUser;
@@ -16,6 +16,11 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
   const router = useRouter();
   const { workspaces, isLoading: workspacesLoading } = useUserWorkspaces(user?.uid);
   const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
+  
+  // Debug: afficher les workspaces chargés
+  useEffect(() => {
+    console.log('Dashboard - workspaces chargés:', workspaces.length, workspaces);
+  }, [workspaces]);
   
   // Trouver le workspace actif (celui par défaut ou le premier)
   const currentWorkspace = workspaces.find(w => w.id === userData?.defaultWorkspaceId) || workspaces[0];
@@ -181,19 +186,19 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-200 p-6 hover:shadow-xl transition-all duration-300 group">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Statut du compte</h3>
+                <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Statut du compte</h3>
                 <div className="p-2 bg-green-100 rounded-xl group-hover:scale-110 transition-transform duration-200">
                   <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
               </div>
-              <p className="text-3xl font-bold text-green-700">Actif</p>
+              <p className="text-2xl font-bold text-green-700">Actif</p>
             </div>
 
             <div className={`rounded-2xl shadow-lg border p-6 hover:shadow-xl transition-all duration-300 group ${user.emailVerified ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200' : 'bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200'}`}>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Email vérifié</h3>
+                <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Email vérifié</h3>
                 <div className={`p-2 rounded-xl group-hover:scale-110 transition-transform duration-200 ${user.emailVerified ? 'bg-green-100' : 'bg-amber-100'}`}>
                   {user.emailVerified ? (
                     <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,21 +211,21 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
                   )}
                 </div>
               </div>
-              <p className={`text-3xl font-bold ${user.emailVerified ? 'text-green-700' : 'text-amber-700'}`}>
+              <p className={`text-2xl font-bold ${user.emailVerified ? 'text-green-700' : 'text-amber-700'}`}>
                 {user.emailVerified ? 'Oui' : 'Non'}
               </p>
             </div>
 
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl shadow-lg border border-blue-200 p-6 hover:shadow-xl transition-all duration-300 group">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Langue</h3>
+                <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Langue</h3>
                 <div className="p-2 bg-blue-100 rounded-xl group-hover:scale-110 transition-transform duration-200">
                   <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                   </svg>
                 </div>
               </div>
-              <p className="text-3xl font-bold text-blue-700">
+              <p className="text-2xl font-bold text-blue-700">
                 {userData?.language === 'fr' ? 'Français' : 'English'}
               </p>
             </div>
@@ -228,8 +233,8 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
 
           {/* Quick Actions */}
           <div className="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-slate-200 p-8 mb-8">
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">Actions rapides</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-6">Actions rapides</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               <button
                 onClick={() => router.push('/my-workspaces')}
                 className="group relative overflow-hidden flex flex-col items-center justify-center p-8 bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
@@ -243,22 +248,6 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
                   </div>
                   <span className="font-bold text-slate-800 text-lg">Mes Workspaces</span>
                   <p className="text-sm text-slate-600 mt-2">Gérer mes espaces</p>
-                </div>
-              </button>
-              
-              <button
-                onClick={() => router.push('/google-data')}
-                className="group relative overflow-hidden flex flex-col items-center justify-center p-8 bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-green-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                <div className="relative z-10">
-                  <div className="p-3 bg-emerald-100 rounded-2xl mb-3 group-hover:scale-110 transition-transform duration-300">
-                    <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                    </svg>
-                  </div>
-                  <span className="font-bold text-slate-800 text-lg">Données Google</span>
-                  <p className="text-sm text-slate-600 mt-2">Importer calendrier/contacts</p>
                 </div>
               </button>
               

@@ -8,7 +8,7 @@ import Head from 'next/head';
 export default function OnboardingPage() {
   const { firebaseUser, loading: authLoading } = useAuth();
   const router = useRouter();
-  const { workspaces, loading: workspacesLoading } = useUserWorkspaces(firebaseUser?.uid || '');
+  const { workspaces, isLoading: workspacesLoading } = useUserWorkspaces(firebaseUser?.uid || '');
   
   const [step, setStep] = useState<'check' | 'create' | 'complete'>('check');
   const [workspaceName, setWorkspaceName] = useState('');
@@ -19,17 +19,21 @@ export default function OnboardingPage() {
   // Vérifier si l'utilisateur a déjà un workspace
   useEffect(() => {
     if (!authLoading && !workspacesLoading && firebaseUser) {
-      if (workspaces.length > 0) {
+      console.log('Onboarding - Vérification workspaces:', workspaces.length);
+      
+      if (workspaces.length > 0 && step === 'check') {
         // L'utilisateur a déjà un workspace, rediriger vers le dashboard
+        console.log('Redirection vers dashboard - workspaces existants');
         router.push('/dashboard');
-      } else {
+      } else if (step === 'check') {
         // Aucun workspace, montrer le formulaire de création
+        console.log('Pas de workspace - affichage du formulaire');
         setStep('create');
         // Suggérer un nom par défaut
         setWorkspaceName(`Workspace de ${firebaseUser.displayName || 'Utilisateur'}`);
       }
     }
-  }, [authLoading, workspacesLoading, firebaseUser, workspaces, router]);
+  }, [authLoading, workspacesLoading, firebaseUser, workspaces, router, step]);
 
   const handleCreateWorkspace = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,18 +47,20 @@ export default function OnboardingPage() {
     setError('');
 
     try {
-      await createWorkspace(firebaseUser.uid, {
+      const workspaceId = await createWorkspace(firebaseUser.uid, {
         name: workspaceName.trim(),
         type: workspaceType,
         description: 'Mon premier workspace Dataxx'
       });
 
+      console.log('Workspace créé avec succès:', workspaceId);
       setStep('complete');
       
-      // Rediriger vers le dashboard après 2 secondes avec rechargement complet
+      // Attendre un peu pour que Firestore propage les changements
+      // puis rediriger vers le dashboard
       setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 2000);
+        router.push('/dashboard');
+      }, 1500);
     } catch (err: any) {
       console.error('Erreur création workspace:', err);
       setError(err.message || 'Erreur lors de la création du workspace');

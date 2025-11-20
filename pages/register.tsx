@@ -17,13 +17,6 @@ const RegisterPage = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    sport: "",
-    sportDuration: "",
-    achievements: "",
-    links: "",
-    nextEvent: "",
-    sponsorType: "",
-    targetAmount: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -63,15 +56,6 @@ const RegisterPage = () => {
       await createOrUpdateUserDocument(userCredential.user, {
         firstName: formData.firstName,
         lastName: formData.lastName,
-        // Note: Les données sportives seront stockées dans le workspace après sa création
-        birthDate: formData.birthDate,
-        sport: formData.sport,
-        sportDuration: formData.sportDuration,
-        achievements: formData.achievements,
-        links: formData.links,
-        nextEvent: formData.nextEvent,
-        sponsorType: formData.sponsorType,
-        targetAmount: formData.targetAmount,
       });
       
       // Rediriger vers l'onboarding pour créer le premier workspace
@@ -279,129 +263,6 @@ const RegisterPage = () => {
                       placeholder="••••••••"
                     />
                   </div>
-                </div>
-
-                {/* Divider */}
-                <div className="border-t border-gray-200 my-6"></div>
-                <h3 className="text-lg font-semibold text-secondary mb-4">Informations sportives</h3>
-
-                {/* Row: Sport & Durée */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="sport" className="block text-sm font-medium text-gray-700 mb-2">
-                      Sport pratiqué *
-                    </label>
-                    <input
-                      type="text"
-                      id="sport"
-                      name="sport"
-                      value={formData.sport}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                      placeholder="Ex: Tennis, Football, Natation..."
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="sportDuration" className="block text-sm font-medium text-gray-700 mb-2">
-                      Depuis combien de temps *
-                    </label>
-                    <input
-                      type="text"
-                      id="sportDuration"
-                      name="sportDuration"
-                      value={formData.sportDuration}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                      placeholder="Ex: 5 ans, 10 ans..."
-                    />
-                  </div>
-                </div>
-
-                {/* Palmarès */}
-                <div>
-                  <label htmlFor="achievements" className="block text-sm font-medium text-gray-700 mb-2">
-                    Palmarès *
-                  </label>
-                  <textarea
-                    id="achievements"
-                    name="achievements"
-                    value={formData.achievements}
-                    onChange={handleChange}
-                    required
-                    rows={4}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none resize-none"
-                    placeholder="Décrivez vos principales réalisations sportives..."
-                  />
-                </div>
-
-                {/* Liens utiles */}
-                <div>
-                  <label htmlFor="links" className="block text-sm font-medium text-gray-700 mb-2">
-                    Liens utiles (réseaux sociaux, site web, etc.) *
-                  </label>
-                  <textarea
-                    id="links"
-                    name="links"
-                    value={formData.links}
-                    onChange={handleChange}
-                    required
-                    rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none resize-none"
-                    placeholder="Instagram: @votre_compte&#10;Site web: www.votre-site.com&#10;LinkedIn: ..."
-                  />
-                </div>
-
-                {/* Prochaine échéance */}
-                <div>
-                  <label htmlFor="nextEvent" className="block text-sm font-medium text-gray-700 mb-2">
-                    Prochaine échéance sportive *
-                  </label>
-                  <input
-                    type="text"
-                    id="nextEvent"
-                    name="nextEvent"
-                    value={formData.nextEvent}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                    placeholder="Ex: Championnat national en juin 2025"
-                  />
-                </div>
-
-                {/* Type de sponsors */}
-                <div>
-                  <label htmlFor="sponsorType" className="block text-sm font-medium text-gray-700 mb-2">
-                    Type de sponsors recherchés *
-                  </label>
-                  <input
-                    type="text"
-                    id="sponsorType"
-                    name="sponsorType"
-                    value={formData.sponsorType}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                    placeholder="Ex: Équipementier, nutrition, technologie..."
-                  />
-                </div>
-
-                {/* Montant cible */}
-                <div>
-                  <label htmlFor="targetAmount" className="block text-sm font-medium text-gray-700 mb-2">
-                    Montant cible recherché *
-                  </label>
-                  <input
-                    type="text"
-                    id="targetAmount"
-                    name="targetAmount"
-                    value={formData.targetAmount}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                    placeholder="Ex: 10 000€, 25 000€..."
-                  />
                 </div>
 
                 {/* Submit Button */}
