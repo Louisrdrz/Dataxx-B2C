@@ -70,6 +70,16 @@ export default async function handler(
     const amount = stripeSubscription.items.data[0].price.unit_amount || 0;
     const currency = stripeSubscription.items.data[0].price.currency;
 
+    // Helper pour convertir timestamp en ISO string de manière sécurisée
+    const safeTimestampToISO = (timestamp: number | null | undefined): string | null => {
+      if (!timestamp || typeof timestamp !== 'number') return null;
+      try {
+        return new Date(timestamp * 1000).toISOString();
+      } catch {
+        return null;
+      }
+    };
+
     // Retourner les données formatées pour Firestore
     return res.status(200).json({
       success: true,
@@ -87,17 +97,17 @@ export default async function handler(
         amount,
         currency,
         isRecurring: true,
-        currentPeriodStart: new Date(stripeSubscription.current_period_start * 1000).toISOString(),
-        currentPeriodEnd: new Date(stripeSubscription.current_period_end * 1000).toISOString(),
-        cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end,
+        currentPeriodStart: safeTimestampToISO(stripeSubscription.current_period_start) || new Date().toISOString(),
+        currentPeriodEnd: safeTimestampToISO(stripeSubscription.current_period_end) || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        cancelAtPeriodEnd: stripeSubscription.cancel_at_period_end || false,
         ...(stripeSubscription.canceled_at && {
-          canceledAt: new Date(stripeSubscription.canceled_at * 1000).toISOString(),
+          canceledAt: safeTimestampToISO(stripeSubscription.canceled_at),
         }),
         ...(stripeSubscription.trial_start && {
-          trialStart: new Date(stripeSubscription.trial_start * 1000).toISOString(),
+          trialStart: safeTimestampToISO(stripeSubscription.trial_start),
         }),
         ...(stripeSubscription.trial_end && {
-          trialEnd: new Date(stripeSubscription.trial_end * 1000).toISOString(),
+          trialEnd: safeTimestampToISO(stripeSubscription.trial_end),
         }),
       }
     });
