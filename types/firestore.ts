@@ -278,6 +278,76 @@ export interface AppSettings {
   updatedBy: string; // userId de l'admin qui a fait la modification
 }
 
+// =============================================
+// TYPES POUR L'ABONNEMENT UTILISATEUR
+// =============================================
+
+// Type pour les plans d'abonnement
+export type SubscriptionPlanType = 'one_shot' | 'basic' | 'pro';
+
+// Type pour l'abonnement utilisateur (niveau utilisateur, pas workspace)
+export interface UserSubscription {
+  id: string;
+  userId: string; // UID de l'utilisateur qui a l'abonnement
+  
+  // Type de plan
+  planType: SubscriptionPlanType;
+  planName: string; // "One Shot", "Basic", "Pro"
+  
+  // Informations Stripe
+  stripeCustomerId: string;
+  stripeSubscriptionId?: string; // Null pour one_shot (paiement unique)
+  stripePriceId: string;
+  stripeProductId?: string;
+  stripePaymentIntentId?: string; // Pour les paiements one_shot
+  
+  // Statut de l'abonnement
+  status: 'active' | 'canceled' | 'past_due' | 'unpaid' | 'trialing' | 'incomplete' | 'incomplete_expired' | 'one_time_used' | 'one_time_available';
+  
+  // Limites du plan
+  searchesPerMonth: number; // Nombre de recherches autorisées par mois
+  searchesUsedThisMonth: number; // Nombre de recherches utilisées ce mois
+  searchesResetDate?: Timestamp; // Date de remise à zéro du compteur
+  
+  // Prix
+  amount: number; // Montant en centimes
+  currency: string; // "eur"
+  isRecurring: boolean; // true pour basic/pro, false pour one_shot
+  
+  // Dates importantes (pour abonnements récurrents)
+  currentPeriodStart?: Timestamp;
+  currentPeriodEnd?: Timestamp;
+  cancelAtPeriodEnd?: boolean;
+  canceledAt?: Timestamp;
+  
+  // Métadonnées
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  
+  // Méthode de paiement
+  paymentMethodLast4?: string;
+  paymentMethodBrand?: string;
+}
+
+// Type pour l'historique des recherches de sponsors
+export interface SponsorSearchUsage {
+  id: string;
+  userId: string;
+  workspaceId: string;
+  subscriptionId: string; // Référence à l'abonnement utilisé
+  searchId: string; // Référence à la recherche SponsorSearch
+  
+  // Détails
+  eventName: string;
+  recommendationsCount: number;
+  
+  // Date
+  usedAt: Timestamp;
+  
+  // Mois de facturation (format: "2024-01")
+  billingMonth: string;
+}
+
 // Type pour une recommandation de sponsor
 export interface SponsorRecommendation {
   id: string;

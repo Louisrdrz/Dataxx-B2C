@@ -29,19 +29,6 @@ service cloud.firestore {
              get(/databases/$(database)/documents/workspaceMembers/$(workspaceId + '_' + request.auth.uid)).data.role == 'admin';
     }
     
-    // Vérifier si l'utilisateur a un rôle spécifique dans un workspace
-    function hasWorkspaceRole(workspaceId, role) {
-      return isAuthenticated() && 
-             exists(/databases/$(database)/documents/workspaceMembers/$(workspaceId + '_' + request.auth.uid)) &&
-             get(/databases/$(database)/documents/workspaceMembers/$(workspaceId + '_' + request.auth.uid)).data.role == role;
-    }
-    
-    // Compter le nombre d'admins dans un workspace
-    function getAdminCount(workspaceId) {
-      // Note: Cette fonction ne peut pas être implémentée efficacement dans les règles Firestore
-      // Elle doit être gérée côté application
-      return true; // Placeholder - la validation doit être faite côté application
-    }
     
     // ============================================
     // COLLECTION USERS
@@ -190,7 +177,7 @@ service cloud.firestore {
     }
     
     // ============================================
-    // COLLECTION SUBSCRIPTIONS
+    // COLLECTION SUBSCRIPTIONS (legacy - workspaces)
     // ============================================
     
     match /subscriptions/{subscriptionId} {
@@ -202,6 +189,39 @@ service cloud.firestore {
       // Création/modification : uniquement par les webhooks Stripe (backend)
       // ou Cloud Functions authentifiées
       allow create, update: if false; // Sera géré par Cloud Functions
+      
+      // Suppression : interdite
+      allow delete: if false;
+    }
+    
+    // ============================================
+    // COLLECTION USER SUBSCRIPTIONS (nouveau - utilisateurs)
+    // ============================================
+    
+    match /userSubscriptions/{subscriptionId} {
+      // Lecture : l'utilisateur peut lire son propre abonnement
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Création/modification : uniquement par les webhooks Stripe (backend)
+      // Géré par Firebase Admin SDK côté serveur
+      allow create, update: if false;
+      
+      // Suppression : interdite
+      allow delete: if false;
+    }
+    
+    // ============================================
+    // COLLECTION SPONSOR SEARCH USAGE
+    // ============================================
+    
+    match /sponsorSearchUsage/{usageId} {
+      // Lecture : l'utilisateur peut lire son propre historique
+      allow read: if isAuthenticated() && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Création/modification : géré par le backend
+      allow create, update: if false;
       
       // Suppression : interdite
       allow delete: if false;

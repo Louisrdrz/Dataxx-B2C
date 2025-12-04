@@ -1,54 +1,75 @@
-// Configuration Stripe
+// Configuration Stripe pour les abonnements utilisateur
 export const stripeConfig = {
   // Clés API
   publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
   secretKey: process.env.STRIPE_SECRET_KEY!,
   webhookSecret: process.env.STRIPE_WEBHOOK_SECRET!,
   
-  // IDs des prix
+  // IDs des prix (à configurer dans Stripe Dashboard)
   prices: {
+    one_shot: process.env.STRIPE_PRICE_ID_ONE_SHOT!,
     basic: process.env.STRIPE_PRICE_ID_BASIC!,
     pro: process.env.STRIPE_PRICE_ID_PRO!,
   },
   
   // Configuration des plans
   plans: {
+    one_shot: {
+      name: 'One Shot',
+      priceId: process.env.STRIPE_PRICE_ID_ONE_SHOT!,
+      price: 49, // Prix suggéré pour un paiement unique
+      currency: 'eur',
+      isRecurring: false,
+      searchesPerMonth: 1, // 1 recherche unique
+      features: [
+        '1 recherche de sponsors complète',
+        'Recommandations IA personnalisées',
+        'Export des résultats',
+        'Support email',
+        'Valable à vie (1 utilisation)',
+      ],
+      description: 'Parfait pour un événement ponctuel',
+      badge: null,
+    },
     basic: {
       name: 'Basic',
       priceId: process.env.STRIPE_PRICE_ID_BASIC!,
-      price: 89.99,
+      price: 89,
       currency: 'eur',
       interval: 'month' as const,
-      trialDays: 14,
+      isRecurring: true,
+      searchesPerMonth: 3, // 3 recherches par mois
       features: [
-        'Maximum 3 utilisateurs',
-        '10 contacts et infos de sponsors',
-        'Support email',
-        '14 jours d\'essai gratuit',
+        '3 recherches de sponsors par mois',
+        'Recommandations IA personnalisées',
+        'Invitez des membres à vos workspaces',
+        'Export des résultats',
+        'Support email prioritaire',
+        'Historique des recherches',
       ],
-      limits: {
-        maxMembers: 3,
-        maxContacts: 10,
-      },
+      description: 'Idéal pour les clubs et athlètes actifs',
+      badge: null,
     },
     pro: {
       name: 'Pro',
       priceId: process.env.STRIPE_PRICE_ID_PRO!,
-      price: 150,
+      price: 179,
       currency: 'eur',
       interval: 'month' as const,
-      trialDays: 0,
+      isRecurring: true,
+      searchesPerMonth: 15, // 15 recherches par mois
       features: [
-        'Maximum 5 utilisateurs',
-        '50 contacts et infos de sponsors',
-        'Support prioritaire',
-        'Export des données',
-        'Intégrations avancées',
+        '15 recherches de sponsors par mois',
+        'Recommandations IA avancées',
+        'Membres illimités dans vos workspaces',
+        'Export des résultats en PDF',
+        'Support prioritaire 24/7',
+        'Historique complet des recherches',
+        'Analyses et statistiques avancées',
+        'Accès API (bientôt)',
       ],
-      limits: {
-        maxMembers: 5,
-        maxContacts: 50,
-      },
+      description: 'Pour les organisations professionnelles',
+      badge: '⭐ Populaire',
     },
   },
   
@@ -57,11 +78,21 @@ export const stripeConfig = {
 };
 
 // Type pour les noms de plans
-export type PlanName = 'basic' | 'pro';
+export type PlanName = 'one_shot' | 'basic' | 'pro';
 
 // Fonction helper pour obtenir les détails d'un plan
 export const getPlanDetails = (planName: PlanName) => {
   return stripeConfig.plans[planName];
+};
+
+// Fonction pour vérifier si un plan est récurrent
+export const isRecurringPlan = (planName: PlanName): boolean => {
+  return stripeConfig.plans[planName].isRecurring;
+};
+
+// Fonction pour obtenir le nombre de recherches par mois
+export const getSearchesPerMonth = (planName: PlanName): number => {
+  return stripeConfig.plans[planName].searchesPerMonth;
 };
 
 // Fonction pour vérifier si une clé existe
@@ -69,6 +100,7 @@ export const validateStripeConfig = () => {
   const required = [
     'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY',
     'STRIPE_SECRET_KEY',
+    'STRIPE_PRICE_ID_ONE_SHOT',
     'STRIPE_PRICE_ID_BASIC',
     'STRIPE_PRICE_ID_PRO',
   ];
@@ -76,9 +108,10 @@ export const validateStripeConfig = () => {
   const missing = required.filter(key => !process.env[key]);
   
   if (missing.length > 0) {
-    throw new Error(
+    console.warn(
       `Variables d'environnement Stripe manquantes: ${missing.join(', ')}`
     );
+    return false;
   }
+  return true;
 };
-
