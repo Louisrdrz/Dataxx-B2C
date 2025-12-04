@@ -294,27 +294,25 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
           console.log('Recherche sauvegardée avec ID:', searchId);
 
           // Enregistrer l'utilisation du crédit de recherche
-          if (user.uid && activeSubscription) {
-            try {
-              const { useSearchCredit } = await import('@/lib/firebase/userSubscriptions');
-              const result = await useSearchCredit(
-                user.uid,
-                workspaceId,
-                searchId,
-                eventName,
-                recs.length
-              );
-              if (result.success) {
-                console.log('Crédit de recherche utilisé');
-                // Rafraîchir l'abonnement pour mettre à jour les compteurs
-                await refreshSubscription();
-              } else {
-                console.error('Erreur lors de l\'enregistrement du crédit:', result.error);
-              }
-            } catch (creditError) {
-              console.error('Erreur lors de l\'enregistrement du crédit:', creditError);
-              // Continue anyway, la recherche est créée
+          try {
+            const { useSearchCredit } = await import('@/lib/firebase/userSubscriptions');
+            const result = await useSearchCredit(
+              user.uid,
+              workspaceId,
+              searchId,
+              eventName,
+              recs.length
+            );
+            if (result.success) {
+              console.log('✅ Crédit de recherche utilisé avec succès');
+              // Rafraîchir l'abonnement pour mettre à jour les compteurs
+              await refreshSubscription();
+            } else {
+              console.error('❌ Erreur lors de l\'enregistrement du crédit:', result.error);
             }
+          } catch (creditError) {
+            console.error('❌ Erreur lors de l\'enregistrement du crédit:', creditError);
+            // Continue anyway, la recherche est créée
           }
         } catch (saveError) {
           console.error('Erreur lors de la sauvegarde:', saveError);
