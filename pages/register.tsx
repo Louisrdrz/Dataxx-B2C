@@ -58,8 +58,8 @@ const RegisterPage = () => {
         lastName: formData.lastName,
       });
       
-      // Rediriger vers l'onboarding pour créer le premier workspace
-      router.push("/onboarding");
+      // Rediriger vers la création de workspace
+      router.push("/create-workspace");
     } catch (err: any) {
       console.error("Erreur lors de l'inscription:", err);
       
@@ -87,8 +87,8 @@ const RegisterPage = () => {
     try {
       const userCredential = await signInWithGoogle();
       await createOrUpdateUserDocument(userCredential.user);
-      // Rediriger vers l'onboarding pour créer le premier workspace
-      router.push("/onboarding");
+      // Rediriger vers la création de workspace
+      router.push("/create-workspace");
     } catch (err: any) {
       console.error("Erreur lors de la connexion Google:", err);
       setError("Une erreur est survenue lors de la connexion avec Google");

@@ -207,6 +207,15 @@ function WorkspacePage({ user, userData }: WorkspacePageProps) {
                 </svg>
                 Retour
               </button>
+              <button
+                onClick={() => router.push(`/workspace/${workspaceId}/sponsors`)}
+                className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 text-white px-6 py-2 rounded-xl hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-200 font-semibold flex items-center gap-2 animate-pulse hover:animate-none"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                🚀 Trouver des sponsors
+              </button>
               {isAdmin && (
                 <button
                   onClick={() => router.push(`/workspace/${workspaceId}/settings`)}
@@ -245,6 +254,62 @@ function WorkspacePage({ user, userData }: WorkspacePageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Colonne principale - Informations du workspace */}
           <div className="lg:col-span-2 space-y-8">
+            {/* Section Sponsor Finder - CTA Principal */}
+            <div className="bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 rounded-3xl shadow-2xl p-8 relative overflow-hidden">
+              {/* Background Effects */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+              </div>
+              
+              <div className="relative z-10">
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-3xl">🚀</span>
+                      <span className="px-3 py-1 bg-white/20 rounded-full text-white text-sm font-medium">
+                        ✨ Powered by AI
+                      </span>
+                    </div>
+                    <h2 className="text-3xl font-bold text-white mb-2">
+                      Trouvez vos sponsors idéaux
+                    </h2>
+                    <p className="text-white/80 text-lg max-w-xl">
+                      Notre IA analyse votre profil et vos besoins pour vous recommander les sponsors les plus pertinents pour votre prochain événement.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <div className="text-2xl mb-2">🎯</div>
+                    <h3 className="text-white font-semibold mb-1">Matching intelligent</h3>
+                    <p className="text-white/70 text-sm">Scores de compatibilité basés sur vos valeurs et objectifs</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <div className="text-2xl mb-2">💰</div>
+                    <h3 className="text-white font-semibold mb-1">Budgets estimés</h3>
+                    <p className="text-white/70 text-sm">Estimations réalistes des montants de sponsoring</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+                    <div className="text-2xl mb-2">📧</div>
+                    <h3 className="text-white font-semibold mb-1">Stratégies de contact</h3>
+                    <p className="text-white/70 text-sm">Conseils personnalisés pour approcher chaque sponsor</p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => router.push(`/workspace/${workspaceId}/sponsors`)}
+                  className="w-full md:w-auto px-8 py-4 bg-white text-purple-700 font-bold text-lg rounded-xl hover:shadow-2xl hover:scale-105 transition-all duration-300 flex items-center justify-center gap-3"
+                >
+                  <span>Lancer la recherche de sponsors</span>
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
             {/* Section Upload Deck */}
             <div className="bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl border border-slate-200 p-8">
               <h2 className="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
@@ -597,6 +662,7 @@ function WorkspacePage({ user, userData }: WorkspacePageProps) {
 }
 
 export default withAuth(WorkspacePage);
+
 
 
 

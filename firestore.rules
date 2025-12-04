@@ -107,9 +107,14 @@ service cloud.firestore {
     match /workspaceMembers/{memberId} {
       // Format du memberId: {workspaceId}_{userId}
       
-      // Lecture : les membres du même workspace peuvent lire
+      // Lecture : 
+      // - L'utilisateur peut lire ses propres appartenances (nécessaire pour la query getUserWorkspaces)
+      // - OU les membres du même workspace peuvent voir les autres membres
       allow read: if isAuthenticated() && 
-                     isWorkspaceMember(resource.data.workspaceId);
+                     (
+                       resource.data.userId == request.auth.uid ||
+                       isWorkspaceMember(resource.data.workspaceId)
+                     );
       
       // Création : 
       // - Admin du workspace peut ajouter des membres
@@ -279,6 +284,39 @@ service cloud.firestore {
       
       // Création/modification : uniquement par les admins (géré par Cloud Functions)
       allow create, update, delete: if false;
+    }
+    
+    // ============================================
+    // COLLECTION SPONSOR SEARCHES
+    // ============================================
+    
+    match /sponsorSearches/{searchId} {
+      // Lecture : les membres du workspace peuvent lire leurs recherches
+      allow read: if isAuthenticated() && 
+                     resource.data.workspaceId != null &&
+                     isWorkspaceMember(resource.data.workspaceId);
+      
+      // Création : les membres du workspace peuvent créer des recherches
+      allow create: if isAuthenticated() && 
+                       request.resource.data.workspaceId != null &&
+                       isWorkspaceMember(request.resource.data.workspaceId) &&
+                       request.resource.data.createdBy == request.auth.uid;
+      
+      // Mise à jour : les membres du workspace peuvent modifier
+      // (pour mettre à jour les statuts de contact, notes, etc.)
+      allow update: if isAuthenticated() && 
+                       resource.data.workspaceId != null &&
+                       isWorkspaceMember(resource.data.workspaceId);
+      
+      // Suppression : 
+      // - Admins du workspace
+      // - OU le créateur de la recherche
+      allow delete: if isAuthenticated() && 
+                       resource.data.workspaceId != null &&
+                       (
+                         isWorkspaceAdmin(resource.data.workspaceId) ||
+                         resource.data.createdBy == request.auth.uid
+                       );
     }
     
     // ============================================

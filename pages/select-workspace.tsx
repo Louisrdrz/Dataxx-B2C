@@ -72,9 +72,9 @@ export default function SelectWorkspacePage() {
     return null;
   }
 
-  // Si l'utilisateur n'a aucun workspace, rediriger vers onboarding
+  // Si l'utilisateur n'a aucun workspace, rediriger vers la création
   if (workspaces.length === 0) {
-    router.push('/onboarding');
+    router.push('/create-workspace');
     return null;
   }
 

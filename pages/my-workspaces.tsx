@@ -64,8 +64,8 @@ export default function MyWorkspacesPage() {
   };
 
   const handleAccessWorkspace = (workspaceId: string) => {
-    // Rediriger vers le dashboard (qui chargera ce workspace)
-    router.push('/dashboard');
+    // Rediriger vers la page du workspace avec toutes les infos
+    router.push(`/workspace/${workspaceId}`);
   };
 
   if (authLoading || workspacesLoading) {

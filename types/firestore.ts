@@ -277,3 +277,71 @@ export interface AppSettings {
   updatedAt: Timestamp;
   updatedBy: string; // userId de l'admin qui a fait la modification
 }
+
+// Type pour une recommandation de sponsor
+export interface SponsorRecommendation {
+  id: string;
+  name: string;
+  logo?: string;
+  industry: string;
+  matchScore: number; // 0-100
+  matchReasons: string[];
+  estimatedBudget: string;
+  contactStrategy: string;
+  website?: string;
+  linkedIn?: string;
+  keyContacts?: string[];
+  pastSponsorships?: string[];
+  valuesAlignment: string[];
+  potentialActivations: string[];
+  priority: 'high' | 'medium' | 'low';
+  category: 'title' | 'official' | 'technical' | 'media' | 'local' | 'startup';
+  
+  // Suivi du contact
+  contactStatus?: 'not_contacted' | 'contacted' | 'in_discussion' | 'accepted' | 'rejected';
+  contactedAt?: Timestamp;
+  notes?: string;
+}
+
+// Type pour les insights globaux
+export interface SponsorSearchInsights {
+  marketAnalysis: string;
+  bestApproachTiming: string;
+  negotiationTips: string[];
+  redFlags: string[];
+}
+
+// Type pour une recherche de sponsors
+export interface SponsorSearch {
+  id: string;
+  workspaceId: string;
+  createdBy: string; // UID de l'utilisateur
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  
+  // Détails de l'événement
+  eventName: string;
+  eventDate?: string;
+  eventDescription: string;
+  
+  // Critères de recherche
+  targetBudget: string;
+  sponsorTypes: string[];
+  industries?: string[];
+  values?: string[];
+  audienceSize?: string;
+  mediaExposure?: string;
+  specificNeeds?: string;
+  
+  // Résultats
+  recommendations: SponsorRecommendation[];
+  globalInsights?: SponsorSearchInsights;
+  
+  // Statistiques
+  totalRecommendations: number;
+  highPriorityCount: number;
+  averageMatchScore: number;
+  
+  // Statut
+  status: 'completed' | 'in_progress' | 'archived';
+}
