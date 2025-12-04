@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { stripe } from '@/lib/stripe/client';
 import { stripeConfig, getPlanDetails, PlanName, isRecurringPlan } from '@/lib/stripe/config';
-import { adminDb } from '@/lib/firebase/admin';
+import { getAdminDb } from '@/lib/firebase/admin';
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,9 +15,9 @@ export default async function handler(
     const { planName, userId, userEmail } = req.body;
 
     // Validation des paramètres
-    if (!planName || !userId) {
+    if (!planName || !userId || !userEmail) {
       return res.status(400).json({ 
-        error: 'Paramètres manquants: planName et userId sont requis' 
+        error: 'Paramètres manquants: planName, userId et userEmail sont requis' 
       });
     }
 
@@ -37,39 +37,47 @@ export default async function handler(
       });
     }
 
-    // Récupérer l'utilisateur pour avoir son email
-    const userRef = adminDb.collection('users').doc(userId);
-    const userDoc = await userRef.get();
-
-    if (!userDoc.exists) {
-      return res.status(404).json({ error: 'Utilisateur non trouvé' });
-    }
-
-    const userData = userDoc.data();
-    const customerEmail = userEmail || userData?.email;
+    const customerEmail = userEmail;
 
     // Vérifier s'il existe déjà un customer Stripe pour cet utilisateur
+    // (optionnel - seulement si Firebase Admin est configuré)
     let customerId: string | undefined;
-    const existingSubscription = await adminDb
-      .collection('userSubscriptions')
-      .where('userId', '==', userId)
-      .limit(1)
-      .get();
+    try {
+      const adminDb = getAdminDb();
+      const existingSubscription = await adminDb
+        .collection('userSubscriptions')
+        .where('userId', '==', userId)
+        .limit(1)
+        .get();
 
-    if (!existingSubscription.empty) {
-      customerId = existingSubscription.docs[0].data().stripeCustomerId;
+      if (!existingSubscription.empty) {
+        customerId = existingSubscription.docs[0].data().stripeCustomerId;
+      }
+    } catch (error) {
+      // Firebase Admin non configuré - on continue sans vérifier les abonnements existants
+      console.log('Firebase Admin non disponible, création d\'un nouveau customer Stripe');
     }
 
     // Créer ou récupérer le customer Stripe
     if (!customerId) {
-      const customer = await stripe.customers.create({
+      // Chercher un customer existant par email (Stripe gère la déduplication)
+      const existingCustomers = await stripe.customers.list({
         email: customerEmail,
-        metadata: {
-          userId,
-          userName: userData?.displayName || userData?.firstName || '',
-        },
+        limit: 1,
       });
-      customerId = customer.id;
+
+      if (existingCustomers.data.length > 0) {
+        customerId = existingCustomers.data[0].id;
+      } else {
+        // Créer un nouveau customer
+        const customer = await stripe.customers.create({
+          email: customerEmail,
+          metadata: {
+            userId,
+          },
+        });
+        customerId = customer.id;
+      }
     }
 
     // Déterminer le mode de paiement

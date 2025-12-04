@@ -50,6 +50,11 @@ const SubscriptionPage = ({ user, userData }: SubscriptionPageProps) => {
       return;
     }
 
+    if (!user.email) {
+      setError('Votre compte doit avoir une adresse email pour souscrire à un abonnement');
+      return;
+    }
+
     setLoadingPlan(planName);
     setError(null);
 
