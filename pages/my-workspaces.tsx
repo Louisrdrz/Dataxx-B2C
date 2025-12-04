@@ -1,6 +1,6 @@
 import { useAuth } from '@/hooks/useAuth';
 import { useUserWorkspaces } from '@/hooks/useWorkspace';
-import { getUserWorkspaceRole } from '@/lib/firebase/workspaceMembers';
+import { getUserRoleInWorkspace } from '@/lib/firebase/workspaceMembers';
 import { setDefaultWorkspace } from '@/lib/firebase/users';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -24,7 +24,7 @@ export default function MyWorkspacesPage() {
       
       for (const workspace of workspaces) {
         try {
-          const role = await getUserWorkspaceRole(workspace.id, firebaseUser.uid);
+          const role = await getUserRoleInWorkspace(workspace.id, firebaseUser.uid);
           rolesData[workspace.id] = role || 'unknown';
         } catch (error) {
           console.error(`Erreur role pour ${workspace.id}:`, error);
