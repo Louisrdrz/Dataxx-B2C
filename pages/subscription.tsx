@@ -46,7 +46,7 @@ const SubscriptionPage = ({ user, userData }: SubscriptionPageProps) => {
       const syncSubscription = async () => {
         try {
           const { syncSubscriptionFromStripe } = await import('@/lib/firebase/syncSubscription');
-          const result = await syncSubscriptionFromStripe(user.uid);
+          const result = await syncSubscriptionFromStripe(user.uid, user.email || undefined);
           
           if (result.success) {
             console.log('✅ Abonnement synchronisé automatiquement');

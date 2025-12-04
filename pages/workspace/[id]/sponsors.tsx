@@ -1018,6 +1018,7 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
                 )}
               </button>
             </form>
+            </>
           )}
 
           {/* Loading Step */}

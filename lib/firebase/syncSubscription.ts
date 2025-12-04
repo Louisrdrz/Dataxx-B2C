@@ -13,14 +13,15 @@ interface SyncSubscriptionResult {
  * Récupère les données depuis Stripe via l'API et crée l'abonnement dans Firestore côté client
  */
 export async function syncSubscriptionFromStripe(
-  userId: string
+  userId: string,
+  userEmail?: string
 ): Promise<SyncSubscriptionResult> {
   try {
     // 1. Récupérer les données depuis Stripe via l'API
     const response = await fetch('/api/get-stripe-subscription', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ userId, userEmail }),
     });
 
     const data = await response.json();

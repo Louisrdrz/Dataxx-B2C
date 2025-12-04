@@ -68,6 +68,12 @@ export default async function handler(
 
       if (existingCustomers.data.length > 0) {
         customerId = existingCustomers.data[0].id;
+        // Mettre à jour les métadonnées pour s'assurer que le userId est bien associé
+        await stripe.customers.update(customerId, {
+          metadata: {
+            userId,
+          },
+        });
       } else {
         // Créer un nouveau customer
         const customer = await stripe.customers.create({

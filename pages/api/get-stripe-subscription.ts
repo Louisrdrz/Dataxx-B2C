@@ -15,7 +15,7 @@ export default async function handler(
   }
 
   try {
-    const { userId } = req.body;
+    const { userId, userEmail } = req.body;
 
     if (!userId) {
       return res.status(400).json({ error: 'userId est requis' });
@@ -25,9 +25,24 @@ export default async function handler(
     const customers = await stripe.customers.list({
       limit: 100,
     });
-    const customer = customers.data.find(
+    let customer = customers.data.find(
       (c) => c.metadata?.userId === userId
     );
+    
+    // Si non trouvé par metadata, chercher par email (pour les anciens customers)
+    if (!customer && userEmail) {
+      const customersByEmail = await stripe.customers.list({
+        email: userEmail,
+        limit: 1,
+      });
+      if (customersByEmail.data.length > 0) {
+        customer = customersByEmail.data[0];
+        // Mettre à jour les métadonnées pour les prochaines fois
+        await stripe.customers.update(customer.id, {
+          metadata: { userId },
+        });
+      }
+    }
     
     if (!customer) {
       return res.status(404).json({ error: 'Customer Stripe non trouvé pour cet utilisateur' });
