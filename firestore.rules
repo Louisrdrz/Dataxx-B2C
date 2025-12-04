@@ -203,9 +203,15 @@ service cloud.firestore {
       allow read: if isAuthenticated() && 
                      resource.data.userId == request.auth.uid;
       
-      // Création/modification : uniquement par les webhooks Stripe (backend)
-      // Géré par Firebase Admin SDK côté serveur
-      allow create, update: if false;
+      // Création : l'utilisateur peut créer son propre abonnement (pour synchronisation depuis Stripe)
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['userId', 'stripeCustomerId', 'stripeSubscriptionId', 'planType', 'planName', 'status', 'searchesPerMonth', 'amount', 'currency', 'isRecurring']);
+      
+      // Mise à jour : l'utilisateur peut mettre à jour son propre abonnement (pour synchronisation)
+      allow update: if isAuthenticated() && 
+                       resource.data.userId == request.auth.uid &&
+                       request.resource.data.userId == resource.data.userId;
       
       // Suppression : interdite
       allow delete: if false;

@@ -5,7 +5,7 @@ import { User as FirebaseUser } from 'firebase/auth';
 import { User } from '@/types/firestore';
 import { useUserSubscription } from '@/hooks/useUserSubscription';
 import { stripeConfig, PlanName } from '@/lib/stripe/config';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Check, Loader2, Zap, Crown, Sparkles, ArrowLeft, CreditCard, Calendar, Search } from 'lucide-react';
 
 interface SubscriptionPageProps {
@@ -32,17 +32,53 @@ const SubscriptionPage = ({ user, userData }: SubscriptionPageProps) => {
   const [loadingPlan, setLoadingPlan] = useState<PlanName | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [syncing, setSyncing] = useState(false);
+  const hasSyncedRef = useRef(false);
 
-  // Afficher le message de succès si retour de Stripe
+  // Synchroniser automatiquement l'abonnement au retour de Stripe (une seule fois)
   useEffect(() => {
-    if (success === 'true') {
+    if (success === 'true' && user?.uid && !syncing && !hasSyncedRef.current) {
+      hasSyncedRef.current = true;
+      setSyncing(true);
       setShowSuccessMessage(true);
-      refresh();
+      
+      // Synchroniser l'abonnement depuis Stripe
+      const syncSubscription = async () => {
+        try {
+          const { syncSubscriptionFromStripe } = await import('@/lib/firebase/syncSubscription');
+          const result = await syncSubscriptionFromStripe(user.uid);
+          
+          if (result.success) {
+            console.log('✅ Abonnement synchronisé automatiquement');
+            // Attendre un peu avant de rafraîchir pour laisser Firestore se mettre à jour
+            setTimeout(async () => {
+              await refresh();
+            }, 1000);
+          } else {
+            console.warn('⚠️ Synchronisation automatique échouée:', result.error);
+            // On rafraîchit quand même au cas où le webhook aurait fonctionné
+            setTimeout(async () => {
+              await refresh();
+            }, 1000);
+          }
+        } catch (err) {
+          console.error('Erreur lors de la synchronisation automatique:', err);
+          // On rafraîchit quand même
+          setTimeout(async () => {
+            await refresh();
+          }, 1000);
+        } finally {
+          setSyncing(false);
+        }
+      };
+
+      syncSubscription();
+      
       // Cacher le message après 5 secondes
       const timer = setTimeout(() => setShowSuccessMessage(false), 5000);
       return () => clearTimeout(timer);
     }
-  }, [success, refresh]);
+  }, [success, user?.uid, refresh]);
 
   const handleSubscribe = async (planName: PlanName) => {
     if (!user) {
@@ -185,11 +221,21 @@ const SubscriptionPage = ({ user, userData }: SubscriptionPageProps) => {
           {showSuccessMessage && (
             <div className="mb-8 p-4 bg-green-50 border border-green-200 rounded-2xl flex items-center gap-3 animate-fade-in-up">
               <div className="p-2 bg-green-100 rounded-full">
-                <Check className="w-5 h-5 text-green-600" />
+                {syncing ? (
+                  <Loader2 className="w-5 h-5 text-green-600 animate-spin" />
+                ) : (
+                  <Check className="w-5 h-5 text-green-600" />
+                )}
               </div>
               <div>
-                <p className="font-semibold text-green-800">Paiement réussi !</p>
-                <p className="text-green-700 text-sm">Votre abonnement est maintenant actif.</p>
+                <p className="font-semibold text-green-800">
+                  {syncing ? 'Synchronisation en cours...' : 'Paiement réussi !'}
+                </p>
+                <p className="text-green-700 text-sm">
+                  {syncing 
+                    ? 'Votre abonnement est en cours de synchronisation depuis Stripe...'
+                    : 'Votre abonnement est maintenant actif.'}
+                </p>
               </div>
             </div>
           )}

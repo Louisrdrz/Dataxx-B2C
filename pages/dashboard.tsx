@@ -6,7 +6,7 @@ import { User as FirebaseUser } from 'firebase/auth';
 import { User } from '@/types/firestore';
 import { useUserWorkspaces } from '@/hooks/useWorkspace';
 import { useUserSubscription } from '@/hooks/useUserSubscription';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, Crown, Zap, Sparkles } from 'lucide-react';
 
 interface DashboardProps {
@@ -27,8 +27,42 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
     searchesUsed,
     remainingSearches,
     loading: subscriptionLoading,
+    refresh: refreshSubscription,
   } = useUserSubscription(user?.uid);
   const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
+  const hasCheckedSyncRef = useRef(false);
+
+  // Synchroniser automatiquement l'abonnement au chargement si pas d'abonnement (une seule fois)
+  useEffect(() => {
+    if (!subscriptionLoading && !hasActiveSubscription && user?.uid && !hasCheckedSyncRef.current) {
+      hasCheckedSyncRef.current = true;
+      
+      // Vérifier si l'utilisateur a un abonnement dans Stripe
+      const checkAndSync = async () => {
+        try {
+          const { syncSubscriptionFromStripe } = await import('@/lib/firebase/syncSubscription');
+          const result = await syncSubscriptionFromStripe(user.uid);
+          
+          if (result.success) {
+            console.log('✅ Abonnement synchronisé automatiquement au chargement');
+            // Attendre un peu avant de rafraîchir pour laisser Firestore se mettre à jour
+            setTimeout(async () => {
+              await refreshSubscription();
+            }, 1000);
+          }
+        } catch (err) {
+          console.error('Erreur lors de la vérification automatique:', err);
+        }
+      };
+
+      // Attendre un peu pour laisser le temps aux webhooks de s'exécuter
+      const timer = setTimeout(() => {
+        checkAndSync();
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [subscriptionLoading, hasActiveSubscription, user?.uid, refreshSubscription]);
   
   // Debug: afficher les workspaces chargés
   useEffect(() => {
@@ -290,12 +324,35 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
               ) : (
                 <div>
                   <p className="text-lg font-bold text-slate-700 mb-1">Aucun abonnement</p>
-                  <button
-                    onClick={() => router.push('/subscription')}
-                    className="text-xs text-indigo-600 hover:text-indigo-700 font-medium mt-2"
-                  >
-                    Souscrire →
-                  </button>
+                  <div className="flex flex-col gap-2 mt-2">
+                    <button
+                      onClick={() => router.push('/subscription')}
+                      className="text-xs text-indigo-600 hover:text-indigo-700 font-medium"
+                    >
+                      Souscrire →
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (!user?.uid) return;
+                        try {
+                          const { syncSubscriptionFromStripe } = await import('@/lib/firebase/syncSubscription');
+                          const result = await syncSubscriptionFromStripe(user.uid);
+                          if (result.success) {
+                            alert('✅ Abonnement synchronisé avec succès !');
+                            // Rafraîchir les données
+                            window.location.reload();
+                          } else {
+                            alert('❌ Erreur: ' + (result.error || 'Erreur inconnue'));
+                          }
+                        } catch (error: any) {
+                          alert('❌ Erreur lors de la synchronisation: ' + error.message);
+                        }
+                      }}
+                      className="text-xs text-emerald-600 hover:text-emerald-700 font-medium underline"
+                    >
+                      🔄 Synchroniser depuis Stripe
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
