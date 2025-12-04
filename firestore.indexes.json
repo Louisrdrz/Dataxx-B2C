@@ -309,16 +309,6 @@
       ]
     },
     {
-      "collectionGroup": "userSubscriptions",
-      "queryScope": "COLLECTION",
-      "fields": [
-        {
-          "fieldPath": "stripeSubscriptionId",
-          "order": "ASCENDING"
-        }
-      ]
-    },
-    {
       "collectionGroup": "sponsorSearchUsage",
       "queryScope": "COLLECTION",
       "fields": [

@@ -5,7 +5,9 @@ import Head from 'next/head';
 import { User as FirebaseUser } from 'firebase/auth';
 import { User } from '@/types/firestore';
 import { useUserWorkspaces } from '@/hooks/useWorkspace';
+import { useUserSubscription } from '@/hooks/useUserSubscription';
 import { useState, useEffect } from 'react';
+import { Search, Crown, Zap, Sparkles } from 'lucide-react';
 
 interface DashboardProps {
   user: FirebaseUser;
@@ -15,6 +17,17 @@ interface DashboardProps {
 const DashboardPage = ({ user, userData }: DashboardProps) => {
   const router = useRouter();
   const { workspaces, isLoading: workspacesLoading } = useUserWorkspaces(user?.uid);
+  const {
+    activeSubscription,
+    hasActiveSubscription,
+    isOneShot,
+    isBasic,
+    isPro,
+    searchesPerMonth,
+    searchesUsed,
+    remainingSearches,
+    loading: subscriptionLoading,
+  } = useUserSubscription(user?.uid);
   const [showWorkspaceMenu, setShowWorkspaceMenu] = useState(false);
   
   // Debug: afficher les workspaces chargés
@@ -183,7 +196,7 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg border border-green-200 p-6 hover:shadow-xl transition-all duration-300 group">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Statut du compte</h3>
@@ -228,6 +241,63 @@ const DashboardPage = ({ user, userData }: DashboardProps) => {
               <p className="text-2xl font-bold text-blue-700">
                 {userData?.language === 'fr' ? 'Français' : 'English'}
               </p>
+            </div>
+
+            {/* Carte Abonnement */}
+            <div className={`rounded-2xl shadow-lg border p-6 hover:shadow-xl transition-all duration-300 group ${
+              hasActiveSubscription 
+                ? isPro ? 'bg-gradient-to-br from-amber-50 to-orange-50 border-amber-300' 
+                  : isBasic ? 'bg-gradient-to-br from-violet-50 to-purple-50 border-violet-300'
+                  : 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-300'
+                : 'bg-gradient-to-br from-slate-50 to-gray-50 border-slate-300'
+            }`}>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-xs font-semibold text-slate-600 uppercase tracking-wide">Abonnement</h3>
+                <div className={`p-2 rounded-xl group-hover:scale-110 transition-transform duration-200 ${
+                  hasActiveSubscription 
+                    ? isPro ? 'bg-amber-100' 
+                      : isBasic ? 'bg-violet-100'
+                      : 'bg-emerald-100'
+                    : 'bg-slate-100'
+                }`}>
+                  {hasActiveSubscription ? (
+                    isPro ? <Crown className="w-6 h-6 text-amber-600" /> :
+                    isBasic ? <Sparkles className="w-6 h-6 text-violet-600" /> :
+                    <Zap className="w-6 h-6 text-emerald-600" />
+                  ) : (
+                    <svg className="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              {subscriptionLoading ? (
+                <p className="text-lg font-bold text-slate-600">Chargement...</p>
+              ) : hasActiveSubscription ? (
+                <div>
+                  <p className="text-xl font-bold text-slate-900 mb-1">{activeSubscription?.planName}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Search className="w-4 h-4 text-slate-600" />
+                    <p className="text-sm text-slate-600">
+                      <span className="font-bold text-slate-900">{remainingSearches}</span>
+                      {activeSubscription?.isRecurring && (
+                        <span className="text-slate-500">/{searchesPerMonth}</span>
+                      )}
+                      {' '}recherche{remainingSearches > 1 ? 's' : ''} disponible{remainingSearches > 1 ? 's' : ''}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p className="text-lg font-bold text-slate-700 mb-1">Aucun abonnement</p>
+                  <button
+                    onClick={() => router.push('/subscription')}
+                    className="text-xs text-indigo-600 hover:text-indigo-700 font-medium mt-2"
+                  >
+                    Souscrire →
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useWorkspaceById } from '@/hooks/useWorkspace';
+import { useUserSubscription } from '@/hooks/useUserSubscription';
 import { withAuth } from '@/lib/firebase/withAuth';
 import { User as FirebaseUser } from 'firebase/auth';
 import { User, Workspace, SponsorSearch, SponsorRecommendation as SponsorRec } from '@/types/firestore';
@@ -14,6 +15,8 @@ import {
   addSponsorNote,
   deleteSponsorSearch
 } from '@/lib/firebase/sponsorSearches';
+import { canPerformSponsorSearch } from '@/lib/firebase/userSubscriptions';
+import { Search, Crown, Zap, Sparkles, AlertCircle } from 'lucide-react';
 
 interface SponsorRecommendation {
   id: string;
@@ -88,6 +91,21 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
   const { workspace, isLoading: workspaceLoading } = useWorkspaceById(
     typeof workspaceId === 'string' ? workspaceId : undefined
   );
+
+  // Abonnement utilisateur
+  const {
+    activeSubscription,
+    hasActiveSubscription,
+    isOneShot,
+    isBasic,
+    isPro,
+    searchesPerMonth,
+    searchesUsed,
+    remainingSearches,
+    loading: subscriptionLoading,
+    canSearch: checkCanSearch,
+    refresh: refreshSubscription,
+  } = useUserSubscription(user?.uid);
 
   // États du formulaire
   const [step, setStep] = useState<'form' | 'loading' | 'results'>('form');
@@ -203,6 +221,19 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
       return;
     }
 
+    // Vérifier les crédits de recherche avant de continuer
+    if (!user?.uid) {
+      setError('Vous devez être connecté pour effectuer une recherche');
+      return;
+    }
+
+    const canSearchResult = await checkCanSearch();
+    if (!canSearchResult.canSearch) {
+      setError(canSearchResult.reason || 'Vous n\'avez pas de crédits de recherche disponibles. Veuillez souscrire à un abonnement.');
+      router.push('/subscription');
+      return;
+    }
+
     setError('');
     setStep('loading');
     setVisibleCards(0);
@@ -261,6 +292,30 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
           });
           setCurrentSearchId(searchId);
           console.log('Recherche sauvegardée avec ID:', searchId);
+
+          // Enregistrer l'utilisation du crédit de recherche
+          if (user.uid && activeSubscription) {
+            try {
+              const { useSearchCredit } = await import('@/lib/firebase/userSubscriptions');
+              const result = await useSearchCredit(
+                user.uid,
+                workspaceId,
+                searchId,
+                eventName,
+                recs.length
+              );
+              if (result.success) {
+                console.log('Crédit de recherche utilisé');
+                // Rafraîchir l'abonnement pour mettre à jour les compteurs
+                await refreshSubscription();
+              } else {
+                console.error('Erreur lors de l\'enregistrement du crédit:', result.error);
+              }
+            } catch (creditError) {
+              console.error('Erreur lors de l\'enregistrement du crédit:', creditError);
+              // Continue anyway, la recherche est créée
+            }
+          }
         } catch (saveError) {
           console.error('Erreur lors de la sauvegarde:', saveError);
           // Continue anyway, les résultats sont affichés
@@ -421,6 +476,44 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
                 <h1 className="text-xl font-bold text-white">{workspace.name}</h1>
               </div>
               <div className="flex items-center gap-3">
+                {/* Affichage de l'abonnement */}
+                {!subscriptionLoading && (
+                  <div className={`px-4 py-2 rounded-xl flex items-center gap-2 ${
+                    hasActiveSubscription 
+                      ? isPro ? 'bg-amber-500/20 border border-amber-400/30 text-amber-200' 
+                        : isBasic ? 'bg-violet-500/20 border border-violet-400/30 text-violet-200'
+                        : 'bg-emerald-500/20 border border-emerald-400/30 text-emerald-200'
+                      : 'bg-slate-500/20 border border-slate-400/30 text-slate-300'
+                  }`}>
+                    {hasActiveSubscription ? (
+                      <>
+                        {isPro ? <Crown className="w-4 h-4" /> :
+                         isBasic ? <Sparkles className="w-4 h-4" /> :
+                         <Zap className="w-4 h-4" />}
+                        <span className="text-sm font-semibold">
+                          {activeSubscription?.planName}
+                        </span>
+                        <div className="h-4 w-px bg-white/30 mx-1"></div>
+                        <Search className="w-4 h-4" />
+                        <span className="text-sm">
+                          {remainingSearches}
+                          {activeSubscription?.isRecurring && `/${searchesPerMonth}`}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <AlertCircle className="w-4 h-4" />
+                        <span className="text-sm">Aucun abonnement</span>
+                        <button
+                          onClick={() => router.push('/subscription')}
+                          className="ml-2 text-xs underline hover:no-underline"
+                        >
+                          Souscrire
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
                 {searchHistory.length > 0 && (
                   <button
                     onClick={() => setShowHistory(!showHistory)}
@@ -599,7 +692,66 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
 
           {/* Form Step */}
           {step === 'form' && (
-            <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
+            <>
+              {/* Alerte crédits insuffisants */}
+              {!subscriptionLoading && !hasActiveSubscription && (
+                <div className="max-w-4xl mx-auto mb-6 bg-gradient-to-r from-amber-500/20 to-orange-500/20 backdrop-blur-xl rounded-2xl border border-amber-500/30 p-6 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <AlertCircle className="w-8 h-8 text-amber-400" />
+                    <div>
+                      <p className="text-amber-200 font-bold text-lg mb-1">Aucun abonnement actif</p>
+                      <p className="text-amber-300/80 text-sm">
+                        Vous devez souscrire à un abonnement pour effectuer des recherches de sponsors.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => router.push('/subscription')}
+                    className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-amber-500/30 transition-all"
+                  >
+                    Souscrire maintenant
+                  </button>
+                </div>
+              )}
+              {!subscriptionLoading && hasActiveSubscription && remainingSearches === 0 && (
+                <div className="max-w-4xl mx-auto mb-6 bg-gradient-to-r from-red-500/20 to-pink-500/20 backdrop-blur-xl rounded-2xl border border-red-500/30 p-6 flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <AlertCircle className="w-8 h-8 text-red-400" />
+                    <div>
+                      <p className="text-red-200 font-bold text-lg mb-1">Crédits épuisés</p>
+                      <p className="text-red-300/80 text-sm">
+                        Vous avez utilisé toutes vos recherches ce mois-ci ({searchesUsed}/{searchesPerMonth}).
+                        {activeSubscription?.isRecurring ? ' Elles seront réinitialisées le mois prochain.' : ''}
+                      </p>
+                    </div>
+                  </div>
+                  {activeSubscription?.isRecurring && (
+                    <button
+                      onClick={() => router.push('/subscription')}
+                      className="px-6 py-3 bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-violet-500/30 transition-all"
+                    >
+                      Passer au plan supérieur
+                    </button>
+                  )}
+                </div>
+              )}
+              {!subscriptionLoading && hasActiveSubscription && remainingSearches > 0 && (
+                <div className="max-w-4xl mx-auto mb-6 bg-gradient-to-r from-emerald-500/20 to-green-500/20 backdrop-blur-xl rounded-2xl border border-emerald-500/30 p-4 flex items-center gap-3">
+                  <div className="p-2 bg-emerald-500/30 rounded-xl">
+                    <Search className="w-5 h-5 text-emerald-300" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-emerald-200 font-semibold">
+                      {remainingSearches} recherche{remainingSearches > 1 ? 's' : ''} disponible{remainingSearches > 1 ? 's' : ''}
+                      {activeSubscription?.isRecurring && ` (${searchesUsed}/${searchesPerMonth} utilisées ce mois)`}
+                    </p>
+                    <p className="text-emerald-300/70 text-sm">
+                      Plan {activeSubscription?.planName}
+                    </p>
+                  </div>
+                </div>
+              )}
+              <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-8">
               {/* Workspace Summary */}
               <div className="bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 p-6">
                 <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
@@ -847,13 +999,23 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-5 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-size-200 hover:bg-pos-100 text-white font-bold text-xl rounded-2xl shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-500 flex items-center justify-center gap-3 group"
+                disabled={subscriptionLoading || !hasActiveSubscription || remainingSearches === 0}
+                className={`w-full py-5 font-bold text-xl rounded-2xl shadow-2xl transition-all duration-500 flex items-center justify-center gap-3 group ${
+                  subscriptionLoading || !hasActiveSubscription || remainingSearches === 0
+                    ? 'bg-slate-600/50 text-slate-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 bg-size-200 hover:bg-pos-100 text-white shadow-purple-500/30 hover:shadow-purple-500/50'
+                }`}
               >
                 <span className="text-2xl group-hover:animate-bounce">🚀</span>
-                Générer mes recommandations personnalisées
-                <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
+                {subscriptionLoading ? 'Chargement...' :
+                 !hasActiveSubscription ? 'Souscrire à un abonnement' :
+                 remainingSearches === 0 ? 'Crédits épuisés' :
+                 `Générer mes recommandations personnalisées (${remainingSearches} crédit${remainingSearches > 1 ? 's' : ''} restant${remainingSearches > 1 ? 's' : ''})`}
+                {!(subscriptionLoading || !hasActiveSubscription || remainingSearches === 0) && (
+                  <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                )}
               </button>
             </form>
           )}
