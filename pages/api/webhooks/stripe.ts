@@ -220,8 +220,9 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
   console.log('Paiement de facture réussi:', invoice.id);
 
   // Si c'est un abonnement, mettre à jour et réinitialiser le compteur mensuel
-  if (invoice.subscription) {
-    const subscription = await stripe.subscriptions.retrieve(invoice.subscription as string);
+  const invoiceData = invoice as any;
+  if (invoiceData.subscription) {
+    const subscription = await stripe.subscriptions.retrieve(invoiceData.subscription as string) as any;
     const userId = subscription.metadata?.userId;
     const planName = subscription.metadata?.planName as PlanName;
 
@@ -230,7 +231,7 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
       await createOrUpdateUserSubscription(subscription, userId, planName || 'basic');
 
       // Réinitialiser le compteur de recherches si c'est un renouvellement
-      if (invoice.billing_reason === 'subscription_cycle') {
+      if (invoiceData.billing_reason === 'subscription_cycle') {
         const subscriptionsRef = adminDb.collection('userSubscriptions');
         const snapshot = await subscriptionsRef
           .where('stripeSubscriptionId', '==', subscription.id)
@@ -254,10 +255,11 @@ async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {
 async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
   console.log('Paiement de facture échoué:', invoice.id);
 
-  if (invoice.subscription) {
+  const invoiceData = invoice as any;
+  if (invoiceData.subscription) {
     const subscriptionsRef = adminDb.collection('userSubscriptions');
     const snapshot = await subscriptionsRef
-      .where('stripeSubscriptionId', '==', invoice.subscription)
+      .where('stripeSubscriptionId', '==', invoiceData.subscription)
       .limit(1)
       .get();
 
@@ -279,10 +281,11 @@ async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
 
 // Fonction helper pour créer ou mettre à jour l'abonnement dans Firestore
 async function createOrUpdateUserSubscription(
-  subscription: Stripe.Subscription,
+  subscriptionParam: Stripe.Subscription,
   userId: string,
   planName: PlanName
 ) {
+  const subscription = subscriptionParam as any;
   const subscriptionsRef = adminDb.collection('userSubscriptions');
 
   // Chercher si un abonnement existe déjà pour cet utilisateur avec ce stripeSubscriptionId

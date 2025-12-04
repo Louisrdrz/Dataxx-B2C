@@ -106,10 +106,6 @@ export default async function handler(
           userId,
           planName,
         },
-        // Période d'essai pour le plan Basic
-        ...(planDetails.trialDays > 0 && {
-          trial_period_days: planDetails.trialDays,
-        }),
       },
       success_url: `${stripeConfig.appUrl}/workspace/${workspaceId}/settings?success=true`,
       cancel_url: `${stripeConfig.appUrl}/workspace/${workspaceId}/settings?canceled=true`,

@@ -36,6 +36,7 @@ function WorkspaceSettingsPage({ user, userData }: WorkspaceSettingsProps) {
     if (workspaceId && typeof workspaceId === 'string' && user) {
       loadWorkspace(workspaceId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workspaceId, user]);
 
   const loadWorkspace = async (id: string) => {

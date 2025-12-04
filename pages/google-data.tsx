@@ -22,7 +22,7 @@ export default function GoogleDataPage() {
   const { calendars, isLoading: calendarsLoading, error: calendarsError, refetch: refetchCalendars, saveToWorkspace: saveCalendarsToWorkspace } = useCalendarList();
   
   // Récupérer les workspaces de l'utilisateur
-  const { workspaces, loading: workspacesLoading } = useUserWorkspaces(user?.uid || '');
+  const { workspaces, isLoading: workspacesLoading } = useUserWorkspaces(user?.uid || '');
   
   // Sélectionner automatiquement le premier workspace
   if (!selectedWorkspace && workspaces.length > 0 && !workspacesLoading) {

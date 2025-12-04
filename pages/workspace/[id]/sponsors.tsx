@@ -295,8 +295,8 @@ function SponsorsPage({ user, userData }: SponsorsPageProps) {
 
           // Enregistrer l'utilisation du crédit de recherche
           try {
-            const { useSearchCredit } = await import('@/lib/firebase/userSubscriptions');
-            const result = await useSearchCredit(
+            const { consumeSearchCredit } = await import('@/lib/firebase/userSubscriptions');
+            const result = await consumeSearchCredit(
               user.uid,
               workspaceId,
               searchId,

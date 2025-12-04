@@ -14,12 +14,12 @@ export const PricingPlans: React.FC<PricingPlansProps> = ({
   currentPlan,
   onSubscribe,
 }) => {
-  const { user } = useAuth();
+  const { firebaseUser } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubscribe = async (planName: 'basic' | 'pro') => {
-    if (!user) {
+    if (!firebaseUser) {
       setError('Vous devez être connecté pour souscrire à un abonnement');
       return;
     }
@@ -37,7 +37,7 @@ export const PricingPlans: React.FC<PricingPlansProps> = ({
         body: JSON.stringify({
           workspaceId,
           planName,
-          userId: user.uid,
+          userId: firebaseUser.uid,
         }),
       });
 

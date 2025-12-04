@@ -10,7 +10,7 @@ import Link from 'next/link';
 export default function SelectWorkspacePage() {
   const { firebaseUser, userData, loading: authLoading } = useAuth();
   const router = useRouter();
-  const { workspaces, loading: workspacesLoading } = useUserWorkspaces(firebaseUser?.uid || '');
+  const { workspaces, isLoading: workspacesLoading } = useUserWorkspaces(firebaseUser?.uid || '');
   const [selectedWorkspace, setSelectedWorkspace] = useState<string | null>(null);
   const [rememberChoice, setRememberChoice] = useState(true);
   const [isRedirecting, setIsRedirecting] = useState(false);

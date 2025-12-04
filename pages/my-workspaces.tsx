@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function MyWorkspacesPage() {
   const { firebaseUser, userData, loading: authLoading } = useAuth();
   const router = useRouter();
-  const { workspaces, loading: workspacesLoading } = useUserWorkspaces(firebaseUser?.uid || '');
+  const { workspaces, isLoading: workspacesLoading } = useUserWorkspaces(firebaseUser?.uid || '');
   const [roles, setRoles] = useState<Record<string, string>>({});
   const [loadingRoles, setLoadingRoles] = useState(false);
   const [settingDefault, setSettingDefault] = useState<string | null>(null);

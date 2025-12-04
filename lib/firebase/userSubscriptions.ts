@@ -152,7 +152,7 @@ export const canPerformSponsorSearch = async (userId: string): Promise<{
 /**
  * Utiliser un crédit de recherche
  */
-export const useSearchCredit = async (
+export const consumeSearchCredit = async (
   userId: string,
   workspaceId: string,
   searchId: string,

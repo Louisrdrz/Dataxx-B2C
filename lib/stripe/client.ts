@@ -4,7 +4,7 @@ import { stripeConfig } from './config';
 
 // Initialiser le client Stripe
 export const stripe = new Stripe(stripeConfig.secretKey, {
-  apiVersion: '2024-11-20.acacia',
+  apiVersion: '2025-11-17.clover',
   typescript: true,
 });
 

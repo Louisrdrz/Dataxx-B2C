@@ -17,7 +17,7 @@ function ScoreGauge({ target = 86, durationMs = 1200 }: { target?: number; durat
   const startRef = useRef<number | null>(null);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  const startAnim = () => {
+  const startAnim = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     startRef.current = null;
     setValue(0);
@@ -31,12 +31,12 @@ function ScoreGauge({ target = 86, durationMs = 1200 }: { target?: number; durat
       if (progress < 1) rafRef.current = requestAnimationFrame(animate);
     };
     rafRef.current = requestAnimationFrame(animate);
-  };
+  }, [target, durationMs]);
 
   useEffect(() => {
     startAnim();
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [target, durationMs]);
+  }, [startAnim]);
 
   // Rejoue à chaque entrée dans le viewport
   useEffect(() => {
@@ -51,7 +51,7 @@ function ScoreGauge({ target = 86, durationMs = 1200 }: { target?: number; durat
     }, { threshold: 0.5 });
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [startAnim]);
 
   return (
     <svg ref={svgRef} viewBox="0 0 300 200" className="w-[85%]" onMouseEnter={startAnim}>

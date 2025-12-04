@@ -78,6 +78,7 @@ const SubscriptionPage = ({ user, userData }: SubscriptionPageProps) => {
       const timer = setTimeout(() => setShowSuccessMessage(false), 5000);
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [success, user?.uid, refresh]);
 
   const handleSubscribe = async (planName: PlanName) => {

@@ -51,7 +51,7 @@ export default async function handler(
     }
 
     // Prendre le plus récent
-    const stripeSubscription = subscriptions.data[0];
+    const stripeSubscription = subscriptions.data[0] as any;
     const planName = stripeSubscription.metadata?.planName as PlanName || 'basic';
     const searchesPerMonth = getSearchesPerMonth(planName);
 

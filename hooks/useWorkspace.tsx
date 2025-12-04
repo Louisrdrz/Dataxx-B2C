@@ -24,7 +24,7 @@ const WorkspaceContext = createContext<WorkspaceContextType | undefined>(undefin
  * Provider pour le contexte workspace
  */
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
-  const { firebaseUser: user } = useAuth();
+  const { firebaseUser, userData } = useAuth();
   const [currentWorkspace, setCurrentWorkspace] = useState<Workspace | null>(null);
   const [userWorkspaces, setUserWorkspaces] = useState<Workspace[]>([]);
   const [userRole, setUserRole] = useState<'admin' | 'member' | null>(null);
@@ -35,7 +35,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
    * Charger tous les workspaces de l'utilisateur
    */
   const loadUserWorkspaces = useCallback(async () => {
-    if (!user) {
+    if (!firebaseUser) {
       setUserWorkspaces([]);
       setCurrentWorkspace(null);
       setUserRole(null);
@@ -47,26 +47,26 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       setIsLoading(true);
       setError(null);
       
-      const workspaces = await getUserWorkspaces(user.uid);
+      const workspaces = await getUserWorkspaces(firebaseUser.uid);
       setUserWorkspaces(workspaces);
 
       // Si l'utilisateur a un workspace par défaut, le charger
-      if (user.defaultWorkspaceId) {
-        const defaultWorkspace = workspaces.find(w => w.id === user.defaultWorkspaceId);
+      if (userData?.defaultWorkspaceId) {
+        const defaultWorkspace = workspaces.find(w => w.id === userData.defaultWorkspaceId);
         if (defaultWorkspace) {
           setCurrentWorkspace(defaultWorkspace);
-          const role = await getUserRoleInWorkspace(defaultWorkspace.id, user.uid);
+          const role = await getUserRoleInWorkspace(defaultWorkspace.id, firebaseUser.uid);
           setUserRole(role);
         } else if (workspaces.length > 0) {
           // Sinon, charger le premier workspace
           setCurrentWorkspace(workspaces[0]);
-          const role = await getUserRoleInWorkspace(workspaces[0].id, user.uid);
+          const role = await getUserRoleInWorkspace(workspaces[0].id, firebaseUser.uid);
           setUserRole(role);
         }
       } else if (workspaces.length > 0) {
         // Si pas de workspace par défaut, charger le premier
         setCurrentWorkspace(workspaces[0]);
-        const role = await getUserRoleInWorkspace(workspaces[0].id, user.uid);
+        const role = await getUserRoleInWorkspace(workspaces[0].id, firebaseUser.uid);
         setUserRole(role);
       }
     } catch (err) {
@@ -75,13 +75,13 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [firebaseUser, userData]);
 
   /**
    * Changer de workspace actif
    */
   const switchWorkspace = useCallback(async (workspaceId: string) => {
-    if (!user) return;
+    if (!firebaseUser) return;
 
     try {
       setIsLoading(true);
@@ -94,11 +94,11 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
       setCurrentWorkspace(workspace);
       
-      const role = await getUserRoleInWorkspace(workspaceId, user.uid);
+      const role = await getUserRoleInWorkspace(workspaceId, firebaseUser.uid);
       setUserRole(role);
 
       // TODO: Sauvegarder le workspace par défaut dans le profil utilisateur
-      // await updateUserProfile(user.uid, { defaultWorkspaceId: workspaceId });
+      // await updateUserProfile(firebaseUser.uid, { defaultWorkspaceId: workspaceId });
     } catch (err) {
       console.error('Erreur lors du changement de workspace:', err);
       setError('Impossible de changer de workspace');
@@ -106,7 +106,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [firebaseUser]);
 
   /**
    * Rafraîchir la liste des workspaces
@@ -119,7 +119,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
    * Rafraîchir le workspace actuel
    */
   const refreshCurrentWorkspace = useCallback(async () => {
-    if (!currentWorkspace || !user) return;
+    if (!currentWorkspace || !firebaseUser) return;
 
     try {
       const workspace = await getWorkspace(currentWorkspace.id);
@@ -127,13 +127,13 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         setCurrentWorkspace(workspace);
       }
 
-      const role = await getUserRoleInWorkspace(currentWorkspace.id, user.uid);
+      const role = await getUserRoleInWorkspace(currentWorkspace.id, firebaseUser.uid);
       setUserRole(role);
     } catch (err) {
       console.error('Erreur lors du rafraîchissement du workspace:', err);
       setError('Impossible de rafraîchir le workspace');
     }
-  }, [currentWorkspace, user]);
+  }, [currentWorkspace, firebaseUser]);
 
   // Charger les workspaces au montage et quand l'utilisateur change
   useEffect(() => {

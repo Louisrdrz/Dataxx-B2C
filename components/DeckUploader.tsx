@@ -34,24 +34,7 @@ export default function DeckUploader({
     setIsDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      handleFileSelect(files[0]);
-    }
-  }, []);
-
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      handleFileSelect(files[0]);
-    }
-  };
-
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = useCallback((file: File) => {
     // Vérifier le type de fichier
     const validTypes = [
       'application/pdf',
@@ -74,7 +57,25 @@ export default function DeckUploader({
     }
 
     setSelectedFile(file);
+  }, [onError]);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFileSelect(files[0]);
+    }
+  }, [handleFileSelect]);
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFileSelect(files[0]);
+    }
   };
+
 
   const handleUpload = async () => {
     if (!selectedFile) return;

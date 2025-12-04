@@ -16,7 +16,7 @@ export const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
   workspaceId,
   isAdmin,
 }) => {
-  const { user } = useAuth();
+  const { firebaseUser } = useAuth();
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
@@ -57,7 +57,7 @@ export const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
   }, [workspaceId]);
 
   const handleManageSubscription = async () => {
-    if (!user || !isAdmin) {
+    if (!firebaseUser || !isAdmin) {
       setError('Vous devez être administrateur pour gérer l\'abonnement');
       return;
     }
@@ -73,7 +73,7 @@ export const SubscriptionManager: React.FC<SubscriptionManagerProps> = ({
         },
         body: JSON.stringify({
           workspaceId,
-          userId: user.uid,
+          userId: firebaseUser.uid,
         }),
       });
 
