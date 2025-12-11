@@ -84,9 +84,13 @@ export default function DeckUploader({
     setUploadProgress(10);
 
     try {
+      console.log('🚀 Début de l\'upload du fichier:', selectedFile.name);
+      
       // Étape 1 : Upload du fichier dans Firebase Storage (depuis le client)
       const { storage } = await import('@/lib/firebase/config');
       const { ref, uploadBytes, getDownloadURL } = await import('firebase/storage');
+      
+      console.log('✅ Firebase Storage importé');
       
       const workspaceIdToUse = workspaceId || 'temp_' + Date.now();
       const sanitizedFileName = selectedFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
@@ -132,6 +136,7 @@ export default function DeckUploader({
       setUploadProgress(50);
 
       // Étape 2 : Envoyer au serveur pour l'analyse OpenAI
+      console.log('📤 Envoi du fichier au serveur pour analyse...');
       const formData = new FormData();
       formData.append('file', selectedFile);
       formData.append('userId', userId);
@@ -140,10 +145,13 @@ export default function DeckUploader({
 
       setUploadProgress(60);
 
+      console.log('📡 Requête API vers /api/upload-deck...');
       const response = await fetch('/api/upload-deck', {
         method: 'POST',
         body: formData,
       });
+      
+      console.log('📥 Réponse reçue:', response.status, response.statusText);
 
       setUploadProgress(80);
 
@@ -184,8 +192,26 @@ export default function DeckUploader({
       setIsUploading(false);
       setUploadProgress(0);
     } catch (error: any) {
-      console.error('Erreur upload:', error);
-      onError?.(error.message || 'Erreur lors de l\'upload du fichier');
+      console.error('❌ Erreur upload complète:', error);
+      console.error('❌ Détails de l\'erreur:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
+      
+      // Message d'erreur plus détaillé
+      let errorMessage = 'Erreur lors de l\'upload du fichier';
+      
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
+      console.error('❌ Message d\'erreur à afficher:', errorMessage);
+      onError?.(errorMessage);
       setIsUploading(false);
       setUploadProgress(0);
     }

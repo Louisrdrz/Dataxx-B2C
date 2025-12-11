@@ -105,11 +105,14 @@ export default async function handler(
   // Vérifier que OPENAI_API_KEY est configurée
   if (!process.env.OPENAI_API_KEY) {
     console.error('❌ OPENAI_API_KEY n\'est pas définie');
+    console.error('❌ Variables d\'environnement disponibles:', Object.keys(process.env).filter(k => k.includes('OPENAI')));
     return res.status(503).json({
       success: false,
       error: 'Service d\'analyse non configuré. OPENAI_API_KEY manquante sur Vercel.',
     });
   }
+
+  console.log('✅ OPENAI_API_KEY trouvée (longueur:', process.env.OPENAI_API_KEY.length, ')');
 
   try {
     // Parser le formulaire multipart
@@ -118,12 +121,16 @@ export default async function handler(
       keepExtensions: true,
     });
 
+    console.log('📋 Parsing du formulaire multipart...');
     const [fields, files] = await form.parse(req);
     
     const workspaceId = fields.workspaceId?.[0];
     const userId = fields.userId?.[0];
     
+    console.log('📋 Données reçues:', { workspaceId, userId, hasFile: !!files.file?.[0] });
+    
     if (!workspaceId || !userId) {
+      console.error('❌ Paramètres manquants:', { workspaceId, userId });
       return res.status(400).json({ 
         success: false, 
         error: 'workspaceId et userId sont requis' 
@@ -133,17 +140,28 @@ export default async function handler(
     const uploadedFile = files.file?.[0];
     
     if (!uploadedFile) {
+      console.error('❌ Aucun fichier uploadé');
       return res.status(400).json({ success: false, error: 'Aucun fichier uploadé' });
     }
 
+    console.log('📄 Fichier reçu:', {
+      name: uploadedFile.originalFilename,
+      size: uploadedFile.size,
+      mimetype: uploadedFile.mimetype,
+    });
+
     // Convertir en PDF si nécessaire
+    console.log('🔄 Conversion en PDF si nécessaire...');
     const { buffer: pdfBuffer, wasConverted } = await ensurePDF(uploadedFile);
+    console.log('✅ PDF prêt (taille:', pdfBuffer.length, 'bytes, converti:', wasConverted, ')');
     
     // Analyser avec OpenAI (passe le Buffer directement)
+    console.log('🤖 Début de l\'analyse avec OpenAI...');
     const extractedData = await analyzeDeck(
       pdfBuffer,
       uploadedFile.originalFilename || 'deck.pdf'
     );
+    console.log('✅ Analyse terminée avec succès');
 
     // Nettoyer le fichier temporaire
     await fs.unlink(uploadedFile.filepath).catch(console.error);
@@ -155,7 +173,10 @@ export default async function handler(
       data: extractedData,
     });
   } catch (error: any) {
-    console.error('Erreur lors de l\'upload:', error);
+    console.error('❌ Erreur lors de l\'upload:', error);
+    console.error('❌ Type d\'erreur:', error?.constructor?.name);
+    console.error('❌ Message d\'erreur:', error?.message);
+    console.error('❌ Stack:', error?.stack);
     
     // Déterminer le code de statut HTTP approprié
     let statusCode = 500;
@@ -171,6 +192,8 @@ export default async function handler(
     if (errorMessage.includes('Format de fichier') || errorMessage.includes('trop volumineux')) {
       statusCode = 400; // Bad Request
     }
+    
+    console.error('❌ Retour de l\'erreur:', { statusCode, errorMessage });
     
     return res.status(statusCode).json({
       success: false,
