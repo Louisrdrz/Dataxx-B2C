@@ -97,20 +97,37 @@ export default function DeckUploader({
       setUploadProgress(20);
       
       // Upload le fichier
-      await uploadBytes(storageRef, selectedFile, {
-        contentType: selectedFile.type,
-        customMetadata: {
-          workspaceId: workspaceIdToUse,
-          originalFileName: selectedFile.name,
-          uploadedAt: new Date().toISOString(),
-          uploadedBy: userId,
+      try {
+        await uploadBytes(storageRef, selectedFile, {
+          contentType: selectedFile.type,
+          customMetadata: {
+            workspaceId: workspaceIdToUse,
+            originalFileName: selectedFile.name,
+            uploadedAt: new Date().toISOString(),
+            uploadedBy: userId,
+          }
+        });
+      } catch (storageError: any) {
+        // Gérer les erreurs Firebase Storage spécifiques
+        if (storageError.code === 'storage/unauthorized') {
+          throw new Error('Vous n\'êtes pas autorisé à uploader ce fichier. Vérifiez que vous êtes connecté.');
+        } else if (storageError.code === 'storage/canceled') {
+          throw new Error('L\'upload a été annulé.');
+        } else if (storageError.code === 'storage/unknown') {
+          throw new Error('Erreur inconnue lors de l\'upload. Vérifiez votre connexion internet.');
         }
-      });
+        throw new Error(`Erreur Firebase Storage: ${storageError.message || 'Erreur inconnue'}`);
+      }
       
       setUploadProgress(40);
       
       // Récupérer l'URL du fichier
-      const fileURL = await getDownloadURL(storageRef);
+      let fileURL: string;
+      try {
+        fileURL = await getDownloadURL(storageRef);
+      } catch (urlError: any) {
+        throw new Error(`Erreur lors de la récupération de l'URL: ${urlError.message || 'Erreur inconnue'}`);
+      }
       
       setUploadProgress(50);
 
@@ -130,11 +147,27 @@ export default function DeckUploader({
 
       setUploadProgress(80);
 
+      // Vérifier le statut de la réponse avant de parser le JSON
+      if (!response.ok) {
+        // Essayer de parser le JSON d'erreur, sinon utiliser le texte brut
+        let errorMessage = 'Erreur lors de l\'analyse';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch {
+          // Si la réponse n'est pas du JSON, utiliser le texte brut
+          const text = await response.text();
+          errorMessage = text || `Erreur ${response.status}: ${response.statusText}`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      // Parser le JSON seulement si la réponse est OK
       const result = await response.json();
 
       setUploadProgress(100);
 
-      if (!response.ok || !result.success) {
+      if (!result.success) {
         throw new Error(result.error || 'Erreur lors de l\'analyse');
       }
 
