@@ -2,9 +2,16 @@
 import OpenAI from 'openai';
 import pdfParse from 'pdf-parse';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || '',
-});
+// Vérifier que la clé API est présente
+if (!process.env.OPENAI_API_KEY) {
+  console.error('⚠️ OPENAI_API_KEY n\'est pas définie dans les variables d\'environnement');
+}
+
+const openai = process.env.OPENAI_API_KEY 
+  ? new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null;
 
 export interface ExtractedWorkspaceData {
   name?: string;
@@ -55,6 +62,11 @@ export async function analyzeDeck(
   pdfBuffer: Buffer,
   fileName: string
 ): Promise<ExtractedWorkspaceData> {
+  // Vérifier que OpenAI est configuré
+  if (!openai) {
+    throw new Error('OPENAI_API_KEY n\'est pas configurée. Veuillez configurer la variable d\'environnement OPENAI_API_KEY sur Vercel.');
+  }
+
   try {
     // Extraire le texte du PDF
     const pdfData = await pdfParse(pdfBuffer);
@@ -134,6 +146,18 @@ ${pdfText}
       ],
       temperature: 0.3,
       max_tokens: 4000,
+    }).catch((error: any) => {
+      // Gérer les erreurs spécifiques d'OpenAI
+      if (error.status === 401 || error.status === 403) {
+        throw new Error('Clé API OpenAI invalide ou manquante. Vérifiez la variable OPENAI_API_KEY sur Vercel.');
+      }
+      if (error.status === 429) {
+        throw new Error('Quota OpenAI dépassé. Veuillez réessayer plus tard.');
+      }
+      if (error.status === 500 || error.status === 503) {
+        throw new Error('Service OpenAI temporairement indisponible. Veuillez réessayer plus tard.');
+      }
+      throw new Error(`Erreur OpenAI: ${error.message || 'Erreur inconnue'}`);
     });
 
     const content = response.choices[0]?.message?.content;
@@ -157,9 +181,22 @@ ${pdfText}
   } catch (error: any) {
     console.error('Erreur lors de l\'analyse du deck:', error);
     
-    // Si c'est une erreur de parsing JSON, essayer de récupérer
+    // Si c'est déjà une erreur avec un message personnalisé, la relancer
+    if (error.message && error.message.includes('OPENAI_API_KEY')) {
+      throw error;
+    }
+    
+    // Si c'est une erreur de parsing JSON
     if (error instanceof SyntaxError) {
       throw new Error('Format de réponse invalide de l\'API OpenAI');
+    }
+    
+    // Si c'est une erreur OpenAI avec un statut HTTP
+    if (error.status) {
+      if (error.status === 401 || error.status === 403) {
+        throw new Error('Clé API OpenAI invalide ou manquante. Vérifiez la variable OPENAI_API_KEY sur Vercel.');
+      }
+      throw new Error(`Erreur OpenAI (${error.status}): ${error.message || 'Erreur inconnue'}`);
     }
     
     throw new Error(error.message || 'Erreur lors de l\'analyse du document');
@@ -170,6 +207,11 @@ ${pdfText}
  * Tester la connexion à l'API OpenAI
  */
 export async function testOpenAIConnection(): Promise<boolean> {
+  if (!openai) {
+    console.error('OpenAI n\'est pas configuré (OPENAI_API_KEY manquante)');
+    return false;
+  }
+  
   try {
     await openai.models.list();
     return true;

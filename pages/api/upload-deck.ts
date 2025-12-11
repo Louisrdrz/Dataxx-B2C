@@ -102,6 +102,15 @@ export default async function handler(
     return res.status(405).json({ success: false, error: 'Méthode non autorisée' });
   }
 
+  // Vérifier que OPENAI_API_KEY est configurée
+  if (!process.env.OPENAI_API_KEY) {
+    console.error('❌ OPENAI_API_KEY n\'est pas définie');
+    return res.status(503).json({
+      success: false,
+      error: 'Service d\'analyse non configuré. OPENAI_API_KEY manquante sur Vercel.',
+    });
+  }
+
   try {
     // Parser le formulaire multipart
     const form = formidable({
@@ -147,9 +156,25 @@ export default async function handler(
     });
   } catch (error: any) {
     console.error('Erreur lors de l\'upload:', error);
-    return res.status(500).json({
+    
+    // Déterminer le code de statut HTTP approprié
+    let statusCode = 500;
+    let errorMessage = error.message || 'Erreur lors du traitement du fichier';
+    
+    // Si c'est une erreur liée à OpenAI (clé manquante/invalide)
+    if (errorMessage.includes('OPENAI_API_KEY') || errorMessage.includes('OpenAI')) {
+      statusCode = 503; // Service Unavailable
+      errorMessage = 'Service d\'analyse temporairement indisponible. ' + errorMessage;
+    }
+    
+    // Si c'est une erreur de validation
+    if (errorMessage.includes('Format de fichier') || errorMessage.includes('trop volumineux')) {
+      statusCode = 400; // Bad Request
+    }
+    
+    return res.status(statusCode).json({
       success: false,
-      error: error.message || 'Erreur lors du traitement du fichier',
+      error: errorMessage,
     });
   }
 }
